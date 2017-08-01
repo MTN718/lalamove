@@ -12,82 +12,143 @@ class Home extends Main_Controller {
     }
 
 	public function index() {
+        $userInfo = $this->session->login_data;
 		$model_data = array(
-	      	'login_id' => $this->session->login_data,
+	      	'party_id' => $userInfo->PARTY_ID,
 	    );
 		$this->mPageTitle = 'Dashboard';
 		$this->mViewData['data'] = array(
-			'profileInfo'=> $this->Homemodel->getProfileInfo($model_data),
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
 			'pageName'=> 'DASHBOARD',
 		);
-
 		$this->render('dashboard');
 	}
 
-	public function account() {
+	public function account($active="time") {
+        $userInfo = $this->session->login_data;
 		$model_data = array(
-	      	'login_id' => $this->session->login_data,
+	      	'party_id' => $userInfo->PARTY_ID,
 	    );
-		$this->mPageTitle = 'Add Customer';
+		$this->mPageTitle = 'Account';
 		$this->mViewData['data'] = array(
-			'profileInfo'=> $this->Homemodel->getProfileInfo($model_data),
-			'pageName'=> 'DASHBOARD',
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
+			'partyEmailInfo'=> $this->Homemodel->getPartyContactInfo($model_data,'EMAIL'),
+			'partyAddressInfo'=> $this->Homemodel->getPartyContactInfo($model_data,'ADDRESS'),
+			'partyTelecomInfo'=> $this->Homemodel->getPartyContactInfo($model_data,'TELECOM'),
+			'noOfCustomer' => 0,
+			'noOfDriver' => 0,			
+			'noOfBussinessLister' => 0,
+			'active' => $active,			
+			'pageName'=> 'ACCOUNT',
 		);
-
-		$this->render('accounts');
+		$this->render('account');
 	}
 
 	public function notifications() {
+        $userInfo = $this->session->login_data;
 		$model_data = array(
-	      	'login_id' => $this->session->login_data,
+	      	'party_id' => $userInfo->PARTY_ID,
 	    );
-		$this->mPageTitle = 'Add Customer';
+		$this->mPageTitle = 'Notification';
 		$this->mViewData['data'] = array(
-			'profileInfo'=> $this->Homemodel->getProfileInfo($model_data),
-			'pageName'=> 'DASHBOARD',
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
+			'notificationCount' => 0,
+			'sentNotificationCount' => 0,			
+			'trashNotificationCount' => 0,
+			'pageName'=> 'NOTIFICATIONS',
 		);
 
-		$this->render('notificationss');
+		$this->render('notifications');
+	}
+
+	public function sentNotifications() {
+        $userInfo = $this->session->login_data;
+		$model_data = array(
+	      	'party_id' => $userInfo->PARTY_ID,
+	    );
+		$this->mPageTitle = 'Sent Notification';
+		$this->mViewData['data'] = array(
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
+			'notificationCount' => 0,
+			'sentNotificationCount' => 0,			
+			'trashNotificationCount' => 0,
+			'pageName'=> 'NOTIFICATIONS',
+		);
+
+		$this->render('sentnotifications');
+	}
+
+	public function trashNotifications() {
+        $userInfo = $this->session->login_data;
+		$model_data = array(
+	      	'party_id' => $userInfo->PARTY_ID,
+	    );
+		$this->mPageTitle = 'Trash Notification';
+		$this->mViewData['data'] = array(
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
+			'notificationCount' => 0,
+			'sentNotificationCount' => 0,			
+			'trashNotificationCount' => 0,
+			'pageName'=> 'NOTIFICATIONS',
+		);
+
+		$this->render('trashnotifications');
 	}
 
 	public function invoices() {
+		$userInfo = $this->session->login_data;
 		$model_data = array(
-	      	'login_id' => $this->session->login_data,
+	      	'party_id' => $userInfo->PARTY_ID,
 	    );
-		$this->mPageTitle = 'Add Customer';
+		$this->mPageTitle = 'Invoices';
 		$this->mViewData['data'] = array(
-			'profileInfo'=> $this->Homemodel->getProfileInfo($model_data),
-			'pageName'=> 'DASHBOARD',
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
+			'pageName'=> 'INVOICES',
 		);
 
-		$this->render('invoicess');
+		$this->render('invoices');
 	}
 
 	public function payments() {
+		$userInfo = $this->session->login_data;
 		$model_data = array(
-	      	'login_id' => $this->session->login_data,
+	      	'party_id' => $userInfo->PARTY_ID,
 	    );
-		$this->mPageTitle = 'Add Customer';
+		$this->mPageTitle = 'Payments';
 		$this->mViewData['data'] = array(
-			'profileInfo'=> $this->Homemodel->getProfileInfo($model_data),
-			'pageName'=> 'DASHBOARD',
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
+			'pageName'=> 'PAYMENTS',
 		);
 
-		$this->render('paymentss');
+		$this->render('payments');
 	}
 
 	public function orders() {
+		$userInfo = $this->session->login_data;
 		$model_data = array(
-	      	'login_id' => $this->session->login_data,
+	      	'party_id' => $userInfo->PARTY_ID,
 	    );
-		$this->mPageTitle = 'Add Customer';
+		$this->mPageTitle = 'Orders';
 		$this->mViewData['data'] = array(
-			'profileInfo'=> $this->Homemodel->getProfileInfo($model_data),
-			'pageName'=> 'DASHBOARD',
+			'partyNameInfo'=> $this->Homemodel->getPartyNameInfo($model_data),
+			'pageName'=> 'ORDERS',
 		);
 
-		$this->render('orderss');
+		$this->render('orders');
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	public function vehicle() {
 		$model_data = array(

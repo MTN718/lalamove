@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<base href="<?php echo base_url(); ?>" />
 	<!-- <link rel="icon" href="<?php echo base_url('assets/images/logo.png');?>" type="image/png" sizes="16x16"> -->
-	<title><?php echo $page_title; ?></title>
+	<!-- <title><?php echo $page_title; ?></title> -->
 
 	<?php
 	  /* getting this meta data from karyon_config.php file which is under application > config folder */

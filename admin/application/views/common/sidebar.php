@@ -4,9 +4,9 @@
     <!-- Logo -->
     <a href="../../index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>LT</span>
+      <span class="logo-mini"><b>l</b>ala</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>LTE</span>
+      <span class="logo-lg"><b>lala</b>moves</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
       <nav class="navbar navbar-static-top" role="navigation">
@@ -226,8 +226,7 @@
             <img src="<?php echo base_url();?>images/profile_img.jpg" class="img-circle" alt="User Image">           
           </div>
           <div class="pull-left info">
-            <!-- <p><?php echo $profileInfo['fname'];?> <?php echo $profileInfo['lname'];?></p> -->
-            <p> Admin Admin </p>
+            <p><?php echo $data['partyNameInfo']->FIRST_NAME;?> <?php echo $data['partyNameInfo']->LAST_NAME;?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>

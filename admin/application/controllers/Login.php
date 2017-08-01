@@ -22,7 +22,7 @@ class Login extends MY_Controller {
 			$sess_array = array(
          		'user_login_id' => $result->USER_LOGIN_ID,
        		);
-       		$this->session->set_userdata('login_data', $sess_array);
+       		$this->session->set_userdata('login_data', $result);
 			redirect('home');
 		}
 	}
