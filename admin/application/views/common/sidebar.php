@@ -223,10 +223,14 @@
       <section class="sidebar" style="height: auto;">
         <div class="user-panel">
           <div class="pull-left image">
-            <img src="<?php echo base_url();?>images/profile_img.jpg" class="img-circle" alt="User Image">           
+            <?php if(empty($data['adminNameInfo']->PERSON_IMAGE_URL)) { ?>
+            <img class="profile-user-img img-responsive" src="<?php echo base_url();?>images/profile_img.jpg" alt="User profile picture" height="45px;">
+            <?php } else { ?>
+            <img class="profile-user-img img-responsive" src="<?php echo base_url();?>images/<?php echo $data['adminNameInfo']->PERSON_IMAGE_URL;?>" alt="User profile picture" height="45px;">
+            <?php } ?>           
           </div>
           <div class="pull-left info">
-            <p><?php echo $data['partyNameInfo']->FIRST_NAME;?> <?php echo $data['partyNameInfo']->LAST_NAME;?></p>
+            <p><?php echo $data['adminNameInfo']->FIRST_NAME;?> <?php echo $data['adminNameInfo']->LAST_NAME;?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>

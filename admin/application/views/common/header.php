@@ -31,4 +31,11 @@
 			echo "<script src='$file'></script>";
 		}
 	?>
+
+	<style type="text/css">
+		.modal-dialog {
+		    width: 760px;
+		    margin: 30px auto;
+		}	
+	</style>
 </head>
