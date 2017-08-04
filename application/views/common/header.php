@@ -41,7 +41,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="active"> <a class="page-scroll" href="<?php echo site_url('home/index'); ?>" class="signintab">Home</a> </li>
             <li> <a class="page-scroll" href="<?php echo site_url('home/business'); ?>">Business</a> </li>
-            <li> <a class="page-scroll" href="<?php echo site_url('home/driver'); ?>">Driver</a> </li>
+            <li> <a class="page-scroll" href="<?php echo site_url('user/driver'); ?>">Driver</a> </li>
             <li> <a class="page-scroll" href="<?php echo site_url('home/how_it_work'); ?>">How It Works</a> </li>
             <li> <a href="<?php echo site_url('home/pricing'); ?>" >Pricing</a> </li>
             <li> <a href="<?php echo site_url('home/bangkok'); ?>" >Bangkok</a>
@@ -52,6 +52,7 @@
             <li> <a href="<?php echo site_url('home/singapore'); ?>" >Singapore</a>
             </ul>
              </li>
+            <!-- <li class="hs-menu-quote"><a href="<?php echo site_url('user/register'); ?>" target="_blank">Instant Quote</a></li> -->
             <li class="hs-menu-quote"><a href="<?php echo site_url('home/instantquote'); ?>" target="_blank">Instant Quote</a></li>
           </ul>
         </div>

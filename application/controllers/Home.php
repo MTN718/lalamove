@@ -59,9 +59,16 @@ class Home extends CI_Controller {
    $this->load->view('common/content_handler', $data);
  }
 
-  function instantquote() { 
-   $data['pageName'] = "INSTANTQUOTE";
-   $this->load->view('common/content_handler', $data);
+  public function instantquote() { 
+
+    // create the data object
+    $data = new stdClass();
+
+    $this->load->view('order/map_header');
+    $this->load->view('order/index');
+    $this->load->view('order/map_footer');
+   /*$data['pageName'] = "INSTANTQUOTE";
+   $this->load->view('common/content_handler', $data);*/
  }
 
 }
