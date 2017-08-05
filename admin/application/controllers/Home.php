@@ -666,39 +666,54 @@ class Home extends Main_Controller {
 	}
 
 
-	// Update About Us
-	public function updateWebAboutUs() {
+	// Update web setting
+	public function updateWebSettings() {
 		$model_data = array(			
-	      	'ABOUT_US_ID' 			=> $this->input->post('ABOUT_US_ID'),
+	      	'ID' 					=> $this->input->post('ID'),
+	      	'VALUE_TYPE'			=> $this->input->post('VALUR_TYPE'),
 			'TITLE' 				=> $this->input->post('TITLE'),
 			'DESCRIPTION' 			=> $this->input->post('DESCRIPTION'),
 		);
-		$status = $this->Homemodel->updateWebAboutUs($model_data);
+
+		if($model_data['VALUE_TYPE'] == "ABOUT_US") 
+			$status = $this->Homemodel->updateWebAboutUs($model_data);
+		else if($model_data['VALUE_TYPE'] == "PRIVACY_POLICY") 
+			$status = $this->Homemodel->updateWebPrivacyPolicy($model_data);
+		else if($model_data['VALUE_TYPE'] == "TERM_CONDITION") 
+			$status = $this->Homemodel->updateWebTermCondition($model_data);
+		else if($model_data['VALUE_TYPE'] == "FAQS") 
+			$status = $this->Homemodel->updateWebFaqs($model_data);
 
 		if($status == "true") {
-		$this->session->set_flashdata('success_msg', 'About Us Updated Successfully...');
+		$this->session->set_flashdata('success_msg', 'Info Updated Successfully...');
 		} else {
-		$this->session->set_flashdata('error_msg', 'About Us not Updated Successfully...');
+		$this->session->set_flashdata('error_msg', 'Info not Updated Successfully...');
 		}
-		redirect('home/settings/about_us');
+
+		if($model_data['VALUE_TYPE'] == "ABOUT_US") 
+			redirect('home/settings/about_us');
+		else if($model_data['VALUE_TYPE'] == "PRIVACY_POLICY") 
+			redirect('home/settings/privacy_policy');
+		else if($model_data['VALUE_TYPE'] == "TERM_CONDITION") 
+			redirect('home/settings/term_condition');
+		else if($model_data['VALUE_TYPE'] == "FAQS") 
+			redirect('home/settings/faqs');
 	}
 
-	// Update Privacy Policy
-	public function updateWebPrivacyPolicy() {
-		$model_data = array(			
-	      	'PRIVACY_POLiCY_ID' 	=> $this->input->post('PRIVACY_POLiCY_ID'),
-			'TITLE' 				=> $this->input->post('TITLE'),
-			'DESCRIPTION' 			=> $this->input->post('DESCRIPTION'),
-		);
-		$status = $this->Homemodel->updateWebPrivacyPolicy($model_data);
 
-		if($status == "true") {
-		$this->session->set_flashdata('success_msg', 'Privacy Policy Updated Successfully...');
-		} else {
-		$this->session->set_flashdata('error_msg', 'Privacy Policy not Updated Successfully...');
-		}
-		redirect('home/settings/privacy_policy');
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -738,7 +753,6 @@ class Home extends Main_Controller {
 
 
 }
-?>
 
 
 

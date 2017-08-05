@@ -262,7 +262,7 @@ Class Homemodel extends CI_Model
 
     // Update About Us 
     public function updateWebAboutUs($model_data) {
-        $ABOUT_US_ID        = $model_data['ABOUT_US_ID'];
+        $ABOUT_US_ID        = $model_data['ID'];
         $TITLE              = $model_data['TITLE'];
         $DESCRIPTION        = $model_data['DESCRIPTION'];
 
@@ -277,18 +277,49 @@ Class Homemodel extends CI_Model
 
     // Update Privacy Policy
     public function updateWebPrivacyPolicy($model_data) {
-        $PRIVACY_POLiCY_ID  = $model_data['PRIVACY_POLiCY_ID'];
+        $PRIVACY_POLICY_ID  = $model_data['ID'];
         $TITLE              = $model_data['TITLE'];
         $DESCRIPTION        = $model_data['DESCRIPTION'];
 
-        if(empty($PRIVACY_POLiCY_ID)) 
-            $sql = "INSERT INTO `PRIVACY_POLiCY`(`TITLE`,`DESCRIPTION`) VALUES('$TITLE','$DESCRIPTION')";
+        if(empty($PRIVACY_POLICY_ID)) 
+            $sql = "INSERT INTO `PRIVACY_POLICY`(`TITLE`,`DESCRIPTION`) VALUES('$TITLE','$DESCRIPTION')";
         else 
-            $sql = "UPDATE `PRIVACY_POLiCY` SET `TITLE` = '$TITLE', `DESCRIPTION` = '$DESCRIPTION' WHERE PRIVACY_POLiCY_ID = '$PRIVACY_POLiCY_ID'";
+            $sql = "UPDATE `PRIVACY_POLICY` SET `TITLE` = '$TITLE', `DESCRIPTION` = '$DESCRIPTION' WHERE PRIVACY_POLICY_ID = '$PRIVACY_POLICY_ID'";
 
         $this->db->query($sql);
         return true;
     }
+
+    // Update Privacy Policy
+    public function updateWebTermCondition($model_data) {
+        $TERM_CONDITION_ID  = $model_data['ID'];
+        $TITLE              = $model_data['TITLE'];
+        $DESCRIPTION        = $model_data['DESCRIPTION'];
+
+        if(empty($TERM_CONDITION_ID)) 
+            $sql = "INSERT INTO `TERM_CONDITION`(`TITLE`,`DESCRIPTION`) VALUES('$TITLE','$DESCRIPTION')";
+        else 
+            $sql = "UPDATE `TERM_CONDITION` SET `TITLE` = '$TITLE', `DESCRIPTION` = '$DESCRIPTION' WHERE TERM_CONDITION_ID = '$TERM_CONDITION_ID'";
+
+        $this->db->query($sql);
+        return true;
+    }
+
+    // Update Faq's
+    public function updateWebFaqs($model_data) {
+        $FAQ_ID             = $model_data['ID'];
+        $QUESTION           = $model_data['TITLE'];
+        $ANSWER             = $model_data['DESCRIPTION'];
+
+        if(empty($FAQ_ID)) 
+            $sql = "INSERT INTO `FAQS`(`QUESTION`,`ANSWER`) VALUES('$QUESTION','$ANSWER')";
+        else
+            $sql = "UPDATE `FAQS` SET `QUESTION` = '$QUESTION', `ANSWER` = '$ANSWER' WHERE FAQ_ID = '$FAQ_ID'";
+
+        $this->db->query($sql);
+        return true;
+    }
+
 
 
 
