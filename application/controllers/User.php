@@ -19,6 +19,7 @@ class User extends CI_Controller {
 		parent::__construct();
 		// $this->load->library(array('session'));
 		$this->load->helper(array('url'));
+		$this->load->helper(array('common_super'));
 		$this->load->model('user_model');
 		
 	}
@@ -59,9 +60,9 @@ class User extends CI_Controller {
 			if ($this->form_validation->run() === false) {
 			
 				// validation not ok, send validation errors to the view
-				$this->load->view('user/header');
-				$this->load->view('user/register/register', $data);
-				$this->load->view('user/footer');
+				$data = array('first_name' => form_error('first_name'), 'last_name' => form_error('last_name'), 'email' => form_error('email'), 'mobile' => form_error('mobile')
+					, 'password' => form_error('password'), 'password_confirm' => form_error('password_confirm'));
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 			
 			} else {
 			
@@ -76,19 +77,15 @@ class User extends CI_Controller {
 			if ($this->user_model->create_user($first_name, $last_name, $email, $mobile, $password, $user_type)) {
 				
 				// user creation ok
-				$this->load->view('common/header');
-				$this->load->view('user/register/register_success', $data);
-				$this->load->view('common/footer');
+				$data = array("status"=>"success", 'message' => "Thank you for registering your new account!");
+				$this->session->set_flashdata("success","Thank you for registering your new account! Please login to update your profile");
+				$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
 			} else {
 				
 				// user creation failed, this should never happen
-				$data->error = 'There was a problem creating your new account. Please try again.';
-				
-				// send error to the view
-				$this->load->view('user/header');
-				$this->load->view('user/register/register', $data);
-				$this->load->view('user/footer');
+				$this->session->set_flashdata("error","There was a problem creating your new account. Please try again.");
+				$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
 			}
 			
@@ -112,9 +109,10 @@ class User extends CI_Controller {
 			$data = array(
     			'company' => 1,   
 			);
-			$this->load->view('user/header');
-			$this->load->view('user/register/register', $data);
-			$this->load->view('user/footer');
+			$data = array('first_name' => form_error('first_name'), 'last_name' => form_error('last_name'), 'email' => form_error('email'), 'mobile' => form_error('mobile')
+					, 'password' => form_error('password'), 'password_confirm' => form_error('password_confirm'), 'company_name' => form_error('company_name'), 'industry' =>
+					form_error('industry[]'), 'staff'=>form_error('staff[]'));
+        	$this->output->set_content_type('application/json')->set_output(json_encode($data));
 			
 		} else {
 					
@@ -132,27 +130,23 @@ class User extends CI_Controller {
 			if ($this->user_model->create_company($first_name, $last_name, $email, $mobile, $password, $company_name, $industry, $staff, $user_type)) {
 				
 				// user creation ok
-				$this->load->view('common/header');
-				$this->load->view('user/register/register_success', $data);
-				$this->load->view('common/footer');
+				$data = array("status"=>"success", 'message' => "Thank you for registering your new account!");
+				$this->session->set_flashdata("success","Thank you for registering your new account! Please login to update your profile");
+				$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
 			} else {
 				
 				// user creation failed, this should never happen
-				$data->error = 'There was a problem creating your new account. Please try again.';
-				
-				// send error to the view
-				$this->load->view('user/header');
-				$this->load->view('user/register/register', $data);
-				$this->load->view('user/footer');
+				$this->session->set_flashdata("error","There was a problem creating your new account. Please try again.");
+				$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
 			}
 			
 		}
 		}else{
-			$this->load->view('user/header');
-			$this->load->view('user/register/register', $data);
-			$this->load->view('user/footer');
+			// $this->load->view('user/header');
+			$this->load->view('user/register/register');
+			// $this->load->view('user/footer');
 		}
 		
 		
@@ -235,9 +229,10 @@ class User extends CI_Controller {
 	 */
 	public function login() {
 		
+		// $CI = & get_instance();
 		// create the data object
 		$data = new stdClass();
-		
+			
 		// load form helper and validation library
 		$this->load->helper('form');
 		$this->load->library('form_validation');
@@ -253,10 +248,8 @@ class User extends CI_Controller {
 			if ($this->form_validation->run() == false) {
 			
 				// validation not ok, send validation errors to the view
-				$this->load->view('user/header');
-				$this->load->view('user/login/login');
-				$this->load->view('user/footer');
-			
+				$data = array('email_error_message' => form_error('email'), 'pass_error_message' => form_error('password'));
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));			
 			} else {
 			
 			// set variables from the form
@@ -269,30 +262,32 @@ class User extends CI_Controller {
 				$user    = $this->user_model->get_user($user_id);
 				
 				// set session user datas
-				$_SESSION['user_id']      = (int)$user->id;
-				$_SESSION['email']     = (string)$user->email;
-				$_SESSION['user_type']     = (int)$user->user_type;
+				/*$sess_array = array(
+					'user_id' 	=> $user->id,
+					'email' 	=> $user->email,
+					'user_type'	=> $user->user_type,
+					'logged_in'	=> (bool)true,
+					'status'	=> $user->status,
+					 );*/
+				$_SESSION['user_id']      = $user->id;
+				$_SESSION['email']     = $user->email;
+				$_SESSION['user_type']     = $user->user_type;
 				$_SESSION['logged_in']    = (bool)true;
-				$_SESSION['status'] = (bool)$user->status;
-				
+				$_SESSION['status'] = $user->status;
+				// $CI->session->set_userdata($sess_array);
 				// user login ok
 				if($user->user_type==1){
-					echo "Load Personal Dashboard";
-					$this->load->view('user/header');
-					$this->load->view('user/login/login_success', $data);
-					$this->load->view('user/footer');
+					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}elseif($user->user_type==2) {
-					echo "Load Company Dashboard";
-					$this->load->view('user/header');
-					$this->load->view('user/login/login_success', $data);
-					$this->load->view('user/footer');
+					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}elseif($user->user_type==3){
-					echo "Load Driver Dashboard";
-					$this->load->view('user/header');
-					$this->load->view('user/login/login_success', $data);
-					$this->load->view('user/footer');
+					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}elseif($user->user_type==4){
-					echo "Show Error Page";
+					$data = array('error' => "<p>Database error please log in again</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}
 				/*$this->load->view('header');
 				$this->load->view('user/login/login_success', $data);
@@ -301,13 +296,8 @@ class User extends CI_Controller {
 			} else {
 				// echo "wrong";die;
 				// login failed
-				$data->error = 'Wrong username or password.';
-				$this->session->set_flashdata('error', 'Wrong username or password.');
-				
-				// send error to the view
-				$this->load->view('user/header');
-				$this->load->view('user/login/login', $data);
-				$this->load->view('user/footer');
+				$data = array('error' => '<p>Wrong email or password.</p>');
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
 			}
 
@@ -323,12 +313,8 @@ class User extends CI_Controller {
 			if ($this->form_validation->run() == false) {
 			
 				// validation not ok, send validation errors to the view
-				$data = array(
-    				'loginType' => 1,   
-				);
-				$this->load->view('user/header');
-				$this->load->view('user/login/login',$data);
-				$this->load->view('user/footer');
+				$data = array('email_error_message' => form_error('mobile'), 'pass_error_message' => form_error('password'));
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 			
 			} else {
 			
@@ -342,30 +328,33 @@ class User extends CI_Controller {
 				$user    = $this->user_model->get_user($user_id);
 				
 				// set session user datas
-				$_SESSION['user_id']      = (int)$user->id;
-				$_SESSION['email']     = (string)$user->email;
-				$_SESSION['user_type']     = (int)$user->user_type;
+				/*$sess_array = array(
+					'user_id' 	=> $user->id,
+					'email' 	=> $user->email,
+					'user_type'	=> $user->user_type,
+					'logged_in'	=> (bool)true,
+					'status'	=> $user->status,
+					 );*/
+				$_SESSION['user_id']      = $user->id;
+				$_SESSION['email']     = $user->email;
+				$_SESSION['user_type']     = $user->user_type;
 				$_SESSION['logged_in']    = (bool)true;
-				$_SESSION['status'] = (bool)$user->status;
+				$_SESSION['status'] = $user->status;
+				// $CI->session->set_userdata($sess_array);
 				
 				// user login ok
 				if($user->user_type==1){
-					echo "Load Personal Dashboard";
-					$this->load->view('user/header');
-					$this->load->view('user/login/login_success', $data);
-					$this->load->view('user/footer');
+					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}elseif($user->user_type==2) {
-					echo "Load Company Dashboard";
-					$this->load->view('user/header');
-					$this->load->view('user/login/login_success', $data);
-					$this->load->view('user/footer');
+					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}elseif($user->user_type==3){
-					echo "Load Driver Dashboard";
-					$this->load->view('user/header');
-					$this->load->view('user/login/login_success', $data);
-					$this->load->view('user/footer');
+					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}elseif($user->user_type==4){
-					echo "Show Error Page";
+					$data = array('error' => "<p>Database error please log in again</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}
 				/*$this->load->view('header');
 				$this->load->view('user/login/login_success', $data);
@@ -374,12 +363,8 @@ class User extends CI_Controller {
 			} else {
 				
 				// login failed
-				$data->error = 'Wrong username or password.';
-				
-				// send error to the view
-				$this->load->view('user/header');
-				$this->load->view('user/login/login', $data);
-				$this->load->view('user/footer');
+				$data = array('error' => '<p>Wrong mobile or password.</p>');
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
 			}
 
@@ -387,9 +372,7 @@ class User extends CI_Controller {
 		
 		}
 	}else{
-			$this->load->view('user/header');
 			$this->load->view('user/login/login');
-			$this->load->view('user/footer');
 
 		}
 	}
@@ -413,15 +396,14 @@ class User extends CI_Controller {
 			}
 			
 			// user logout ok
-			$this->load->view('header');
-			$this->load->view('user/logout/logout_success', $data);
-			$this->load->view('footer');
+			$this->session->set_flashdata("success","You have successfully logged out");            
+   			redirect('/home');
 			
 		} else {
 			
 			// there user was not logged in, we cannot logged him out,
 			// redirect him to site root
-			redirect('/');
+			redirect('/home');
 			
 		}
 		
