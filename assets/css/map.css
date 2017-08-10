@@ -325,7 +325,7 @@ header {
     float: left;
     padding: 0 115px;
     width: calc(100% - 230px);
-    width:100%;
+	width:100%;
 }
 .logo-ctn {
     display: inline-block;
@@ -430,41 +430,41 @@ header {
 }
 #user-signin:hover, #show-user-wallet:hover, #user-signout:hover {
    background-color: #fff;
-    color:#ee6c35;
+	color:#ee6c35;
 }
 #pwd-thank, #enter-pwd, #reenter-pwd, #forgot-pwd, #user-thank, #user-signin, #user-register, #sms-verification {
     background: rgba(0, 0, 0, 0) url("../images/map/signin-icon.png") no-repeat scroll 12px 12px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #show-user-wallet {
     background: rgba(0, 0, 0, 0) url("../images/map/wallet-icon.png") no-repeat scroll 13px 10px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #user-signout {
     background: rgba(0, 0, 0, 0) url("../images/map/signout-icon.png") no-repeat scroll 12px 12px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #profile-settings {
     background: rgba(0, 0, 0, 0) url("../images/map/setting-icon.png") no-repeat scroll 12px 12px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #about-us {
     background: rgba(0, 0, 0, 0) url("../images/map/aboutus.png") no-repeat scroll 13px 10px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #about-us:hover, #profile-settings:hover {
     background-color: #fff;
-    color:#ee6c35;
+	color:#ee6c35;
 }
 .country-header-link {
     display: inline-block;
@@ -608,17 +608,17 @@ nav li a {
     padding: 20%;
     text-align: center;
     width: 100%;
-    text-decoration:none;
+	text-decoration:none;
 }
 nav li a.active, nav li a.active:hover {
     background-color: #9d9d9d;
     color: #fff;
-    width:100%
-    text-decoration:none;
+	width:100%
+	text-decoration:none;
 }
 nav li a:hover {
     background-color: #e8e8e8;
-    text-decoration:none;
+	text-decoration:none;
 }
 nav li a span.place-order-icon {
     background: rgba(0, 0, 0, 0) url("../images/map/icon-sprite.png") no-repeat scroll 0 0;
@@ -741,7 +741,7 @@ div.slide-menu.open {
     overflow-y: hidden;
     position: relative;
     width: calc(100% - 538px);
-    /*z-index: 800;*/
+    z-index: 800;
 }
 #map-canvas {
     display: inline-block;
@@ -1193,11 +1193,11 @@ div.slide-menu.open {
 }
 .custom-radio {
     display: inline-block;
-    /*padding-left: 5px;*/
+    padding-left: 5px;
     padding-top: 5px;
 }
 .emailMobileRadio {
-    /*bottom: 0.5625rem;*/
+    bottom: 0.5625rem;
     color: rgb(48, 48, 48);
     font-size: 0.75rem;
     font-weight: bold;
@@ -1209,7 +1209,7 @@ div.slide-menu.open {
     font-family: "Noto Sans",sans-serif;
     font-weight: 100;
     padding-bottom: 9px;
-    padding-left: 7px;
+    padding-left: 20px;
     padding-top: 22px;
 }
 #form-next-btn, #form-register-btn, #form-register-business-btn, #form-register-social-media-btn, #thank-login-btn, #forgot-pwd-submit-btn, #forgot-pwd-confirm-btn, #order-cancel-confirm-btn, #form-email-phone-verification-btn, #form-email-verification-ok-btn, #form-change-pwd-verification-btn, #form-verify-email-btn, #form-verify-phone-btn, #form-verify-code-btn {
@@ -1303,7 +1303,7 @@ div.slide-menu.open {
     height: calc(100% - 50px);
     position: relative;
     max-width: 430px;
-    width:100%;
+	width:100%;
 }
 #menu-ctn.loading {
     opacity: 0.38;
@@ -1508,7 +1508,7 @@ body.en_TW .vehicle-type-select, body.zh_TW .vehicle-type-select {
 .additional-service-input:hover {
     background-color: #ee6c35;
     color: #fff;
-    text-decoration:none;
+	text-decoration:none;
 }
 .detail-address-input, .comment-textarea-input {
     background: #fff url("../images/map/textarea-icon.png") no-repeat scroll 95% 15%;
@@ -1552,7 +1552,7 @@ input[placeholder], textarea[placeholder] {
     width: 100%;
 }
 .modal.in .modal-dialog{
-    z-index:99999;
+	z-index:99999;
 }
 #register-email-input, #register-password-input, #forgot-pwd-input, #register-company-input, #old-pwd, #new-pwd, #confirm-pwd {
     padding-left: 7rem;
@@ -3468,77 +3468,77 @@ div.slide-menu {
 }
 .waypoint-1 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_1.png");
+    background-image: url("../images/waypt_icon_1.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-2 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_2.png");
+    background-image: url("../images/waypt_icon_2.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-3 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_3.png");
+    background-image: url("../images/waypt_icon_3.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-4 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_4.png");
+    background-image: url("../images/waypt_icon_4.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-5 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_5.png");
+    background-image: url("../images/waypt_icon_5.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-6 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_6.png");
+    background-image: url("../images/waypt_icon_6.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-7 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_7.png");
+    background-image: url("../images/waypt_icon_7.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-8 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_8.png");
+    background-image: url("../images/waypt_icon_8.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-9 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_9.png");
+    background-image: url("../images/waypt_icon_9.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-10 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_10.png");
+    background-image: url("../images/waypt_icon_10.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
 }
 .waypoint-11 {
     background-color: #fff;
-    background-image: url("../images/map/waypt_icon_11.png");
+    background-image: url("../images/waypt_icon_11.png");
     background-position: 7px 8px;
     background-repeat: no-repeat;
     height: 45px;
@@ -3950,35 +3950,35 @@ div.slide-menu {
 }
 /* css for light box panel */
 .tabbable ul{
-              background:#fff;
-          }
-         .tabbable li a:focus, .tabbable li a{
-             font-size:18px;
-             color:#ee6c35;
-             padding:0;
-         }
+			  background:#fff;
+		  }
+		 .tabbable li a:focus, .tabbable li a{
+			 font-size:18px;
+			 color:#ee6c35;
+			 padding:0;
+		 }
           .tabbable li a:hover{
-             background:none;
-             outline:none;
-         }
-         .tabbable .tab-pane{
-             padding:10px;
-         }
-         .closeCross{
-             padding-right:20px !important;
-             padding-top:20px !important;
-         }
-         .topPad{
-             margin-top:0 !important;
-         }
+			 background:none;
+			 outline:none;
+		 }
+		 .tabbable .tab-pane{
+			 padding:10px;
+		 }
+		 .closeCross{
+			 padding-right:20px !important;
+			 padding-top:20px !important;
+		 }
+		 .topPad{
+			 margin-top:0 !important;
+		 }
 .mybulletPanel{
-    text-align:center;
-    }
+	text-align:center;
+	}
 #wallet-recharge input[type="text"], #wallet-recharge textarea, #wallet-recharge [type="submit"]{
-    width:100%;
-    margin-bottom:6px;
+	width:100%;
+	margin-bottom:6px;
 }
-         
+		 
 #fancybox-loading div {
     background-image: url("../../js/original/fancybox/fancybox.png");
     height: 480px;

@@ -17,9 +17,8 @@ class User extends CI_Controller {
 	public function __construct() {
 		
 		parent::__construct();
-		// $this->load->library(array('session'));
+		$this->load->library(array('session'));
 		$this->load->helper(array('url'));
-		$this->load->helper(array('common_super'));
 		$this->load->model('user_model');
 		
 	}
@@ -47,22 +46,21 @@ class User extends CI_Controller {
 		$this->load->library('form_validation');
 
 		$user_type = $this->input->post('user_type');
-		// echo "<pre>";print_r($_POST);die;
+		
 		
 		if($user_type==1){
 			$this->form_validation->set_rules('first_name', 'First name', 'trim|required|alpha|min_length[2]|max_length[30]');
 			$this->form_validation->set_rules('last_name', 'Last name', 'trim|required|alpha|min_length[2]|max_length[30]');
 			$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[users.email]');
-			$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[8]');
+			$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[10]');
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
-			$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
 			
 			if ($this->form_validation->run() === false) {
 			
 				// validation not ok, send validation errors to the view
-				$data = array('first_name' => form_error('first_name'), 'last_name' => form_error('last_name'), 'email' => form_error('email'), 'mobile' => form_error('mobile')
-					, 'password' => form_error('password'), 'password_confirm' => form_error('password_confirm'));
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$this->load->view('header');
+				$this->load->view('user/register/register', $data);
+				$this->load->view('footer');
 			
 			} else {
 			
@@ -77,15 +75,19 @@ class User extends CI_Controller {
 			if ($this->user_model->create_user($first_name, $last_name, $email, $mobile, $password, $user_type)) {
 				
 				// user creation ok
-				$data = array("status"=>"success", 'message' => "Thank you for registering your new account!");
-				$this->session->set_flashdata("success","Thank you for registering your new account! Please login to update your profile");
-				$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$this->load->view('header');
+				$this->load->view('user/register/register_success', $data);
+				$this->load->view('footer');
 				
 			} else {
 				
 				// user creation failed, this should never happen
-				$this->session->set_flashdata("error","There was a problem creating your new account. Please try again.");
-				$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$data->error = 'There was a problem creating your new account. Please try again.';
+				
+				// send error to the view
+				$this->load->view('header');
+				$this->load->view('user/register/register', $data);
+				$this->load->view('footer');
 				
 			}
 			
@@ -96,9 +98,8 @@ class User extends CI_Controller {
 		$this->form_validation->set_rules('first_name', 'First name', 'trim|required|alpha|min_length[2]|max_length[30]');
 		$this->form_validation->set_rules('last_name', 'Last name', 'trim|required|alpha|min_length[2]|max_length[30]');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[users.email]');
-		$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[8]');
+		$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[10]');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
-		$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
 		$this->form_validation->set_rules('company_name', 'Company name', 'trim|required|min_length[2]|max_length[30]');
 		$this->form_validation->set_rules('industry[]', 'Industry', 'required');
 		$this->form_validation->set_rules('staff[]', 'Staff', 'required');
@@ -109,10 +110,9 @@ class User extends CI_Controller {
 			$data = array(
     			'company' => 1,   
 			);
-			$data = array('first_name' => form_error('first_name'), 'last_name' => form_error('last_name'), 'email' => form_error('email'), 'mobile' => form_error('mobile')
-					, 'password' => form_error('password'), 'password_confirm' => form_error('password_confirm'), 'company_name' => form_error('company_name'), 'industry' =>
-					form_error('industry[]'), 'staff'=>form_error('staff[]'));
-        	$this->output->set_content_type('application/json')->set_output(json_encode($data));
+			$this->load->view('header');
+			$this->load->view('user/register/register', $data);
+			$this->load->view('footer');
 			
 		} else {
 					
@@ -130,23 +130,27 @@ class User extends CI_Controller {
 			if ($this->user_model->create_company($first_name, $last_name, $email, $mobile, $password, $company_name, $industry, $staff, $user_type)) {
 				
 				// user creation ok
-				$data = array("status"=>"success", 'message' => "Thank you for registering your new account!");
-				$this->session->set_flashdata("success","Thank you for registering your new account! Please login to update your profile");
-				$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$this->load->view('header');
+				$this->load->view('user/register/register_success', $data);
+				$this->load->view('footer');
 				
 			} else {
 				
 				// user creation failed, this should never happen
-				$this->session->set_flashdata("error","There was a problem creating your new account. Please try again.");
-				$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$data->error = 'There was a problem creating your new account. Please try again.';
+				
+				// send error to the view
+				$this->load->view('header');
+				$this->load->view('user/register/register', $data);
+				$this->load->view('footer');
 				
 			}
 			
 		}
 		}else{
-			// $this->load->view('user/header');
-			$this->load->view('user/register/register');
-			// $this->load->view('user/footer');
+			$this->load->view('header');
+			$this->load->view('user/register/register', $data);
+			$this->load->view('footer');
 		}
 		
 		
@@ -163,8 +167,8 @@ class User extends CI_Controller {
 	public function driver() {
 
 		// create the data object
-		$data = new stdClass();		
-
+		$data = new stdClass();
+		
 		// load form helper and validation library
 		$this->load->helper('form');
 		$this->load->library('form_validation');
@@ -172,18 +176,18 @@ class User extends CI_Controller {
 		// set validation rules
 		$this->form_validation->set_rules('first_name', 'Name', 'trim|required|alpha|min_length[2]|max_length[30]');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[users.email]');
-		$this->form_validation->set_rules('mobile', 'Phone', 'trim|required|min_length[8]');
+		$this->form_validation->set_rules('mobile', 'Phone', 'trim|required|min_length[10]');
 		$this->form_validation->set_rules('vehicle_type', 'Vehicle Type', 'required');
 		$this->form_validation->set_rules('training_session', 'Training Session', 'required');
-		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
-		$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
+		
+		
 		
 		if ($this->form_validation->run() === false) {
 			
 			// validation not ok, send validation errors to the view
-			$this->load->view('common/header');
+			$this->load->view('header');
 			$this->load->view('user/driver/driver', $data);
-			$this->load->view('common/footer');
+			$this->load->view('footer');
 			
 		} else {
 			
@@ -193,16 +197,14 @@ class User extends CI_Controller {
 			$mobile    = $this->input->post('mobile');
 			$vehicle_type = $this->input->post('vehicle_type');
 			$training_session = $this->input->post('training_session');
-			$password = $this->input->post('password');
 			$user_type = 3;
 			
-			if ($this->user_model->create_driver($first_name, $email, $mobile, $vehicle_type, $training_session, $password, $user_type)) {
+			if ($this->user_model->create_driver($first_name, $email, $mobile, $vehicle_type, $training_session, $user_type)) {
 				
 				// user creation ok
-				unset($_POST['password_confirm']);
-				$this->load->view('common/header');
+				$this->load->view('header');
 				$this->load->view('user/driver/driver_success', $data);
-				$this->load->view('common/footer');
+				$this->load->view('footer');
 				
 			} else {
 				
@@ -210,9 +212,9 @@ class User extends CI_Controller {
 				$data->error = 'There was a problem creating your new account. Please try again.';
 				
 				// send error to the view
-				$this->load->view('common/header');
+				$this->load->view('header');
 				$this->load->view('user/driver/driver', $data);
-				$this->load->view('common/footer');
+				$this->load->view('footer');
 				
 			}
 			
@@ -229,10 +231,9 @@ class User extends CI_Controller {
 	 */
 	public function login() {
 		
-		// $CI = & get_instance();
 		// create the data object
 		$data = new stdClass();
-			
+		
 		// load form helper and validation library
 		$this->load->helper('form');
 		$this->load->library('form_validation');
@@ -248,8 +249,10 @@ class User extends CI_Controller {
 			if ($this->form_validation->run() == false) {
 			
 				// validation not ok, send validation errors to the view
-				$data = array('email_error_message' => form_error('email'), 'pass_error_message' => form_error('password'));
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));			
+				$this->load->view('header');
+				$this->load->view('user/login/login');
+				$this->load->view('footer');
+			
 			} else {
 			
 			// set variables from the form
@@ -257,47 +260,49 @@ class User extends CI_Controller {
 			$password = $this->input->post('password');
 			
 			if ($this->user_model->resolve_user_login_email($email, $password)) {
-				// echo "string";die;
+				
 				$user_id = $this->user_model->get_user_id_from_email($email);
 				$user    = $this->user_model->get_user($user_id);
 				
 				// set session user datas
-				/*$sess_array = array(
-					'user_id' 	=> $user->id,
-					'email' 	=> $user->email,
-					'user_type'	=> $user->user_type,
-					'logged_in'	=> (bool)true,
-					'status'	=> $user->status,
-					 );*/
-				$_SESSION['user_id']      = $user->id;
-				$_SESSION['email']     = $user->email;
-				$_SESSION['user_type']     = $user->user_type;
+				$_SESSION['user_id']      = (int)$user->id;
+				$_SESSION['email']     = (string)$user->email;
+				$_SESSION['user_type']     = (int)$user->user_type;
 				$_SESSION['logged_in']    = (bool)true;
-				$_SESSION['status'] = $user->status;
-				// $CI->session->set_userdata($sess_array);
+				$_SESSION['status'] = (bool)$user->status;
+				
 				// user login ok
 				if($user->user_type==1){
-					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Load Personal Dashboard";
+					$this->load->view('header');
+					$this->load->view('user/login/login_success', $data);
+					$this->load->view('footer');
 				}elseif($user->user_type==2) {
-					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Load Company Dashboard";
+					$this->load->view('header');
+					$this->load->view('user/login/login_success', $data);
+					$this->load->view('footer');
 				}elseif($user->user_type==3){
-					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Load Driver Dashboard";
+					$this->load->view('header');
+					$this->load->view('user/login/login_success', $data);
+					$this->load->view('footer');
 				}elseif($user->user_type==4){
-					$data = array('error' => "<p>Database error please log in again</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Show Error Page";
 				}
 				/*$this->load->view('header');
 				$this->load->view('user/login/login_success', $data);
 				$this->load->view('footer');*/
 				
 			} else {
-				// echo "wrong";die;
+				
 				// login failed
-				$data = array('error' => '<p>Wrong email or password.</p>');
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$data->error = 'Wrong username or password.';
+				
+				// send error to the view
+				$this->load->view('header');
+				$this->load->view('user/login/login', $data);
+				$this->load->view('footer');
 				
 			}
 
@@ -313,8 +318,12 @@ class User extends CI_Controller {
 			if ($this->form_validation->run() == false) {
 			
 				// validation not ok, send validation errors to the view
-				$data = array('email_error_message' => form_error('mobile'), 'pass_error_message' => form_error('password'));
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$data = array(
+    				'loginType' => 1,   
+				);
+				$this->load->view('header');
+				$this->load->view('user/login/login',$data);
+				$this->load->view('footer');
 			
 			} else {
 			
@@ -328,33 +337,30 @@ class User extends CI_Controller {
 				$user    = $this->user_model->get_user($user_id);
 				
 				// set session user datas
-				/*$sess_array = array(
-					'user_id' 	=> $user->id,
-					'email' 	=> $user->email,
-					'user_type'	=> $user->user_type,
-					'logged_in'	=> (bool)true,
-					'status'	=> $user->status,
-					 );*/
-				$_SESSION['user_id']      = $user->id;
-				$_SESSION['email']     = $user->email;
-				$_SESSION['user_type']     = $user->user_type;
+				$_SESSION['user_id']      = (int)$user->id;
+				$_SESSION['email']     = (string)$user->email;
+				$_SESSION['user_type']     = (int)$user->user_type;
 				$_SESSION['logged_in']    = (bool)true;
-				$_SESSION['status'] = $user->status;
-				// $CI->session->set_userdata($sess_array);
+				$_SESSION['status'] = (bool)$user->status;
 				
 				// user login ok
 				if($user->user_type==1){
-					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Load Personal Dashboard";
+					$this->load->view('header');
+					$this->load->view('user/login/login_success', $data);
+					$this->load->view('footer');
 				}elseif($user->user_type==2) {
-					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Load Company Dashboard";
+					$this->load->view('header');
+					$this->load->view('user/login/login_success', $data);
+					$this->load->view('footer');
 				}elseif($user->user_type==3){
-					$data = array("status"=>"success", 'message' => "<p>Login success!</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Load Driver Dashboard";
+					$this->load->view('header');
+					$this->load->view('user/login/login_success', $data);
+					$this->load->view('footer');
 				}elseif($user->user_type==4){
-					$data = array('error' => "<p>Database error please log in again</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
+					echo "Show Error Page";
 				}
 				/*$this->load->view('header');
 				$this->load->view('user/login/login_success', $data);
@@ -363,8 +369,12 @@ class User extends CI_Controller {
 			} else {
 				
 				// login failed
-				$data = array('error' => '<p>Wrong mobile or password.</p>');
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+				$data->error = 'Wrong username or password.';
+				
+				// send error to the view
+				$this->load->view('header');
+				$this->load->view('user/login/login', $data);
+				$this->load->view('footer');
 				
 			}
 
@@ -372,7 +382,9 @@ class User extends CI_Controller {
 		
 		}
 	}else{
+			$this->load->view('header');
 			$this->load->view('user/login/login');
+			$this->load->view('footer');
 
 		}
 	}
@@ -396,14 +408,15 @@ class User extends CI_Controller {
 			}
 			
 			// user logout ok
-			$this->session->set_flashdata("success","You have successfully logged out");            
-   			redirect('/home');
+			$this->load->view('header');
+			$this->load->view('user/logout/logout_success', $data);
+			$this->load->view('footer');
 			
 		} else {
 			
 			// there user was not logged in, we cannot logged him out,
 			// redirect him to site root
-			redirect('/home');
+			redirect('/');
 			
 		}
 		
@@ -426,9 +439,7 @@ class User extends CI_Controller {
 		// load form helper and validation library
 		$this->load->helper('form');
 		$this->load->library('form_validation');
-        $this->load->library('email');
-
-
+            
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email'); 
             
             if($this->form_validation->run() == FALSE) {
@@ -457,19 +468,7 @@ class User extends CI_Controller {
                 $message .= '<strong>Please click:</strong> ' . $link;             
 
                 echo $message; //send this through mail
-                $to = $userInfo->email;
-                $subject = "test";
-                $result = $this->email
-				        ->from('easyweb444@gmail.com')
-				        ->to($to)
-				        ->subject($subject)
-				        ->message($message)
-				        ->send();
-
-	                var_dump($result);
-echo '<br />';
-echo $this->email->print_debugger();
-
+                die;
                 exit;
                 
             }
@@ -511,7 +510,7 @@ echo $this->email->print_debugger();
                                 
                 $password = $this->input->post('password');
                 $user_id  = $user_info->id;
-                unset($_POST['passconf']);
+                unset($_POST['passconf']);                
                 if($this->user_model->update_password_userid($user_id, $password)){
                 	$this->user_model->deleteToken($user_id);
                 	$this->session->set_flashdata('success', 'Your password has been updated. You may now login');
@@ -533,25 +532,25 @@ echo $this->email->print_debugger();
     }    
 
 
-    /*public function sendMail($subject,$message,$to)
+    public function sendMail($subject,$message,$to)
 		{
 		    $config = Array(
 		  'protocol' => 'smtp',
 		  'smtp_host' => 'ssl://smtp.googlemail.com',
 		  'smtp_port' => 465,
-		  'smtp_user' => 'easyweb444@gmail.com', // change it to yours
-		  'smtp_pass' => '@Flip7411wtfcnn', // change it to yours
+		  'smtp_user' => 'xxx@gmail.com', // change it to yours
+		  'smtp_pass' => 'xxx', // change it to yours
 		  'mailtype' => 'html',
 		  'charset' => 'iso-8859-1',
 		  'wordwrap' => TRUE
 		);
 
-    	
+    	$message = '';
     	$this->load->library('email', $config);
 	    $this->email->set_newline("\r\n");
-	    $this->email->from('easyweb444@gmail.com'); // change it to yours
-	    $this->email->to($to);// change it to yours
-	    $this->email->subject($subject);
+	    $this->email->from('xxx@gmail.com'); // change it to yours
+	    $this->email->to('xxx@gmail.com');// change it to yours
+	    $this->email->subject('Resume from JobsBuddy for your Job posting');
 	    $this->email->message($message);
       if($this->email->send())
      {
@@ -562,6 +561,6 @@ echo $this->email->print_debugger();
      show_error($this->email->print_debugger());
     }
 
-}*/
+}
 	
 }

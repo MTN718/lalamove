@@ -52,7 +52,6 @@
             <li> <a href="<?php echo site_url('home/singapore'); ?>" >Singapore</a>
             </ul>
              </li>
-            <!-- <li class="hs-menu-quote"><a href="<?php echo site_url('user/register'); ?>" target="_blank">Instant Quote</a></li> -->
             <li class="hs-menu-quote"><a href="<?php echo site_url('home/instantquote'); ?>" target="_blank">Instant Quote</a></li>
           </ul>
         </div>
