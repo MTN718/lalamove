@@ -34,10 +34,10 @@
             </div>
         <?php } ?>
         <section class="content-header">
-            <h1>Vehicle Type</h1>
+            <h1>Additional Services</h1>
             <ol class="breadcrumb">
                 <li><a href="javascript:void(0)"><i class="fa fa-dashboard"></i>Home</a></li>
-                <li class="active">Vehicle Type List</li>
+                <li class="active">Additional Services</li>
             </ol>
          </section>
         <!-- Main content -->
@@ -50,9 +50,6 @@
                                 <div class="col-sm-6 col-md-6">
                                     <h2 class="box-title floatalign_text_left">Vehicle Type List</h2>
                                 </div>
-                                <div class="col-sm-6 col-md-6">
-                                    <a href="" data-toggle="modal" data-target="#addVehicleTypeDialog" class="btn btn-primary floatalign_text_right"><i class="fa fa-plus"></i></a>
-                                </div>
                             </div>
                         </div>
                         <!-- /.box-header -->
@@ -61,40 +58,35 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Min Weight Capacity (KG)</th>
-                                        <th>Max Weight Capacity (KG)</th>
-                                        <th>Item Height (Feet)</th>
-                                        <th>Item Width (Feet)</th>
-                                        <th>Item Length (Feet)</th>
-                                        <th>Base Fare ($)</th>
-                                        <th style="background: #ffbfbf;">Region</th>
-                                        <th style="background: #ffbfbf;">Action</th>
+                                        <th>Load Unload Overtime ($)</th>
+                                        <th>Landfills ($)</th>
+                                        <th>Construction ($)</th>
+                                        <th>Night ($)</th>
+                                        <th>Mid Night ($)</th>
+                                        <th>Sunday / PH ($)</th>
+                                        <th>ONG ($)</th>
+                                        <th>Over time ($)</th>
+                                        <th>Parking Fee ($)</th>
+                                        <th style="background: #ffbfbf;">Owner Payable ($)</th>
                                     </tr>
                                 </thead>
                                 <tbody id="_editable_table">
-                                    <?php foreach ($data['vehicleTypeList'] as $vehicleType) { ?>
-                                    <tr data-row-id="<?php echo $vehicleType->VEHICLE_TYPE_ID;?>">
-                                        <td class="editable-col" contenteditable="true" col-index='0' oldVal ="<?php echo $vehicleType->VEHICLE_TYPE_NAME; ?>"><?php echo $vehicleType->VEHICLE_TYPE_NAME; ?></td>
-                                        <td class="editable-col" contenteditable="true" col-index='1' oldVal ="<?php echo $vehicleType->MIN_WEIGHT_CAPACITY; ?>"><?php echo $vehicleType->MIN_WEIGHT_CAPACITY; ?></td>
-                                        <td class="editable-col" contenteditable="true" col-index='2' oldVal ="<?php echo $vehicleType->MAX_WEIGHT_CAPACITY; ?>"><?php echo $vehicleType->MAX_WEIGHT_CAPACITY; ?></td>
-                                        <td class="editable-col" contenteditable="true" col-index='3' oldVal ="<?php echo $vehicleType->ITEM_HEIGHT; ?>"><?php echo $vehicleType->ITEM_HEIGHT; ?></td>
-                                        <td class="editable-col" contenteditable="true" col-index='4' oldVal ="<?php echo $vehicleType->ITEM_WIDTH; ?>"><?php echo $vehicleType->ITEM_WIDTH; ?></td>
-                                        <td class="editable-col" contenteditable="true" col-index='5' oldVal ="<?php echo $vehicleType->ITEM_LENGTH; ?>"><?php echo $vehicleType->ITEM_LENGTH; ?></td>
-                                        <td class="editable-col" contenteditable="true" col-index='6' oldVal ="<?php echo $vehicleType->BASE_FARE; ?>"><?php echo $vehicleType->BASE_FARE; ?></td>
-                                        <td style="background: #ffbfbf;">
-                                             <select class="form-control select2 editable-city" col-index='7' data-placeholder="Select Vehicle Type" name="WORKING_REGION" style="width: 100%;background: #ffbfbf;border: none;padding: 0px 12px;height: 22px;">
-                                                <?php foreach ($data['operationalCityList'] as $operationalCity) { 
-                                                $str_flag = "";
-                                                if($operationalCity->OPERATIONAL_CITY_ID == $vehicleType->WORKING_REGION)
-                                                    $str_flag = "selected"; 
-                                                ?>
-                                                <option value="<?php echo $operationalCity->OPERATIONAL_CITY_ID; ?>" <?php echo $str_flag; ?> > <?php echo $operationalCity->CITY_NAME; ?> </option>
-                                        <?php } ?>
-                                       </select>
-                                        </td>
-                                        <td style="background: #ffbfbf; text-align: center;">                    
-                                            <a href="<?php echo base_url(); ?>index.php/home/additionalServices/<?php echo $vehicleType->VEHICLE_TYPE_ID;?>" class="btn btn-default editable-action"><i class="fa fa-pencil"></i>&nbsp;Additional Charges</a>
-                                        </td>
+                                    <?php foreach ($data['vehicleTypeList'] as $vehicleType) { 
+                                        $string1 = $vehicleType->VEHICLE_TYPE_ID;
+                                        $string2 = $data['active'];
+                                    ?>
+                                    <tr data-row-id="<?php echo $vehicleType->VEHICLE_TYPE_ID;?>" <?php if( $string1 == $string2 ) echo "style='background:#ffbfbf'"; ?>>
+                                        <td><?php echo $data['active']; echo $vehicleType->VEHICLE_TYPE_NAME; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='8' oldVal ="<?php echo $vehicleType->LOAD_UNLOAD_OVERTIME_CHARGE; ?>"><?php echo $vehicleType->LOAD_UNLOAD_OVERTIME_CHARGE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='9' oldVal ="<?php echo $vehicleType->LANDFILLS_CHARGE; ?>"><?php echo $vehicleType->LANDFILLS_CHARGE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='10' oldVal ="<?php echo $vehicleType->CONSTRUCTION_CHARGE; ?>"><?php echo $vehicleType->CONSTRUCTION_CHARGE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='11' oldVal ="<?php echo $vehicleType->NIGHT_CHARGE; ?>"><?php echo $vehicleType->NIGHT_CHARGE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='12' oldVal ="<?php echo $vehicleType->MIDNIGHT_FEE; ?>"><?php echo $vehicleType->MIDNIGHT_FEE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='13' oldVal ="<?php echo $vehicleType->SUNDAY_PH_CHARGE; ?>"><?php echo $vehicleType->SUNDAY_PH_CHARGE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='15' oldVal ="<?php echo $vehicleType->ONG_CHARGE; ?>"><?php echo $vehicleType->ONG_CHARGE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='16' oldVal ="<?php echo $vehicleType->OVERTIME_CHARGE; ?>"><?php echo $vehicleType->OVERTIME_CHARGE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='17' oldVal ="<?php echo $vehicleType->PARKING_FEE; ?>"><?php echo $vehicleType->PARKING_FEE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='14' oldVal ="<?php echo $vehicleType->OWNER_PAYABLE; ?>" style="background: #ffbfbf;"><?php echo $vehicleType->OWNER_PAYABLE; ?></td>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
@@ -215,28 +207,4 @@
             });
         });
     });
-    </script>
-
-    <script type="text/javascript">
-    $(document).ready(function(){      
-        $('.editable-city').on('focusout', function() {
-            data = {};
-            data['val'] = $(this).val();
-            data['id'] = $(this).parent('td').parent('tr').attr('data-row-id');
-            data['index'] = $(this).attr('col-index');
-            
-            $.ajax({   
-
-                type: "POST",  
-                url: "<?php echo base_url(); ?>/index.php/home/updateInline/vehicleType",  
-                cache:false,  
-                data: data,
-                dataType: "json",       
-                success: function(response)  
-                {   
-
-                }   
-            });
-        });
-      });
     </script>

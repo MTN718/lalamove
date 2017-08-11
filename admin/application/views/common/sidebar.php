@@ -86,6 +86,11 @@
           <i class="fa fa-car"></i> <span>Vehicle Type</span>
         </a>
         </li>
+          <?php echo($data['pageName'] == "ADDITIONALSERVICES" ? "<li class='active'>" : "<li>"); ?>
+        <a href="<?php echo base_url(); ?>index.php/home/additionalServices">
+          <i class="fa fa-car"></i> <span>Additional Services</span>
+        </a>
+        </li>
           <?php echo($data['pageName'] == "DISCOUNTS" ? "<li class='active'>" : "<li>"); ?>
         <a href="<?php echo base_url(); ?>index.php/home/discounts">
           <i class="fa fa-percent"></i> <span>Discounts</span>

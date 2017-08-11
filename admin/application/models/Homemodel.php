@@ -138,6 +138,66 @@ Class Homemodel extends CI_Model
         return $this->db->get()->result();
     }
 
+    // get vehicles list
+    public function getOperationCityList() {
+        $this->db->select('*');
+        $this->db->from('OPERATIONAL_CITY');
+        return $this->db->get()->result();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ================================================ check Data Methods ==========================================
+
+    // check vehicles list
+    public function checkVehicleInfo($VEHICLE_ID) {
+        $this->db->select('*');
+        $this->db->from('VEHICLE');
+        $this->db->where('VEHICLE_ID', $VEHICLE_ID);
+        return $this->db->get()->num_rows();
+    }
+
+    // check vehicles list
+    public function checkVehicleTypeInfo($VEHICLE_TYPE_ID) {
+        $this->db->select('*');
+        $this->db->from('VEHICLE_TYPE');
+        $this->db->where('VEHICLE_TYPE_ID', $VEHICLE_TYPE_ID);
+        return $this->db->get()->num_rows();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -195,15 +255,21 @@ Class Homemodel extends CI_Model
 
     // add vehicle
     public function addVehicleInfo($model_data) {
-        $VEHICLE_ID = $model_data['VEHICLE_ID'];
+        $VEHICLE_ID = $model_data['VEHICLE_NO'];
+        $VEHICLE_ID = strtoupper($VEHICLE_ID);
+        $VEHICLE_ID = preg_replace('/[^A-Za-z0-9\-]/', '', $VEHICLE_ID);
+
+        $VEHICLE_NO = $model_data['VEHICLE_NO'];
         $PARTY_ID = $model_data['PARTY_ID'];
         $VEHICLE_TYPE_ID = $model_data['VEHICLE_TYPE_ID'];
         $PERMIT = $model_data['PERMIT'];
         $REGISTRATION_NO = $model_data['REGISTRATION_NO'];
 
-        // if()
+        $num_rows = $this->checkVehicleInfo($VEHICLE_ID);
+        if($num_rows > 0)
+            return false;
 
-        $sql = "INSERT INTO `VEHICLE`(`VEHICLE_ID`,`PARTY_ID`,`VEHICLE_TYPE_ID`,`PERMIT`,`REGISTRATION_NO`) VALUES('$VEHICLE_ID','$PARTY_ID','$VEHICLE_TYPE_ID','$PERMIT','$REGISTRATION_NO')";  
+        $sql = "INSERT INTO `VEHICLE`(`VEHICLE_ID`,`VEHICLE_NO`,`PARTY_ID`,`VEHICLE_TYPE_ID`,`PERMIT`,`REGISTRATION_NO`) VALUES('$VEHICLE_ID','$VEHICLE_NO','$PARTY_ID','$VEHICLE_TYPE_ID','$PERMIT','$REGISTRATION_NO')";  
         $status = $this->db->query($sql); 
 
         return true;    
@@ -211,19 +277,27 @@ Class Homemodel extends CI_Model
 
 
     // add vehicle type
-    public function addVehicleType($model_data) {
+    public function addVehicleTypeInfo($model_data) {
         $VEHICLE_TYPE_ID = $model_data['VEHICLE_TYPE_NAME'];
+        $VEHICLE_TYPE_ID = strtoupper($VEHICLE_TYPE_ID);
+        $VEHICLE_TYPE_ID = preg_replace('/[^A-Za-z0-9\-]/', '', $VEHICLE_TYPE_ID);
+
         $VEHICLE_TYPE_NAME = $model_data['VEHICLE_TYPE_NAME'];
         $WORKING_REGION = $model_data['WORKING_REGION'];
         $MIN_WEIGHT_CAPACITY = $model_data['MIN_WEIGHT_CAPACITY'];
         $MAX_WEIGHT_CAPACITY = $model_data['MAX_WEIGHT_CAPACITY'];
         $ITEM_HEIGHT = $model_data['ITEM_HEIGHT'];
         $ITEM_WIDTH = $model_data['ITEM_WIDTH'];
-        $ITEM_LEGTH = $model_data['ITEM_LENGTH'];
+        $ITEM_LENGTH = $model_data['ITEM_LENGTH'];
         $BASE_FARE = $model_data['BASE_FARE'];
 
-        $sql = "INSERT INTO `VEHICLE_TYPE`(`VEHICLE_TYPE_ID`,`VEHICLE_TYPE_NAME`,`WORKING_REGION`,`MIN_WEIGHT_CAPACITY`,`MAX_WEIGHT_CAPACITY`,`ITEM_HEIGHT`,`ITEM_WIDTH`,`ITEM_LEGTH`,`BASE_FARE`) VALUES('$VEHICLE_TYPE_ID','$VEHICLE_TYPE_NAME','$WORKING_REGION',$MIN_WEIGHT_CAPACITY','$MAX_WEIGHT_CAPACITY','$ITEM_HEIGHT','$ITEM_WIDTH','$ITEM_LEGTH','$BASE_FARE')";
+        $num_rows = $this->checkVehicleTypeInfo($VEHICLE_TYPE_ID);
+        if($num_rows > 0)
+            return false;
+
+        $sql = "INSERT INTO `VEHICLE_TYPE`(`VEHICLE_TYPE_ID`,`VEHICLE_TYPE_NAME`,`WORKING_REGION`,`MIN_WEIGHT_CAPACITY`,`MAX_WEIGHT_CAPACITY`,`ITEM_HEIGHT`,`ITEM_WIDTH`,`ITEM_LENGTH`,`BASE_FARE`) VALUES('$VEHICLE_TYPE_ID','$VEHICLE_TYPE_NAME','$WORKING_REGION','$MIN_WEIGHT_CAPACITY','$MAX_WEIGHT_CAPACITY','$ITEM_HEIGHT','$ITEM_WIDTH','$ITEM_LEGTH','$BASE_FARE')";
         $this->db->query($sql);
+        return true;
     }
 
 
@@ -272,7 +346,12 @@ Class Homemodel extends CI_Model
         $BIRTH_DATE = $model_data['BIRTH_DATE'];
         $OCCUPATION = $model_data['OCCUPATION'];
 
-        $sql = "UPDATE `PERSON` SET `SALUTATION` = '$SALUTATION', `FIRST_NAME` = '$FIRST_NAME', `LAST_NAME` = '$LAST_NAME', `GENDER` = '$GENDER', `BIRTH_DATE` = '$BIRTH_DATE', `OCCUPATION` = '$OCCUPATION' WHERE PARTY_ID = '$PARTY_ID'";
+        //For Driver
+        $LICENSE_NUMBER = $model_data['LICENSE_NUMBER'];
+        $CRIMINAL_CASE_STATUS = $model_data['CRIMINAL_CASE_STATUS'];
+        $CRIMINAL_CASE_CLEARANCE_NO = $model_data['CRIMINAL_CASE_CLEARANCE_NO'];
+
+        $sql = "UPDATE `PERSON` SET `SALUTATION` = '$SALUTATION', `FIRST_NAME` = '$FIRST_NAME', `LAST_NAME` = '$LAST_NAME', `GENDER` = '$GENDER', `BIRTH_DATE` = '$BIRTH_DATE', `OCCUPATION` = '$OCCUPATION', `LICENSE_NUMBER` = '$LICENSE_NUMBER', `CRIMINAL_CASE_STATUS` = '$CRIMINAL_CASE_STATUS', `CRIMINAL_CASE_CLEARANCE_NO` = '$CRIMINAL_CASE_CLEARANCE_NO' WHERE PARTY_ID = '$PARTY_ID'";
         $this->db->query($sql);
     }
 
@@ -432,7 +511,18 @@ Class Homemodel extends CI_Model
             3 => 'ITEM_HEIGHT',
             4 => 'ITEM_WIDTH',
             5 => 'ITEM_LENGTH',
-            6 => 'BASE_FARE'
+            6 => 'BASE_FARE',
+            7 => 'WORKING_REGION',
+            8 => 'LOAD_UNLOAD_OVERTIME_CHARGE',
+            9 => 'LANDFILLS_CHARGE',
+            10 => 'CONSTRUCTION_CHARGE',
+            11 => 'NIGHT_CHARGE',
+            12 => 'MIDNIGHT_FEE',
+            13 => 'SUNDAY_PH_CHARGE',
+            14 => 'OWNER_PAYABLE',
+            15 => 'ONG_CHARGE',
+            16 => 'OVERTIME_CHARGE',
+            17 => 'PARKING_FEE'
         );
 
         $colVal = '';
@@ -447,7 +537,7 @@ Class Homemodel extends CI_Model
               $colIndex = $model_data['index'];
             }
 
-            if(isset($model_data['id']) && $model_data['id'] > 0) {
+            if(isset($model_data['id']) && $model_data['id'] != NULL) {
               $rowId = $model_data['id'];
             }
           

@@ -186,10 +186,29 @@ class Home extends Main_Controller
         $this->mViewData['data'] = array(
             'adminNameInfo' => $this->homemodel->getPartyNameInfo($model_data),
             'vehicleTypeList' => $this->homemodel->getVehicleTypeList(),
+            'operationalCityList' => $this->homemodel->getOperationCityList(),
             'pageName' => 'VEHICLESTYPE',
         );
 
         $this->render('vehicleType');
+    }
+
+    // Vehicle Type Additional charges Page
+    public function additionalServices($active="")
+    {
+        $userInfo = $this->session->login_data;
+        $model_data = array(
+            'PARTY_ID' => $userInfo->PARTY_ID,
+        );
+        $this->mPageTitle = 'Services';
+        $this->mViewData['data'] = array(
+            'adminNameInfo' => $this->homemodel->getPartyNameInfo($model_data),
+            'vehicleTypeList' => $this->homemodel->getVehicleTypeList(),
+            'active' => $active,
+            'pageName' => 'ADDITIONALSERVICES',
+        );
+
+        $this->render('additionalServices');
     }
 
     // Customer Business List Page
@@ -399,6 +418,7 @@ class Home extends Main_Controller
             'partyEmailInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'EMAIL'),
             'partyAddressInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'ADDRESS'),
             'partyTelecomInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'TELECOM'),
+            'partyTypeInfo' => "",
             'pageName' => 'DRIVERS',
         );
 
@@ -554,6 +574,8 @@ class Home extends Main_Controller
         $PARTY_ID = $this->input->post('PARTY_ID');
         $PARTY_TYPE_ID = $this->input->post('PARTY_TYPE_ID');
         $model_data = array(
+
+            //For All Party Type
             'PARTY_ID' => $PARTY_ID,
             'EMAIL_MECH_ID' => $this->input->post('EMAIL_MECH_ID'),
             'TELECOM_MECH_ID' => $this->input->post('TELECOM_MECH_ID'),
@@ -577,6 +599,11 @@ class Home extends Main_Controller
             'CITY' => $this->input->post('CITY'),
             'STATE' => $this->input->post('STATE'),
             'POSTAL_CODE' => $this->input->post('POSTAL_CODE'),
+
+            //For Driver Type
+            'LICENSE_NUMBER' => $this->input->post('LICENSE_NUMBER'),
+            'CRIMINAL_CASE_STATUS' => $this->input->post('CRIMINAL_CASE_STATUS'),
+            'CRIMINAL_CASE_CLEARANCE_NO' => $this->input->post('CRIMINAL_CASE_CLEARANCE_NO'),
         );
 
         $this->updatePartyPicture();
@@ -626,7 +653,7 @@ class Home extends Main_Controller
     // add vehicle type
     public function addVehicleInfo() {
         $model_data = array(
-           'VEHICLE_ID' => $this->input->post('VEHICLE_ID'),
+           'VEHICLE_NO' => $this->input->post('VEHICLE_NO'),
            'PARTY_ID' => $this->input->post('PARTY_ID'),
            'VEHICLE_TYPE_ID' => $this->input->post('VEHICLE_TYPE_ID'),
            'PERMIT' => $this->input->post('PERMIT'),
@@ -634,12 +661,12 @@ class Home extends Main_Controller
         );
 
         $status = $this->homemodel->addVehicleInfo($model_data);
+        if($status)            
+            $this->session->set_flashdata('success_msg', ' Vehicle Info Added Successfully');
+        else
+            $this->session->set_flashdata('error_msg', ' Vehicle Info Already Exist');
 
-        print_r($status);
-        exit();
-        //if($status)
-            
-        //redirect('home/vehicle');
+        redirect('home/vehicle');
     }
 
 
@@ -647,17 +674,22 @@ class Home extends Main_Controller
     public function addVehicleTypeInfo() {
         $model_data = array(
            'VEHICLE_TYPE_NAME' => $this->input->post('VEHICLE_TYPE_NAME'),
-           'VEHICLE_WEIGHT_CAPACITY' => $this->input->post('VEHICLE_WEIGHT_CAPACITY'),
+           'WORKING_REGION' => $this->input->post('WORKING_REGION'),
+           'MIN_WEIGHT_CAPACITY' => $this->input->post('MIN_WEIGHT_CAPACITY'),
+           'MAX_WEIGHT_CAPACITY' => $this->input->post('MAX_WEIGHT_CAPACITY'),
            'ITEM_HEIGHT' => $this->input->post('ITEM_HEIGHT'),
            'ITEM_WIDTH' => $this->input->post('ITEM_WIDTH'),
            'ITEM_LENGTH' => $this->input->post('ITEM_LENGTH'),
            'BASE_FARE' => $this->input->post('BASE_FARE'),
         );
 
-        $status = $this->homemodel->addVehicleTypeI($model_data);
-        if($status) {
-            redirect('home/vehicleType');
-        }
+        $status = $this->homemodel->addVehicleTypeInfo($model_data);
+        if($status)            
+            $this->session->set_flashdata('success_msg', ' Vehicle Info Added Successfully');
+        else
+            $this->session->set_flashdata('error_msg', ' Vehicle Info Already Exist');
+
+        redirect('home/vehicleType');
     }
 
 
