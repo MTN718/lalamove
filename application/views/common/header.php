@@ -52,6 +52,7 @@
             <li> <a href="<?php echo site_url('home/singapore'); ?>" >Singapore</a>
             </ul>
              </li>
+            <!-- <li class="hs-menu-quote"><a href="<?php echo site_url('user/register'); ?>" target="_blank">Instant Quote</a></li> -->
             <li class="hs-menu-quote"><a href="<?php echo site_url('home/instantquote'); ?>" target="_blank">Instant Quote</a></li>
           </ul>
         </div>
@@ -63,3 +64,14 @@
   </div>
   <!-- /.container-fluid -->
 </nav>
+ <?php if ($this->session->flashdata('error')) { ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <?php echo $this->session->flashdata('error'); ?>
+                    </div>
+                <?php } elseif ($this->session->flashdata('success')) { ?>
+                    <div class="alert alert-success alert-dismissible success-alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <?php echo $this->session->flashdata('success'); ?>
+                    </div>
+                <?php } ?> 

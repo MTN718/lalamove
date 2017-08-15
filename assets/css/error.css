@@ -1,0 +1,75 @@
+/*Error field design*/
+      .password-danger{
+        font-size: 15px;
+        float: right;
+      }
+      .email-danger > p{
+        font-size: 13.5px;
+        margin-left: 31%;
+      }
+      .mobile-danger > p{
+        font-size: 13.5px;
+        margin-left: 34%;
+      }
+      .mpassword-danger{
+        font-size: 15px;
+        float: right;
+      }
+
+      .suc-alert{
+      	margin-bottom: 0;
+		margin-left: 25%;
+		padding: 0;
+		text-align: center;
+		width: 50%;
+	}
+	.lgt-cls-hide{
+		display: none !important;
+	}
+   .cmn-cls-width{
+        width: 100% !important;
+      }
+
+    .order-overlay-passenger {
+  /*margin-left: 3%;*/
+  margin-top: 3%;
+  /*width: 94%;*/
+}
+.order-overlay-myfleet, .order-overlay-passenger {
+  display: inline-block;
+  height: 36px;
+  line-height: 17px;
+  min-height: 14px;
+  vertical-align: bottom;
+}
+.icon-passenger::before {
+  content: "";
+}
+.passenger-total-ctn {
+  color: #58595b;
+  display: inline-block;
+  font-size: 12px;
+  padding-top: 11px;
+  width: 231px;
+}
+.passenger-increase-ctn {
+  margin-right: 10px;
+}
+.passenger-decrease-ctn, .passenger-increase-ctn {
+  border: 1px solid #e0e0e0;
+  display: inline-block;
+  float: right;
+  height: 25px;
+  position: relative;
+  top: 5px;
+  width: 45px;
+}
+.passenger-decrease-ctn, .passenger-increase-ctn {
+  border: 1px solid #e0e0e0;
+  display: inline-block;
+  float: right;
+  height: 25px;
+  position: relative;
+  top: 5px;
+  width: 45px;
+}

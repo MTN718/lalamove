@@ -1,34 +1,98 @@
-(function($) {
-    "use strict";
+$(document).ready(function() {
+        $('#additional-service-btn').click(function(){
+      $('.overlay-menu').slideToggle('slow');
+      });
+        $('#more-info-link').click(function(){
+      $('#service-type-info-overlay').slideToggle('slow');
+      });
 
-    $('body').scrollspy({
-        target: '.navbar-fixed-top',
-        offset: 60
-    });
-
-    $('#topNav').affix({
-        offset: {
-            top: 200
+        $(".dropdown").hover(            
+        function() {
+            $('.dropdown-menu', this).not('.in .dropdown-menu').stop( true, true ).slideDown("fast");
+            $(this).toggleClass('open');        
+        },
+        function() {
+            $('.dropdown-menu', this).not('.in .dropdown-menu').stop( true, true ).slideUp("fast");
+            $(this).toggleClass('open');       
         }
+    );
+      
+      });
+    
+    $('#toll-tunnels-btn').click(function(){
+      $('.overlay-menu').slideToggle('slow');
+      });
+    
+    
+       
+     $('.overlay-back-btn').click(function(){
+      $('.overlay-menu').hide('slow');
+      }); 
+      
+$(document).ready(function(){
+    $('.business-btn').click(function(){
+        // $('.error-company').hide();
+        $('.business').show();
+        $('.personal').hide();
     });
-    
-    new WOW().init();
-    
-    $('a.page-scroll').bind('click', function(event) {
-        var $ele = $(this);
-        $('html, body').stop().animate({
-            scrollTop: ($($ele.attr('href')).offset().top - 60)
-        }, 1450, 'easeInOutExpo');
-        event.preventDefault();
-    });
-    
-    $('.navbar-collapse ul li a').click(function() {
-        /* always close responsive nav after click */
-        $('.navbar-toggle:visible').click();
+    $('.personal-btn').click(function(){
+        $('.business').hide();
+        $('.personal').show();
     });
 
-    $('#galleryModal').on('show.bs.modal', function (e) {
-       $('#galleryImage').attr("src",$(e.relatedTarget).data("src"));
+
+
+
+
+   
+
+
+
+});
+
+        $(document).ready(function() {
     });
 
-})(jQuery);
+        
+$(window).load(function() {
+        $('#industry').multiselect();
+        $('#staff').multiselect();
+    /*$('#industry').multiselect({
+        columns: 1,
+        placeholder: 'Industry'
+    });
+    $('#staff').multiselect({
+        columns: 1,
+        placeholder: '# of staff'
+    });*/
+
+
+    var value = $('.company-onload').val();
+        if(value==1){
+            $('.personal').hide();
+            $('.business').show();
+            $('.error-personal').hide();
+        }
+
+    var login_val = $('.login-onload').val();
+        if(login_val==1){
+            $('.mobile-login').show();
+            $('.email-login').hide();
+            $('.email-error').hide();
+            $(".login-mobile").attr('checked', true);
+        }
+
+});
+
+
+//Login Model Start
+$(document).on("click", ".login-email", function(event){
+       $('.email-login').show();
+        $('.mobile-login').hide();
+});
+
+$(document).on("click", ".login-mobile", function(event){
+        $('.email-login').hide();
+        $('.mobile-login').show();
+});
+//Login Model END

@@ -36,8 +36,8 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-12 col-md-8 lftContBanner">
-        <h2>Lalamove for Business</h2>
-        <h3>We make delivery fast & simple so you can focus on growing your business.</h3>
+        
+        <h3>Sign up to start earning</h3>
       </div>
       <div class="col-sm-12 col-md-4 rhtFormBanner">
         <h3>Contact us for details about corporate packages</h3>
