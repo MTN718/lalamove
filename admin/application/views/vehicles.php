@@ -42,7 +42,7 @@
         <h1>Vehicles</h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)"><i class="fa fa-dashboard"></i>Home</a></li>
-            <li class="active">Vehicles List</li>
+            <li class="active">Vehicles</li>
         </ol>
     </section>
     <!-- Main content -->
@@ -53,7 +53,7 @@
                     <div class="box-header">
                         <div class="row">
                             <div class="col-sm-6 col-md-6">
-                                <h2 class="box-title floatalign_text_left">Vehicle Type List</h2>
+                                <h2 class="box-title floatalign_text_left">Vehicle List</h2>
                             </div>
                             <div class="col-sm-6 col-md-6">
                                 <a href="" data-toggle="modal" data-target="#addVehicleDialog" class="btn btn-primary floatalign_text_right"><i class="fa fa-plus"></i></a>

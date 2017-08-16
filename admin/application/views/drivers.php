@@ -65,14 +65,14 @@
                 <th>Image</th>
                 <th>Name</th>
                 <th>Username</th>
-                <th>Last Invoice Date</th>
-                <th>Last Invoice Status</th>
+                <!-- <th>Last Invoice Date</th> -->
+                <th>Status</th>
                 <th>Action</th>
               </tr>
               </thead>
               <tbody>
               <?php foreach ($data['partyDriverList'] as $driver) { ?>
-                <tr>
+                <tr data-row-id="<?php echo $driver->PARTY_ID; ?>">
                   <td>
                       <?php if ($driver->PERSON_IMAGE_URL == 'NULL' || $driver->PERSON_IMAGE_URL == '') { ?>
                         <img class="profile-user-img img-responsive img-circle user__img"
@@ -83,18 +83,23 @@
                       <?php } ?>
                   </td>
                   <td>
-                    <a href="<?php echo base_url(); ?>index.php/home/driverOverview?PARTY_ID=<?php echo $driver->PARTY_ID ?>">
+                    <a href="<?php echo base_url(); ?>index.php/home/driverOverview?PARTY_ID=<?php echo $driver->PARTY_ID; ?>">
                         <?php if (!empty($driver->FIRST_NAME)) echo $driver->FIRST_NAME; ?><?php if (!empty($driver->LAST_NAME)) echo $driver->LAST_NAME; ?>
                     </a>
                   </td>
                   <td><?php if (!empty($driver->USER_LOGIN_ID)) echo $driver->USER_LOGIN_ID; ?></td>
-                  <td></td>
-                  <td></td>
+                  <!-- <td></td> -->
+                  <td><?php if (!empty($driver->STATUS_ID)) echo $driver->STATUS_ID; ?></td>
                   <td class="text__align__right">
-                    <a href="<?php echo base_url(); ?>index.php/home/driverOverview?PARTY_ID=<?php echo $driver->PARTY_ID ?>"
+                    <?php if($driver->STATUS_ID == "Active") { ?>                          
+                      <a href="javascript:void(0)" class="btn btn-primary editable-action" col-index='4' data="Inactive"><i class="fa fa-thumbs-up"></i></a>
+                    <?php } else { ?>                          
+                      <a href="javascript:void(0)" class="btn btn-default editable-action" col-index='4' data="Active"><i class="fa fa-thumbs-down"></i></a>
+                    <?php } ?>
+                    <a href="<?php echo base_url(); ?>index.php/home/driverOverview?PARTY_ID=<?php echo $driver->PARTY_ID; ?>"
                        class="btn btn-info"><i class="fa fa-pencil"></i></a>
                     <a href="<?php echo base_url(); ?>index.php/home/partyDelete?PARTY_ID=<?php echo $driver->PARTY_ID; ?>"
-                       class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                       class="btn btn-danger"><i class="fa fa-trash"></i></a>  
                   </td>
                 </tr>
               <?php } ?>
@@ -106,3 +111,28 @@
     </div>
   </section>
 </div>    
+
+<script type="text/javascript">
+    $(document).ready(function(){      
+      $('.editable-action').on('click', function() {
+        data = {};
+        data['val'] = $(this).attr('data');
+        data['id'] = $(this).parent('td').parent('tr').attr('data-row-id');
+        data['index'] = $(this).attr('col-index');
+        
+        $.ajax({   
+
+            type: "POST",  
+            url: "<?php echo base_url(); ?>/index.php/home/updateInline/drivers",  
+            cache:false,  
+            data: data,
+            dataType: "json",       
+            success: function(response)  
+            {   
+               // $("#vehicleAction").load(location.href + " #vehicleAction");
+              location.reload();
+           }   
+       });
+    });
+  });
+</script>

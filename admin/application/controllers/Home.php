@@ -346,6 +346,7 @@ class Home extends Main_Controller
             'partyEmailInfo' => $this->homemodel->getPartyContactInfo($customer_data, 'EMAIL'),
             'partyAddressInfo' => $this->homemodel->getPartyContactInfo($customer_data, 'ADDRESS'),
             'partyTelecomInfo' => $this->homemodel->getPartyContactInfo($customer_data, 'TELECOM'),
+            'partyBalance' => $this->homemodel->getPartyBalanceInfo($customer_data),
             'pageName' => 'CUSTOMERS',
         );
 
@@ -370,6 +371,8 @@ class Home extends Main_Controller
             'partyEmailInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'EMAIL'),
             'partyAddressInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'ADDRESS'),
             'partyTelecomInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'TELECOM'),
+            'vehiclesList' => $this->homemodel->getVehicleList($driver_data),
+            'vehicleTypeList' => $this->homemodel->getVehicleTypeList(),
             'pageName' => 'DRIVERS',
         );
 
@@ -394,7 +397,7 @@ class Home extends Main_Controller
             'partyEmailInfo' => $this->homemodel->getPartyContactInfo($business_data, 'EMAIL'),
             'partyAddressInfo' => $this->homemodel->getPartyContactInfo($business_data, 'ADDRESS'),
             'partyTelecomInfo' => $this->homemodel->getPartyContactInfo($business_data, 'TELECOM'),
-            'pageName' => 'BUSINESSLISTER',
+            'pageName' => 'BUSINESSLISTERS',
         );
 
         $this->render('businesslisterOverview');
@@ -407,19 +410,20 @@ class Home extends Main_Controller
         $model_data = array(
             'PARTY_ID' => $userInfo->PARTY_ID,
         );
-        $driver_data = array(
+        $party_data = array(
             'PARTY_ID' => $this->input->get('PARTY_ID'),
         );
+        $PARTY_NAME = $this->homemodel->getPartyNameInfo($party_data);
         $this->mPageTitle = 'Customers';
         $this->mViewData['data'] = array(
             'adminNameInfo' => $this->homemodel->getPartyNameInfo($model_data),
-            'partyUserNameInfo' => $this->homemodel->getPartyUserNameInfo($driver_data),
-            'partyNameInfo' => $this->homemodel->getPartyNameInfo($driver_data),
-            'partyEmailInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'EMAIL'),
-            'partyAddressInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'ADDRESS'),
-            'partyTelecomInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'TELECOM'),
-            'partyTypeInfo' => "",
-            'pageName' => 'DRIVERS',
+            'partyUserNameInfo' => $this->homemodel->getPartyUserNameInfo($party_data),
+            'partyNameInfo' => $PARTY_NAME,
+            'partyEmailInfo' => $this->homemodel->getPartyContactInfo($party_data, 'EMAIL'),
+            'partyAddressInfo' => $this->homemodel->getPartyContactInfo($party_data, 'ADDRESS'),
+            'partyTelecomInfo' => $this->homemodel->getPartyContactInfo($party_data, 'TELECOM'),
+            'partyTypeInfo' => $PARTY_NAME->PARTY_TYPE_ID,
+            'pageName' => $PARTY_NAME->PARTY_TYPE_ID."S",
         );
 
         $this->render('partyBasicInfoEdit');
@@ -651,7 +655,7 @@ class Home extends Main_Controller
 
 
     // add vehicle type
-    public function addVehicleInfo() {
+    public function addVehicleInfo($active="") {
         $model_data = array(
            'VEHICLE_NO' => $this->input->post('VEHICLE_NO'),
            'PARTY_ID' => $this->input->post('PARTY_ID'),
@@ -666,7 +670,11 @@ class Home extends Main_Controller
         else
             $this->session->set_flashdata('error_msg', ' Vehicle Info Already Exist');
 
-        redirect('home/vehicle');
+        if($active == "active") {
+            redirect('home/driverOverview?PARTY_ID='.$model_data['PARTY_ID']);
+        } else {
+            redirect('home/vehicle');
+        }
     }
 
 
@@ -750,6 +758,11 @@ class Home extends Main_Controller
             'CITY' => $this->input->post('CITY'),
             'STATE' => $this->input->post('STATE'),
             'POSTAL_CODE' => $this->input->post('POSTAL_CODE'),
+
+            //For Driver Type
+            'LICENSE_NUMBER' => $this->input->post('LICENSE_NUMBER'),
+            'CRIMINAL_CASE_STATUS' => $this->input->post('CRIMINAL_CASE_STATUS'),
+            'CRIMINAL_CASE_CLEARANCE_NO' => $this->input->post('CRIMINAL_CASE_CLEARANCE_NO'),
         );
 
         $this->updatePartyPicture();
@@ -899,6 +912,8 @@ class Home extends Main_Controller
             $status = $this->homemodel->updateVehicleInline($model_data);
         if($task == "vehicleType")
             $status = $this->homemodel->updateVehicleTypeInline($model_data);
+        if($task == "drivers")
+            $status = $this->homemodel->updateDriverInline($model_data);
 
         if ($status == true) {
             $msg = array('msg' => 'Success! updation');

@@ -82,15 +82,15 @@
                                         <td class="editable-col" contenteditable="true" col-index='5' oldVal ="<?php echo $vehicleType->ITEM_LENGTH; ?>"><?php echo $vehicleType->ITEM_LENGTH; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='6' oldVal ="<?php echo $vehicleType->BASE_FARE; ?>"><?php echo $vehicleType->BASE_FARE; ?></td>
                                         <td style="background: #ffbfbf;">
-                                             <select class="form-control select2 editable-city" col-index='7' data-placeholder="Select Vehicle Type" name="WORKING_REGION" style="width: 100%;background: #ffbfbf;border: none;padding: 0px 12px;height: 22px;">
+                                            <select class="form-control select2 editable-city" col-index='7' data-placeholder="Select Vehicle Type" name="WORKING_REGION" style="width: 100%;background: #ffbfbf;border: none;padding: 0px 12px;height: 22px;">
                                                 <?php foreach ($data['operationalCityList'] as $operationalCity) { 
                                                 $str_flag = "";
                                                 if($operationalCity->OPERATIONAL_CITY_ID == $vehicleType->WORKING_REGION)
                                                     $str_flag = "selected"; 
                                                 ?>
                                                 <option value="<?php echo $operationalCity->OPERATIONAL_CITY_ID; ?>" <?php echo $str_flag; ?> > <?php echo $operationalCity->CITY_NAME; ?> </option>
-                                        <?php } ?>
-                                       </select>
+                                                <?php } ?>
+                                            </select>
                                         </td>
                                         <td style="background: #ffbfbf; text-align: center;">                    
                                             <a href="<?php echo base_url(); ?>index.php/home/additionalServices/<?php echo $vehicleType->VEHICLE_TYPE_ID;?>" class="btn btn-default editable-action"><i class="fa fa-pencil"></i>&nbsp;Additional Charges</a>

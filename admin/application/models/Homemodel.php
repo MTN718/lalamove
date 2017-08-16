@@ -124,11 +124,20 @@ Class Homemodel extends CI_Model
     }
 
     // get vehicles list
-    public function getVehicleList() {
-        $this->db->select('*');
-        $this->db->from('VEHICLE');
-        $this->db->where('IS_DELETED', 1);
-        return $this->db->get()->result();
+    public function getVehicleList($driver_data="") {
+
+        if(!empty($driver_data)) {
+            $this->db->select('*');
+            $this->db->from('VEHICLE');
+            $this->db->where('IS_DELETED', 1);
+            $this->db->where('PARTY_ID', $driver_data['PARTY_ID']);
+            return $this->db->get()->result();
+        } else {
+            $this->db->select('*');
+            $this->db->from('VEHICLE');
+            $this->db->where('IS_DELETED', 1);
+            return $this->db->get()->result();
+        }
     }
 
     // get vehicles list
@@ -143,6 +152,14 @@ Class Homemodel extends CI_Model
         $this->db->select('*');
         $this->db->from('OPERATIONAL_CITY');
         return $this->db->get()->result();
+    }
+
+    // get vehicles list
+    public function getPartyBalanceInfo($party_data) {
+        $this->db->select('*');
+        $this->db->from('WALLET');
+        $this->db->where('PARTY_ID',$party_data['PARTY_ID']);
+        return $this->db->get()->row();
     }
 
 
@@ -577,6 +594,37 @@ Class Homemodel extends CI_Model
             }
 
             $sql = "UPDATE VEHICLE SET ".$columns[$colIndex]." = '".$colVal."' WHERE VEHICLE_ID='".$rowId."'";
+
+            $this->db->query($sql);
+            return true;
+        }
+        return false;
+    }
+
+    //Driver data inline editing
+    public function updateDriverInline($model_data) {
+        $columns = array(
+            4 => 'STATUS_ID',
+            5 => 'IS_DELETED',
+        );
+
+        $colVal = '';
+        $colIndex = $rowId = 0;
+         
+        if(isset($model_data)){
+            if(isset($model_data['val']) && !empty($model_data['val'])) {
+                $colVal = $model_data['val'];
+            }
+
+            if(isset($model_data['index']) && $model_data['index'] >= 0) {
+              $colIndex = $model_data['index'];
+            }
+
+            if(isset($model_data['id']) && $model_data['id'] != NULL) {
+              $rowId = $model_data['id'];
+            }
+
+            $sql = "UPDATE PARTY SET ".$columns[$colIndex]." = '".$colVal."' WHERE PARTY_ID='".$rowId."'";
 
             $this->db->query($sql);
             return true;

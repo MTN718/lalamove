@@ -7,7 +7,7 @@
             gridContainer.innerHTML = ""; 
 
             if(data == "yes") {
-                gridContainer.innerHTML += "<input type='text' class='form-control' placeholder='Enter Police Clearance Number' name='CRIMINAL_CASE_CLEARANCE_NO' required='required'  style='border:1px solid red;'>";
+                gridContainer.innerHTML += "<input type='text' class='form-control' placeholder='Enter Police Clearance Number' name='CRIMINAL_CASE_CLEARANCE_NO' required='required' value='<?php if (!empty($data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO)) echo $data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO; ?>'' style='border:1px solid red;'>";
             } else {
                 gridContainer.innerHTML = " ";
             }
@@ -143,7 +143,7 @@
 
 
                             <!-- Here Field for only Drives -->
-                            <?php if ($data['partyTypeInfo'] == "DRIVER" OR $data['partyNameInfo']->PARTY_TYPE_ID == "DRIVER") { ?>
+                            <?php if ($data['partyTypeInfo'] == "DRIVER") { ?>
                                 <div class="row">
                                     <div class="form-group col-sm-6 col-md-6">
                                         <label class="col-sm-2 control-label asterisk">License No.</label>
@@ -160,15 +160,21 @@
                                         <div class="col-md-10">
                                             <div class="col-xs-3" style="padding: 0px;">
                                                 <div class="radio-inline">
-                                                    <label><input type="radio" class="criminal-case" name="CRIMINAL_CASE_STATUS" data="yes" required="required">Yes</label>
+                                                    <label>
+                                                    <input type="radio" class="criminal-case" name="CRIMINAL_CASE_STATUS" data="yes" value="Yes" required="required" <?php if (isset($data['partyNameInfo']->CRIMINAL_CASE_STATUS) AND $data['partyNameInfo']->CRIMINAL_CASE_STATUS == 'Yes') echo 'checked'; ?>>
+                                                    Yes</label>
                                                 </div>
                                                 <div class="radio-inline">
-                                                    <label><input type="radio" class="criminal-case" name="CRIMINAL_CASE_STATUS" data="no" required="required">No</label>
+                                                    <label>
+                                                    <input type="radio" class="criminal-case" name="CRIMINAL_CASE_STATUS" data="no" value="No" required="required" <?php if (isset($data['partyNameInfo']->CRIMINAL_CASE_STATUS) AND $data['partyNameInfo']->CRIMINAL_CASE_STATUS == 'No') echo 'checked'; ?>>
+                                                    No</label>
                                                 </div>
                                             </div>
                                             <div class="col-xs-9" style="padding: 0px;">
-                                                <?php if (isset($data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO)) { ?>
-                                                    <input type="text" class="form-control" name="CRIMINAL_CASE_CLEARANCE_NO" value="<?php if (!empty($data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO)) echo $data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO; ?>" required="required" style="border:1px solid red;">
+                                                <?php if (isset($data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO) AND $data['partyNameInfo']->CRIMINAL_CASE_STATUS == 'Yes') { ?>
+                                                    <div id="criminal_case_no_input">
+                                                        <input type="text" class="form-control" name="CRIMINAL_CASE_CLEARANCE_NO" value="<?php if (!empty($data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO)) echo $data['partyNameInfo']->CRIMINAL_CASE_CLEARANCE_NO; ?>" required="required" style="border:1px solid red;">
+                                                    </div>
                                                 <?php } else { ?>
                                                     <div id="criminal_case_no_input"></div>
                                                 <?php } ?>

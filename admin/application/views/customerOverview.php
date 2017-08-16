@@ -93,6 +93,14 @@
         <div class="row">
           <div class="col-md-6">
             <div class="col-md-6">
+              <label>Balance</label>
+            </div>
+            <div class="col-md-6">
+                <?php if (!empty($data['partyBalance']->AMOUNT)) echo "$".$data['partyBalance']->AMOUNT; else echo '$0'; ?>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-6">
               <label>Address</label>
             </div>
             <div class="col-md-6">
@@ -102,6 +110,85 @@
                 <?php if (!empty($data['partyAddressInfo']->STATE_PROVINCE_GEO_ID)) echo $data['partyAddressInfo']->STATE_PROVINCE_GEO_ID; ?>
               ,
                 <?php if (!empty($data['partyAddressInfo']->POSTAL_CODE)) echo $data['partyAddressInfo']->POSTAL_CODE; ?>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <div class="row">
+              <div class="col-sm-6 col-md-6" style="text-align:left;float: left;">
+                <h2 class="box-title">Favourite Driver List</h2>
+              </div>
+            </div>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="table-responsive">
+              <table id="example5" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Driver Name</th>
+                  <th>Contact Number</th>
+                  <th>Current status</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- <?php
+                foreach ($invoices as $invoice) { ?>
+                  <tr>
+                        <td><?php echo $invoice->invoice_id; ?></td>
+                        <td>
+                          <?php
+                    $this->db->select('*');
+                    $this->db->from('users');
+                    $this->db->where('user_id', $invoice->user_id);
+                    $row = $this->db->get()->row();
+                    echo $row->fname . " " . $row->lname;
+                    ?>
+                        </td>
+                        <td><?php echo $invoice->invoice_from_date; ?></td>
+                        <td><?php echo $invoice->invoice_to_date; ?></td>
+                        <td>$<?php echo $invoice->amount; ?></td>
+                        <td>
+                        <?php
+                    if ($invoice->amount == 0) {
+                        $this->db->select('sum(billing_charge) as total');
+                        $this->db->from('walk');
+                        $this->db->join('invoice_walk_conn', 'walk.walk_id = invoice_walk_conn.walk_id');
+                        $this->db->where('invoice_walk_conn.invoice_id', $invoice->invoice_id);
+                        $revenue = $this->db->get()->row();
+                        echo "$" . $revenue->total;
+                    } else {
+                        echo "-";
+                    }
+                    ?>
+                        </td>
+                        <td>
+                          <?php
+                    $this->db->select('*');
+                    $this->db->from('invoice_status');
+                    $this->db->where('status_id', $invoice->invoice_status);
+                    $row = $this->db->get()->row();
+                    echo $row->title;
+                    ?>
+                        </td> 
+                        <td class="text__align__right">                                                                             
+                            <a href="<?php echo base_url(); ?>index.php/admin_controller/invoiceoverview?id=<?php echo $invoice->invoice_id; ?>" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> View Invoice</a>
+                          <?php if ($invoice->admin_status == 0) { ?>
+                            <a href="<?php echo base_url(); ?>index.php/admin_controller/invoiceapproved/active?id=<?php echo $invoice->invoice_id; ?>" class="btn btn-success"><i class="fa fa-check-square-o"></i> Approve</a>
+                            <a href="<?php echo base_url(); ?>index.php/admin_controller/invoicedelete/active?id=<?php echo $invoice->invoice_id; ?>" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                          <?php } ?>                      
+                        </td>                      
+                      </tr>
+                  <?php } ?> -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -189,5 +276,88 @@
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <div class="row">
+              <div class="col-sm-6 col-md-6" style="text-align:left;float: left;">
+                <h2 class="box-title">Transactions List</h2>
+              </div>
+            </div>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="table-responsive">
+              <table id="example4" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Transactions ID</th>
+                  <th>Method</th>
+                  <th>Order Name</th>
+                  <th>Order Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- <?php
+                foreach ($invoices as $invoice) { ?>
+                  <tr>
+                        <td><?php echo $invoice->invoice_id; ?></td>
+                        <td>
+                          <?php
+                    $this->db->select('*');
+                    $this->db->from('users');
+                    $this->db->where('user_id', $invoice->user_id);
+                    $row = $this->db->get()->row();
+                    echo $row->fname . " " . $row->lname;
+                    ?>
+                        </td>
+                        <td><?php echo $invoice->invoice_from_date; ?></td>
+                        <td><?php echo $invoice->invoice_to_date; ?></td>
+                        <td>$<?php echo $invoice->amount; ?></td>
+                        <td>
+                        <?php
+                    if ($invoice->amount == 0) {
+                        $this->db->select('sum(billing_charge) as total');
+                        $this->db->from('walk');
+                        $this->db->join('invoice_walk_conn', 'walk.walk_id = invoice_walk_conn.walk_id');
+                        $this->db->where('invoice_walk_conn.invoice_id', $invoice->invoice_id);
+                        $revenue = $this->db->get()->row();
+                        echo "$" . $revenue->total;
+                    } else {
+                        echo "-";
+                    }
+                    ?>
+                        </td>
+                        <td>
+                          <?php
+                    $this->db->select('*');
+                    $this->db->from('invoice_status');
+                    $this->db->where('status_id', $invoice->invoice_status);
+                    $row = $this->db->get()->row();
+                    echo $row->title;
+                    ?>
+                        </td> 
+                        <td class="text__align__right">                                                                             
+                            <a href="<?php echo base_url(); ?>index.php/admin_controller/invoiceoverview?id=<?php echo $invoice->invoice_id; ?>" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> View Invoice</a>
+                          <?php if ($invoice->admin_status == 0) { ?>
+                            <a href="<?php echo base_url(); ?>index.php/admin_controller/invoiceapproved/active?id=<?php echo $invoice->invoice_id; ?>" class="btn btn-success"><i class="fa fa-check-square-o"></i> Approve</a>
+                            <a href="<?php echo base_url(); ?>index.php/admin_controller/invoicedelete/active?id=<?php echo $invoice->invoice_id; ?>" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                          <?php } ?>                      
+                        </td>                      
+                      </tr>
+                  <?php } ?> -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </section>
 </div>  
