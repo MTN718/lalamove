@@ -150,6 +150,7 @@ class Home extends Main_Controller
         $this->mPageTitle = 'Orders';
         $this->mViewData['data'] = array(
             'adminNameInfo' => $this->homemodel->getPartyNameInfo($model_data),
+            'orderList' => $this->homemodel->getOrderList(),
             'pageName' => 'ORDERS',
         );
 
@@ -485,6 +486,39 @@ class Home extends Main_Controller
         $this->render('settings');
     }
 
+    // Order Overview
+    public function OrderInfoEdit()
+    {
+        $userInfo = $this->session->login_data;
+        $model_data = array(
+            'PARTY_ID' => $userInfo->PARTY_ID,
+        );
+        $order_data = array(
+            'ORDER_ID' => $this->input->get('ORDER_ID'),
+        );        
+        $customer_data = array(
+            'PARTY_ID' => $this->homemodel->getCustomerIdByOrder($order_data),
+        );       
+        $driver_data = array(
+            'PARTY_ID' => $this->homemodel->getDriverIdByOrder($order_data),
+        );
+        $this->mPageTitle = 'Customers';
+        $this->mViewData['data'] = array(
+            'adminNameInfo' => $this->homemodel->getPartyNameInfo($model_data),
+            'customerNameInfo' => $this->homemodel->getPartyNameInfo($customer_data),
+            'customerEmailInfo' => $this->homemodel->getPartyContactInfo($customer_data, 'EMAIL'),
+            'customerAddressInfo' => $this->homemodel->getPartyContactInfo($customer_data, 'ADDRESS'),
+            'customerTelecomInfo' => $this->homemodel->getPartyContactInfo($customer_data, 'TELECOM'),
+            'driverNameInfo' => $this->homemodel->getPartyNameInfo($driver_data),
+            'driverEmailInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'EMAIL'),
+            'driverAddressInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'ADDRESS'),
+            'driverTelecomInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'TELECOM'),
+            'orderInfo' => $this->homemodel->getOrderInfo($order_data),
+            'pageName' => "Orders",
+        );
+
+        $this->render('orderInfoEdit');
+    }
 
 
 

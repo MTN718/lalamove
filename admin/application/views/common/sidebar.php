@@ -39,7 +39,7 @@
             <?php } ?>
         </div>
         <div class="pull-left info">
-          <p><?php echo $data['adminNameInfo']->FIRST_NAME; ?><?php echo $data['adminNameInfo']->LAST_NAME; ?></p>
+          <p><?php echo $data['adminNameInfo']->FIRST_NAME; ?> <?php echo $data['adminNameInfo']->LAST_NAME; ?></p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>

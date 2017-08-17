@@ -162,6 +162,41 @@ Class Homemodel extends CI_Model
         return $this->db->get()->row();
     }
 
+    // get Order list
+    public function getOrderList() {
+        $this->db->select('*');
+        $this->db->from('ORDER');
+        $this->db->join('ORDER_STOP', 'ORDER_STOP.ORDER_ID = ORDER.ORDER_ID'); 
+        $this->db->join('ORDER_CONTACT', 'ORDER_CONTACT.ORDER_STOP_ID = ORDER_STOP.ORDER_STOP_ID'); 
+        return $this->db->get()->result();
+    }
+
+    // get Selected Order Info
+    public function getOrderInfo($order_data="") {
+        $this->db->select('*');
+        $this->db->from('ORDER');
+        $this->db->join('ORDER_STOP', 'ORDER_STOP.ORDER_ID = ORDER.ORDER_ID'); 
+        $this->db->join('ORDER_CONTACT', 'ORDER_CONTACT.ORDER_STOP_ID = ORDER_STOP.ORDER_STOP_ID'); 
+        $this->db->where('ORDER.ORDER_ID',$order_data['ORDER_ID']);
+        return $this->db->get()->row();
+    }
+
+    // get Customer Id by Order
+    public function getCustomerIdByOrder($order_data="") {
+        $this->db->select('*');
+        $this->db->from('ORDER');
+        $this->db->where('ORDER_ID', $order_data['ORDER_ID']);
+        return $this->db->get()->row()->PARTY_ID;
+    }
+
+    // get Driver Id by Order
+    public function getDriverIdByOrder($order_data="") {
+        $this->db->select('*');
+        $this->db->from('ORDER');
+        $this->db->where('ORDER_ID', $order_data['ORDER_ID']);
+        return $this->db->get()->row()->DRIVER_ID;
+    }
+
 
 
 
