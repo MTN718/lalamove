@@ -145,13 +145,15 @@
                                 <h2 class="box-title floatalign_text_left">Vehicle List</h2>
                             </div>
                             <div class="col-sm-6 col-md-6">
+                              <?php if(empty($data['vehiclesList'])) { ?>
                                 <a href="" data-toggle="modal" data-target="#addVehicleDialog" class="btn btn-primary floatalign_text_right" style="margin-top: -13px;margin-right: -10px;"><i class="fa fa-plus"></i></a>
+                              <?php } ?>
                             </div>
                         </div>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body table-responsive">
-                        <table id="example1" class="table table-bordered table-hover">
+                        <table id="example123456" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Vehicle No.</th>

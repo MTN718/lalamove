@@ -91,11 +91,6 @@
           <i class="fa fa-car"></i> <span>Additional Services</span>
         </a>
         </li>
-          <?php echo($data['pageName'] == "DISCOUNTS" ? "<li class='active'>" : "<li>"); ?>
-        <a href="<?php echo base_url(); ?>index.php/home/discounts">
-          <i class="fa fa-percent"></i> <span>Discounts</span>
-        </a>
-        </li>
           <?php echo($data['pageName'] == "ORDERS" ? "<li class='active'>" : "<li>"); ?>
         <a href="<?php echo base_url(); ?>index.php/home/orders">
           <i class="fa fa-shopping-cart"></i> <span>Orders</span>
@@ -109,6 +104,11 @@
           <?php echo($data['pageName'] == "PAYMENTS" ? "<li class='active'>" : "<li>"); ?>
         <a href="<?php echo base_url(); ?>index.php/home/payments">
           <i class="fa fa-credit-card"></i> <span>Payments</span>
+        </a>
+        </li>
+          <?php echo($data['pageName'] == "DISCOUNTS" ? "<li class='active'>" : "<li>"); ?>
+        <a href="<?php echo base_url(); ?>index.php/home/discounts">
+          <i class="fa fa-percent"></i> <span>Discounts</span>
         </a>
         </li>
           <?php echo($data['pageName'] == "SETTINGS" ? "<li class='active'>" : "<li>"); ?>

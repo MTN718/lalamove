@@ -124,20 +124,44 @@
                                     <tr>
                                         <td>Order#00<?php if (!empty($order->ORDER_ID)) echo $order->ORDER_ID; ?></td>
                                         <td>
-                                            <?php if (!empty($order->ORDER_TIME)) echo $order->ORDER_TIME; ?><br>
+                                            <?php if (!empty($order->ORDER_DATE)) echo date('H:i',strtotime($order->ORDER_DATE)); ?><br>
                                             <span style="color: #f16622 ;"><?php if (!empty($order->ORDER_DATE)) echo date('d-m-Y',strtotime($order->ORDER_DATE)); ?></span>
                                         </td>
-                                        <td>         
+                                        <td>  
+                                            <?php 
+                                                $this->db->select('LOCATION_NAME');
+                                                $this->db->from('ORDER_LOCATION'); 
+                                                $this->db->where('ORDER_ID',$order->ORDER_ID);
+                                                $this->db->where('LOCATION_TYPE','START');                                                
+                                                $this->db->where('ORDER_LOCATION.LOCATION_TYPE','START');
+                                                $start_location = $this->db->get()->row();
+
+                                                $this->db->select('*');
+                                                $this->db->from('ORDER_LOCATION'); 
+                                                $this->db->where('ORDER_ID',$order->ORDER_ID);
+                                                $this->db->where('LOCATION_TYPE','STOP');
+                                                $stop_number = $this->db->get()->num_rows();
+
+                                                $this->db->select('LOCATION_NAME');
+                                                $this->db->from('ORDER_LOCATION'); 
+                                                $this->db->where('ORDER_ID',$order->ORDER_ID);
+                                                $this->db->where('LOCATION_TYPE','END');
+                                                $this->db->where('ORDER_LOCATION.LOCATION_TYPE','END');
+                                                $end_location = $this->db->get()->row();
+                                            ?>       
                                             <div style="color: #58595b; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                 <i class="record-from-location from-to-location-icon" href="javascript:void(0);" draggable="true"></i> 
-                                                <?php if (!empty($order->START_NAME)) echo $order->START_NAME; ?>
+                                                <?php if (!empty($start_location->LOCATION_NAME)) echo $start_location->LOCATION_NAME; ?>
                                             </div>
+                                            <?php if(!empty($stop_number)) { ?>
                                             <div style="color: #f16622; line-height: 20px; font-size: 12px;"> 
-                                                <i class="record-extra-location from-to-location-icon" href="javascript:void(0);" draggable="true"></i> 1 Stops 
+                                                <i class="record-extra-location from-to-location-icon" href="javascript:void(0);" draggable="true"></i> 
+                                                <?php echo $stop_number; ?> Stops
                                             </div>
+                                            <?php } ?>
                                             <div style="color: #58595b; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"> 
                                                 <i class="record-to-location from-to-location-icon" href="javascript:void(0);" draggable="true"></i> 
-                                                <?php if (!empty($order->STOP_NAME)) echo $order->STOP_NAME; ?>
+                                                <?php if (!empty($end_location->LOCATION_NAME)) echo $end_location->LOCATION_NAME; ?>
                                             </div>
                                         </td>
                                         <td>N/A</td>

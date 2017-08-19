@@ -58,14 +58,14 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Load Unload Overtime ($)</th>
+                                        <th>Load/Unload Max Time (Min)</th>
+                                        <th>Load/Unload Overtime Charge ($/Min)</th>
                                         <th>Landfills ($)</th>
                                         <th>Construction ($)</th>
                                         <th>Night ($)</th>
                                         <th>Mid Night ($)</th>
                                         <th>Sunday / PH ($)</th>
                                         <th>ONG ($)</th>
-                                        <th>Over time ($)</th>
                                         <th>Parking Fee ($)</th>
                                         <th style="background: #ffbfbf;">Owner Payable ($)</th>
                                     </tr>
@@ -77,6 +77,7 @@
                                     ?>
                                     <tr data-row-id="<?php echo $vehicleType->VEHICLE_TYPE_ID;?>" <?php if( $string1 == $string2 ) echo "style='background:#ffbfbf'"; ?>>
                                         <td><?php echo $data['active']; echo $vehicleType->VEHICLE_TYPE_NAME; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='16' oldVal ="<?php echo $vehicleType->LOAD_UNLOAD_MAX_TIME; ?>"><?php echo $vehicleType->LOAD_UNLOAD_MAX_TIME; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='8' oldVal ="<?php echo $vehicleType->LOAD_UNLOAD_OVERTIME_CHARGE; ?>"><?php echo $vehicleType->LOAD_UNLOAD_OVERTIME_CHARGE; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='9' oldVal ="<?php echo $vehicleType->LANDFILLS_CHARGE; ?>"><?php echo $vehicleType->LANDFILLS_CHARGE; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='10' oldVal ="<?php echo $vehicleType->CONSTRUCTION_CHARGE; ?>"><?php echo $vehicleType->CONSTRUCTION_CHARGE; ?></td>
@@ -84,7 +85,6 @@
                                         <td class="editable-col" contenteditable="true" col-index='12' oldVal ="<?php echo $vehicleType->MIDNIGHT_FEE; ?>"><?php echo $vehicleType->MIDNIGHT_FEE; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='13' oldVal ="<?php echo $vehicleType->SUNDAY_PH_CHARGE; ?>"><?php echo $vehicleType->SUNDAY_PH_CHARGE; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='15' oldVal ="<?php echo $vehicleType->ONG_CHARGE; ?>"><?php echo $vehicleType->ONG_CHARGE; ?></td>
-                                        <td class="editable-col" contenteditable="true" col-index='16' oldVal ="<?php echo $vehicleType->OVERTIME_CHARGE; ?>"><?php echo $vehicleType->OVERTIME_CHARGE; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='17' oldVal ="<?php echo $vehicleType->PARKING_FEE; ?>"><?php echo $vehicleType->PARKING_FEE; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='14' oldVal ="<?php echo $vehicleType->OWNER_PAYABLE; ?>" style="background: #ffbfbf;"><?php echo $vehicleType->OWNER_PAYABLE; ?></td>
                                     </tr>

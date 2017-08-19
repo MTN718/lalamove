@@ -18,7 +18,16 @@
       is strictly forbidden unless prior written permission is obtained
      from Karyon Solutions.
     -->
+    <style type="text/css">
+        input[type='number'] {
+            -moz-appearance:textfield;
+        }
 
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+    </style>
     <!-- vehicleType.php starts -->
     <div class="content-wrapper">
         <?php if ($this->session->flashdata('success_msg') != "") { ?>
@@ -67,6 +76,7 @@
                                         <th>Item Width (Feet)</th>
                                         <th>Item Length (Feet)</th>
                                         <th>Base Fare ($)</th>
+                                        <th>Rent Per KM ($)</th>
                                         <th style="background: #ffbfbf;">Region</th>
                                         <th style="background: #ffbfbf;">Action</th>
                                     </tr>
@@ -81,6 +91,7 @@
                                         <td class="editable-col" contenteditable="true" col-index='4' oldVal ="<?php echo $vehicleType->ITEM_WIDTH; ?>"><?php echo $vehicleType->ITEM_WIDTH; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='5' oldVal ="<?php echo $vehicleType->ITEM_LENGTH; ?>"><?php echo $vehicleType->ITEM_LENGTH; ?></td>
                                         <td class="editable-col" contenteditable="true" col-index='6' oldVal ="<?php echo $vehicleType->BASE_FARE; ?>"><?php echo $vehicleType->BASE_FARE; ?></td>
+                                        <td class="editable-col" contenteditable="true" col-index='18' oldVal ="<?php echo $vehicleType->RENT_PER_KM; ?>"><?php echo $vehicleType->RENT_PER_KM; ?></td>
                                         <td style="background: #ffbfbf;">
                                             <select class="form-control select2 editable-city" col-index='7' data-placeholder="Select Vehicle Type" name="WORKING_REGION" style="width: 100%;background: #ffbfbf;border: none;padding: 0px 12px;height: 22px;">
                                                 <?php foreach ($data['operationalCityList'] as $operationalCity) { 
@@ -152,16 +163,22 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div class="col-sm-4 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label for="color" class="control-label asterisk">Item Height (Feet)</label>
                                     <input type="number" class="form-control" name="ITEM_HEIGHT" value="" required="required">
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div class="col-sm-4 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label for="color" class="control-label asterisk">Item Width (Feet)</label>
                                     <input type="number" class="form-control" name="ITEM_WIDTH" value="" required="required">
+                                </div>
+                            </div>                            
+                            <div class="col-sm-4 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label for="color" class="control-label asterisk">Item Length (Feet)</label>
+                                    <input type="number" class="form-control" name="ITEM_LENGTH" value="" required="required">
                                 </div>
                             </div>
                         </div>
@@ -169,8 +186,8 @@
                         <div class="row">
                             <div class="col-sm-6 col-md-6 col-lg-6">
                                 <div class="form-group">
-                                    <label for="color" class="control-label asterisk">Item Length (Feet)</label>
-                                    <input type="number" class="form-control" name="ITEM_LENGTH" value="" required="required">
+                                    <label for="color" class="control-label asterisk">Rent Per KM ($)</label>
+                                    <input type="number" class="form-control" name="RENT_PER_KM" value="" required="required">
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-6 col-lg-6">

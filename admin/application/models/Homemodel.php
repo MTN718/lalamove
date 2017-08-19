@@ -166,8 +166,15 @@ Class Homemodel extends CI_Model
     public function getOrderList() {
         $this->db->select('*');
         $this->db->from('ORDER');
-        $this->db->join('ORDER_STOP', 'ORDER_STOP.ORDER_ID = ORDER.ORDER_ID'); 
-        $this->db->join('ORDER_CONTACT', 'ORDER_CONTACT.ORDER_STOP_ID = ORDER_STOP.ORDER_STOP_ID'); 
+        return $this->db->get()->result();
+    }
+
+    // get Order location Info
+    public function getOrderLocationInfo($order_data="") {
+        $this->db->select('*');
+        $this->db->from('ORDER_LOCATION');
+        $this->db->join('ORDER_DELIVERY_CONTACT', 'ORDER_DELIVERY_CONTACT.ORDER_LOCATION_ID = ORDER_LOCATION.ORDER_LOCATION_ID', 'left');
+        $this->db->where('ORDER_LOCATION.ORDER_ID',$order_data['ORDER_ID']);
         return $this->db->get()->result();
     }
 
@@ -175,9 +182,7 @@ Class Homemodel extends CI_Model
     public function getOrderInfo($order_data="") {
         $this->db->select('*');
         $this->db->from('ORDER');
-        $this->db->join('ORDER_STOP', 'ORDER_STOP.ORDER_ID = ORDER.ORDER_ID'); 
-        $this->db->join('ORDER_CONTACT', 'ORDER_CONTACT.ORDER_STOP_ID = ORDER_STOP.ORDER_STOP_ID'); 
-        $this->db->where('ORDER.ORDER_ID',$order_data['ORDER_ID']);
+        $this->db->where('ORDER_ID',$order_data['ORDER_ID']);
         return $this->db->get()->row();
     }
 
@@ -196,6 +201,26 @@ Class Homemodel extends CI_Model
         $this->db->where('ORDER_ID', $order_data['ORDER_ID']);
         return $this->db->get()->row()->DRIVER_ID;
     }
+
+    // get Selected Order Vehicle type Info
+    public function getOrderLocationInfoByLocation($order_location_id="") {
+        $this->db->select('*');
+        $this->db->from('ORDER');
+        $this->db->join('ORDER_LOCATION', 'ORDER_LOCATION.ORDER_ID = ORDER.ORDER_ID');
+        $this->db->join('VEHICLE_TYPE', 'VEHICLE_TYPE.VEHICLE_TYPE_ID = ORDER.VEHICLE_TYPE_ID');
+        $this->db->where('ORDER_LOCATION_ID',$order_location_id);
+        return $this->db->get()->row();
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -227,26 +252,6 @@ Class Homemodel extends CI_Model
         $this->db->where('VEHICLE_TYPE_ID', $VEHICLE_TYPE_ID);
         return $this->db->get()->num_rows();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -342,12 +347,13 @@ Class Homemodel extends CI_Model
         $ITEM_WIDTH = $model_data['ITEM_WIDTH'];
         $ITEM_LENGTH = $model_data['ITEM_LENGTH'];
         $BASE_FARE = $model_data['BASE_FARE'];
+        $RENT_PER_KM = $model_data['RENT_PER_KM'];
 
         $num_rows = $this->checkVehicleTypeInfo($VEHICLE_TYPE_ID);
         if($num_rows > 0)
             return false;
 
-        $sql = "INSERT INTO `VEHICLE_TYPE`(`VEHICLE_TYPE_ID`,`VEHICLE_TYPE_NAME`,`WORKING_REGION`,`MIN_WEIGHT_CAPACITY`,`MAX_WEIGHT_CAPACITY`,`ITEM_HEIGHT`,`ITEM_WIDTH`,`ITEM_LENGTH`,`BASE_FARE`) VALUES('$VEHICLE_TYPE_ID','$VEHICLE_TYPE_NAME','$WORKING_REGION','$MIN_WEIGHT_CAPACITY','$MAX_WEIGHT_CAPACITY','$ITEM_HEIGHT','$ITEM_WIDTH','$ITEM_LEGTH','$BASE_FARE')";
+        $sql = "INSERT INTO `VEHICLE_TYPE`(`VEHICLE_TYPE_ID`,`VEHICLE_TYPE_NAME`,`WORKING_REGION`,`MIN_WEIGHT_CAPACITY`,`MAX_WEIGHT_CAPACITY`,`ITEM_HEIGHT`,`ITEM_WIDTH`,`ITEM_LENGTH`,`BASE_FARE`,`RENT_PER_KM`) VALUES('$VEHICLE_TYPE_ID','$VEHICLE_TYPE_NAME','$WORKING_REGION','$MIN_WEIGHT_CAPACITY','$MAX_WEIGHT_CAPACITY','$ITEM_HEIGHT','$ITEM_WIDTH','$ITEM_LEGTH','$BASE_FARE','$RENT_PER_KM')";
         $this->db->query($sql);
         return true;
     }
@@ -554,6 +560,84 @@ Class Homemodel extends CI_Model
         return true;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // =============================== Delete Party Methods ===============================
+
+    // Delete Party Info
+    public function partyDelete($model_data)
+    {
+        $PARTY_ID = $model_data['PARTY_ID'];
+
+        $partyEmailMechId = $this->getPartyContactInfo($model_data, 'EMAIL')->CONTACT_MECH_ID;
+        if (!empty($partyEmailMechId)) {
+            $sql1 = "DELETE FROM CONTACT_MECH WHERE CONTACT_MECH_ID = $partyEmailMechId";
+            $this->db->query($sql1);
+        }
+
+        $partyTelecomMechId = $this->getPartyContactInfo($model_data, 'TELECOM')->CONTACT_MECH_ID;
+        if (!empty($partyTelecomMechId)) {
+            $sql2 = "DELETE FROM TELECOM_NUMBER WHERE CONTACT_MECH_ID = $partyTelecomMechId";
+            $this->db->query($sql2);
+        }
+
+        $partyAddressMechId = $this->getPartyContactInfo($model_data, 'ADDRESS')->CONTACT_MECH_ID;
+        if (!empty($partyAddressMechId)) {
+            $sql3 = "DELETE FROM POSTAL_ADDRESS WHERE CONTACT_MECH_ID = $partyAddressMechId";
+            $this->db->query($sql3);
+        }
+
+        $sql = "DELETE FROM PARTY_CONTACT_MECH WHERE PARTY_ID = $PARTY_ID";
+        $this->db->query($sql);
+
+        $sql = "DELETE FROM USER_LOGIN WHERE PARTY_ID = $PARTY_ID";
+        $this->db->query($sql);
+
+        $sql = "DELETE FROM PARTY WHERE PARTY_ID = $PARTY_ID";
+        $this->db->query($sql);
+    }
+
+    // Delete Faq Info
+    public function faqDelete($model_data)
+    {
+        $FAQ_ID = $model_data['FAQ_ID'];
+
+        $sql = "DELETE FROM FAQS WHERE FAQ_ID = $FAQ_ID";
+        $this->db->query($sql);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //================================== ajax model ================================
+
+
+
     //vehicle type data inline editing
     public function updateVehicleTypeInline($model_data) {
         $columns = array(
@@ -573,8 +657,9 @@ Class Homemodel extends CI_Model
             13 => 'SUNDAY_PH_CHARGE',
             14 => 'OWNER_PAYABLE',
             15 => 'ONG_CHARGE',
-            16 => 'OVERTIME_CHARGE',
-            17 => 'PARKING_FEE'
+            16 => 'LOAD_UNLOAD_MAX_TIME',
+            17 => 'PARKING_FEE',
+            18 => 'RENT_PER_KM'
         );
 
         $colVal = '';
@@ -667,65 +752,50 @@ Class Homemodel extends CI_Model
         return false;
     }
 
+    //order inline Update
+    public function orderInlineUpdate($model_data) {
+        $columns = array(
+            1 => 'CONTACT_ADDRESS',
+            2 => 'CONTACT_NAME',
+            3 => 'CONTACT_MOBILE',
+            4 => 'STOP_TIME', 
+        );
 
+        $colVal = '';
+        $colIndex = $rowId = 0;
+         
+        if(isset($model_data)){
+            if(isset($model_data['val']) && !empty($model_data['val'])) {
+              $colVal =  preg_replace('/\s+/S', " ", $model_data['val']);
+            }
 
+            if(isset($model_data['index']) && $model_data['index'] >= 0) {
+              $colIndex = $model_data['index'];
+            }
 
+            if(isset($model_data['id']) && $model_data['id'] > 0) {
+              $rowId = $model_data['id'];
+            }
+          
 
+            if($colIndex == 4) {
+                $extraCharge = 0;
+                $locationdata = $this->getOrderLocationInfoByLocation($rowId);
+                $load_unload_max_time = $locationdata->LOAD_UNLOAD_MAX_TIME;
+                if($colVal > $load_unload_max_time) {
+                    $extraTime = $colVal-($locationdata->LOAD_UNLOAD_MAX_TIME);                    
+                    $extraCharge = $extraTime*($locationdata->LOAD_UNLOAD_OVERTIME_CHARGE);                    
+                }
+                $sql = "UPDATE ORDER_LOCATION SET ".$columns[$colIndex]." = '".$colVal."', STOP_TIME_CHARGE = '".$extraCharge."' WHERE ORDER_LOCATION_ID='".$rowId."'";
+            }
+            else {
+                $sql = "UPDATE ORDER_DELIVERY_CONTACT SET ".$columns[$colIndex]." = '".$colVal."' WHERE ORDER_LOCATION_ID='".$rowId."'";
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // =============================== Delete Party Methods ===============================
-
-    // Delete Party Info
-    public function partyDelete($model_data)
-    {
-        $PARTY_ID = $model_data['PARTY_ID'];
-
-        $partyEmailMechId = $this->getPartyContactInfo($model_data, 'EMAIL')->CONTACT_MECH_ID;
-        if (!empty($partyEmailMechId)) {
-            $sql1 = "DELETE FROM CONTACT_MECH WHERE CONTACT_MECH_ID = $partyEmailMechId";
-            $this->db->query($sql1);
+            $this->db->query($sql);
+            return true;
         }
-
-        $partyTelecomMechId = $this->getPartyContactInfo($model_data, 'TELECOM')->CONTACT_MECH_ID;
-        if (!empty($partyTelecomMechId)) {
-            $sql2 = "DELETE FROM TELECOM_NUMBER WHERE CONTACT_MECH_ID = $partyTelecomMechId";
-            $this->db->query($sql2);
-        }
-
-        $partyAddressMechId = $this->getPartyContactInfo($model_data, 'ADDRESS')->CONTACT_MECH_ID;
-        if (!empty($partyAddressMechId)) {
-            $sql3 = "DELETE FROM POSTAL_ADDRESS WHERE CONTACT_MECH_ID = $partyAddressMechId";
-            $this->db->query($sql3);
-        }
-
-        $sql = "DELETE FROM PARTY_CONTACT_MECH WHERE PARTY_ID = $PARTY_ID";
-        $this->db->query($sql);
-
-        $sql = "DELETE FROM USER_LOGIN WHERE PARTY_ID = $PARTY_ID";
-        $this->db->query($sql);
-
-        $sql = "DELETE FROM PARTY WHERE PARTY_ID = $PARTY_ID";
-        $this->db->query($sql);
-    }
-
-    // Delete Faq Info
-    public function faqDelete($model_data)
-    {
-        $FAQ_ID = $model_data['FAQ_ID'];
-
-        $sql = "DELETE FROM FAQS WHERE FAQ_ID = $FAQ_ID";
-        $this->db->query($sql);
+        return false;
     }
 
 

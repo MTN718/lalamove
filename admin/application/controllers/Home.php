@@ -514,13 +514,12 @@ class Home extends Main_Controller
             'driverAddressInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'ADDRESS'),
             'driverTelecomInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'TELECOM'),
             'orderInfo' => $this->homemodel->getOrderInfo($order_data),
+            'orderLocationInfo' => $this->homemodel->getOrderLocationInfo($order_data),
             'pageName' => "Orders",
         );
 
         $this->render('orderInfoEdit');
     }
-
-
 
 
 
@@ -687,7 +686,6 @@ class Home extends Main_Controller
         }
     }
 
-
     // add vehicle type
     public function addVehicleInfo($active="") {
         $model_data = array(
@@ -711,7 +709,6 @@ class Home extends Main_Controller
         }
     }
 
-
     // add vehicle type
     public function addVehicleTypeInfo() {
         $model_data = array(
@@ -723,6 +720,7 @@ class Home extends Main_Controller
            'ITEM_WIDTH' => $this->input->post('ITEM_WIDTH'),
            'ITEM_LENGTH' => $this->input->post('ITEM_LENGTH'),
            'BASE_FARE' => $this->input->post('BASE_FARE'),
+           'RENT_PER_KM' => $this->input->post('RENT_PER_KM'),
         );
 
         $status = $this->homemodel->addVehicleTypeInfo($model_data);
@@ -733,6 +731,7 @@ class Home extends Main_Controller
 
         redirect('home/vehicleType');
     }
+
 
 
 
@@ -1006,6 +1005,47 @@ class Home extends Main_Controller
             redirect('home/business');
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //=========================================== Ajax Request =====================================
+
+    // order location Inline Update
+    public function orderInlineUpdate()
+    {
+        $model_data = array(
+            'val' => $_POST['val'],
+            'index' => $_POST['index'],
+            'id' => $_POST['id'],
+            );
+
+        $status = $this->homemodel->orderInlineUpdate($model_data);
+        if ($status == true) {
+            $msg = array('msg' => 'Success! updation');
+        }
+        echo json_encode($msg);
+    }
+
+
+
+
+
+
+
+
+
 
 
 }
