@@ -140,6 +140,15 @@ Class Homemodel extends CI_Model
         }
     }
 
+    // get vehicles data
+    public function getVehicleData($driver_data="") {
+        $this->db->select('*');
+        $this->db->from('VEHICLE');
+        $this->db->join('VEHICLE_TYPE', 'VEHICLE_TYPE.VEHICLE_TYPE_ID = VEHICLE.VEHICLE_TYPE_ID');
+        $this->db->where('VEHICLE.PARTY_ID', $driver_data['PARTY_ID']);
+        return $this->db->get()->row();
+    }
+
     // get vehicles list
     public function getVehicleTypeList() {
         $this->db->select('*');
@@ -210,6 +219,17 @@ Class Homemodel extends CI_Model
         $this->db->join('VEHICLE_TYPE', 'VEHICLE_TYPE.VEHICLE_TYPE_ID = ORDER.VEHICLE_TYPE_ID');
         $this->db->where('ORDER_LOCATION_ID',$order_location_id);
         return $this->db->get()->row();
+    }
+
+    // get Available Driver List According to vehicle type
+    public function getAvailableDriverList($order_data="") {
+        $this->db->select('*');
+        $this->db->from('ORDER');
+        $this->db->join('VEHICLE_TYPE', 'VEHICLE_TYPE.VEHICLE_TYPE_ID = ORDER.VEHICLE_TYPE_ID');
+        $this->db->join('VEHICLE', 'VEHICLE.VEHICLE_TYPE_ID = VEHICLE_TYPE.VEHICLE_TYPE_ID');
+        $this->db->join('PERSON', 'PERSON.PARTY_ID = VEHICLE.PARTY_ID');
+        $this->db->where('ORDER.ORDER_ID',$order_data['ORDER_ID']);
+        return $this->db->get()->result();
     }
 
 
@@ -759,26 +779,51 @@ Class Homemodel extends CI_Model
             2 => 'CONTACT_NAME',
             3 => 'CONTACT_MOBILE',
             4 => 'STOP_TIME', 
+            5 => 'ROOM', 
+            6 => 'FLOOR', 
+            7 => 'BUILDING_BLOCK', 
+            8 => 'DRIVER_ID', 
+            9 => 'DESCRIPTION', 
         );
 
         $colVal = '';
         $colIndex = $rowId = 0;
          
         if(isset($model_data)){
-            if(isset($model_data['val']) && !empty($model_data['val'])) {
-              $colVal =  preg_replace('/\s+/S', " ", $model_data['val']);
-            }
 
             if(isset($model_data['index']) && $model_data['index'] >= 0) {
               $colIndex = $model_data['index'];
             }
 
+            if(isset($model_data['val']) && !empty($model_data['val'])) {
+                if($colIndex == 4) {
+                    $colVal =  preg_replace('/[^a-zA-Z0-9-_\.]/','', $model_data['val']);
+                } else {
+                    $colVal =  preg_replace('/\s+/S', " ", $model_data['val']);
+                }
+            }
+
             if(isset($model_data['id']) && $model_data['id'] > 0) {
               $rowId = $model_data['id'];
             }
-          
+            
 
-            if($colIndex == 4) {
+
+
+
+
+            if($colIndex == 9) {
+                $sql = "UPDATE `ORDER` SET ".$columns[$colIndex]." = '".$colVal."' WHERE ORDER_ID='".$rowId."'";
+            }
+            else if($colIndex == 8 || $colIndex == 9) {
+                $driver_data = array(
+                    'PARTY_ID' => $colVal,
+                );
+                $vehicle_data = $this->getVehicleData($driver_data);
+                $vehicle_id = $vehicle_data->VEHICLE_ID;
+                $sql = "UPDATE `ORDER` SET ".$columns[$colIndex]." = '".$colVal."', VEHICLE_ID = '".$vehicle_id."' WHERE ORDER_ID='".$rowId."'";
+            }
+            else if($colIndex == 4) {
                 $extraCharge = 0;
                 $locationdata = $this->getOrderLocationInfoByLocation($rowId);
                 $load_unload_max_time = $locationdata->LOAD_UNLOAD_MAX_TIME;
@@ -786,11 +831,21 @@ Class Homemodel extends CI_Model
                     $extraTime = $colVal-($locationdata->LOAD_UNLOAD_MAX_TIME);                    
                     $extraCharge = $extraTime*($locationdata->LOAD_UNLOAD_OVERTIME_CHARGE);                    
                 }
-                $sql = "UPDATE ORDER_LOCATION SET ".$columns[$colIndex]." = '".$colVal."', STOP_TIME_CHARGE = '".$extraCharge."' WHERE ORDER_LOCATION_ID='".$rowId."'";
+                $sql = "UPDATE `ORDER_LOCATION` SET ".$columns[$colIndex]." = '".$colVal."', STOP_TIME_CHARGE = '".$extraCharge."' WHERE ORDER_LOCATION_ID='".$rowId."'";
             }
             else {
-                $sql = "UPDATE ORDER_DELIVERY_CONTACT SET ".$columns[$colIndex]." = '".$colVal."' WHERE ORDER_LOCATION_ID='".$rowId."'";
+                $sql = "UPDATE `ORDER_DELIVERY_CONTACT` SET ".$columns[$colIndex]." = '".$colVal."' WHERE ORDER_LOCATION_ID='".$rowId."'";
             }
+
+
+
+
+
+
+
+
+
+
 
             $this->db->query($sql);
             return true;

@@ -146,7 +146,7 @@
                         </div>
                         <div class="col-sm-6 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label for="breedtype" class="control-label">Driver:</label>
+                                <label for="Driver" class="control-label">Driver:</label>
                                 <select class="form-control select2" col-index='0' data-placeholder="Select Vehicle Type" name="PARTY_ID">
                                 <?php foreach ($data['partyDriverList'] as $partyDriver) { ?>
                                     <option value="<?php echo $partyDriver->PARTY_ID; ?>"> <?php echo $partyDriver->FIRST_NAME; ?> <?php echo $partyDriver->LAST_NAME; ?> </option>

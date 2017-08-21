@@ -515,9 +515,18 @@ class Home extends Main_Controller
             'driverTelecomInfo' => $this->homemodel->getPartyContactInfo($driver_data, 'TELECOM'),
             'orderInfo' => $this->homemodel->getOrderInfo($order_data),
             'orderLocationInfo' => $this->homemodel->getOrderLocationInfo($order_data),
+            'availablePartyDriverList' => $this->homemodel->getAvailableDriverList($order_data),
+            'vehicleData' => $this->homemodel->getVehicleData($driver_data),
+
+
+
+
+            
+
+
+
             'pageName' => "Orders",
         );
-
         $this->render('orderInfoEdit');
     }
 
