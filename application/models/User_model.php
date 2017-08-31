@@ -131,9 +131,9 @@ class User_model extends CI_Model {
 	 */
 	public function update_password($email, $password) {
 		$password = $this->hash_password($password);
-		$this->db->set('PASSWORD', $password);		
-		$this->db->where('EMAIL', $email);
-		return $this->db->update('PARTY');
+		$this->db->set('CURRENT_PASSWORD', $password);		
+		$this->db->where('USER_LOGIN_ID', $email);
+		return $this->db->update('USER_LOGIN');
 	}
 
 	/**
@@ -146,9 +146,29 @@ class User_model extends CI_Model {
 	 */
 	public function update_password_userid($user_id, $password) {
 		$password = $this->hash_password($password);
-		$this->db->set('PASSWORD', $password);		
+		$this->db->set('CURRENT_PASSWORD', $password);		
 		$this->db->where('PARTY_ID', $user_id);
-		return $this->db->update('PARTY');
+		return $this->db->update('USER_LOGIN');
+	}
+
+	/**
+	 * updateEreceipt function.
+	 * 
+	 * @access public
+	 * @param mixed $email	 
+	 * @param mixed $password
+	 * @return bool true on success, false on failure
+	 */
+	public function updateEreceipt($party_id, $email, $e_receipt) {		
+		$data = array(
+        'PARTY_ID' => $party_id,
+        'EMAIL' => $email,
+        'E_RECEIPT' => $e_receipt
+		);
+
+		$this->db->where('PARTY_ID', $party_id);
+		return $this->db->update('BILLING_RECEIPT', $data);
+		
 	}
 	
 	/**
@@ -161,10 +181,10 @@ class User_model extends CI_Model {
 	 */
 	public function resolve_user_login_email($email, $password) {
 		
-		$this->db->select('PASSWORD');
-		$this->db->from('PARTY');
-		$this->db->where('EMAIL', $email);
-		$hash = $this->db->get()->row('PASSWORD');
+		$this->db->select('CURRENT_PASSWORD');
+		$this->db->from('USER_LOGIN');
+		$this->db->where('USER_LOGIN_ID', $email);
+		$hash = $this->db->get()->row('CURRENT_PASSWORD');
 		
 		return $this->verify_password_hash($password, $hash);
 		
@@ -180,10 +200,10 @@ class User_model extends CI_Model {
 	 */
 	public function resolve_user_login_mobile($mobile, $password) {
 		
-		$this->db->select('PASSWORD');
-		$this->db->from('PARTY');
-		$this->db->where('MOBILE', $mobile);
-		$hash = $this->db->get()->row('PASSWORD');
+		$this->db->select('CURRENT_PASSWORD');
+		$this->db->from('USER_LOGIN');
+		$this->db->where('USER_MOBILE', $mobile);
+		$hash = $this->db->get()->row('CURRENT_PASSWORD');
 		
 		return $this->verify_password_hash($password, $hash);
 		
@@ -199,10 +219,27 @@ class User_model extends CI_Model {
 	public function get_user_id_from_email($email) {
 		
 		$this->db->select('PARTY_ID');
-		$this->db->from('PARTY');
-		$this->db->where('EMAIL', $email);
+		$this->db->from('USER_LOGIN');
+		$this->db->where('USER_LOGIN_ID', $email);
 
 		return $this->db->get()->row('PARTY_ID');
+		
+	}
+
+		/**
+	 * get_email_bill function.
+	 * 
+	 * @access public
+	 * @param mixed $username
+	 * @return int the user id
+	 */
+	public function get_email_bill($party_id) {
+		
+		$this->db->select('*');
+		$this->db->from('BILLING_RECEIPT');
+		$this->db->where('PARTY_ID', $party_id);
+
+		return $this->db->get()->row();
 		
 	}
 
@@ -216,11 +253,25 @@ class User_model extends CI_Model {
 	public function get_user_id_from_mobile($mobile) {
 		
 		$this->db->select('PARTY_ID');
-		$this->db->from('PARTY');
-		$this->db->where('MOBILE', $mobile);
+		$this->db->from('USER_LOGIN');
+		$this->db->where('USER_MOBILE', $mobile);
 
 		return $this->db->get()->row('PARTY_ID');
 		
+	}
+
+	/**
+	 * get_user_wallet function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user_wallet($user_id) {
+		$this->db->select('*');
+		$this->db->from('WALLET');
+		$this->db->where('PARTY_ID', $user_id);		
+		return $this->db->get()->row();
 	}
 	
 	/**
@@ -231,9 +282,12 @@ class User_model extends CI_Model {
 	 * @return object the user object
 	 */
 	public function get_user($user_id) {
-		
-		$this->db->from('PARTY');
-		$this->db->where('PARTY_ID', $user_id);
+
+		$this->db->select('*');
+		$this->db->from('USER_LOGIN');
+		$this->db->join('PERSON', 'PERSON.PARTY_ID = USER_LOGIN.PARTY_ID');
+		$this->db->join('PARTY', 'PARTY.PARTY_ID = USER_LOGIN.PARTY_ID');		
+		$this->db->where('USER_LOGIN.PARTY_ID', $user_id);		
 		return $this->db->get()->row();
 		
 	}
@@ -247,8 +301,8 @@ class User_model extends CI_Model {
 	 */
 	public function get_user_by_email($email) {
 		
-		$this->db->from('PARTY');
-		$this->db->where('EMAIL', $email);
+		$this->db->from('USER_LOGIN');
+		$this->db->where('USER_LOGIN_ID', $email);
 		return $this->db->get()->row();
 		
 	}
@@ -363,4 +417,153 @@ class User_model extends CI_Model {
 		
 	}
 	
+	/**
+	 * walletTopUp function.
+	 * 
+	 * @access public
+	 * @param mixed $party_id
+	 * @return row
+	 */
+	public function walletTopUp($party_id) {
+		
+		$this->db->select('*');
+		$this->db->from('WALLET');
+		$this->db->where('PARTY_ID', $party_id);
+
+		return $this->db->get()->row();
+		
+	}
+
+
+
+	/**************************Add Party_type_id************************************/
+	 // Add New Party
+    public function addPartyId($PARTY_TYPE_ID,$email)
+    {
+
+		$data1 = array(
+			'PARTY_TYPE_ID'	=> $PARTY_TYPE_ID
+		);
+		$this->db->insert('PARTY', $data1);
+		$PARTY_ID = $this->db->insert_id();
+
+        $data2 = array(
+			'PARTY_ID'	=> $PARTY_ID,
+			'USER_LOGIN_ID' => $email
+		);
+		$this->db->insert('USER_LOGIN', $data2);
+
+		$data3 = array(
+			'PARTY_ID'	=> $PARTY_ID,
+			'LAST_UPDATED_STAMP' 		=> date('Y-m-d H:i:s'),
+			'CREATED_STAMP' 		=> date('Y-m-d H:i:s')
+		);
+		$this->db->insert('PERSON', $data3);
+
+        return $PARTY_ID;
+    }
+
+    // Add Pasword     
+    public function addUserPassword($PARTY_ID,$email,$mobile,$password)
+    {
+        $PARTY_ID = $PARTY_ID;
+        $USER_LOGIN_ID = $email;
+        $CURRENT_PASSWORD = $this->hash_password($password);
+
+    	$data = array(
+			'USER_MOBILE'	=> $mobile,
+			'CURRENT_PASSWORD'	=> $CURRENT_PASSWORD,					
+		);
+		$this->db->where('PARTY_ID', $PARTY_ID);
+		$this->db->update('USER_LOGIN', $data);		
+    }
+
+    // Add Billing Email
+    public function addBillingDetails($PARTY_ID,$email)
+    {
+       	$data = array(
+			'PARTY_ID'	=> $PARTY_ID,
+			'EMAIL'	=> $email,
+			'E_RECEIPT'	=> "YES"			
+		);
+		$this->db->insert('BILLING_RECEIPT', $data);		
+    }
+
+    // Add Connect Mech Type Id
+    public function addPartyContactMechId($PARTY_ID, $CONTACT_MECH_TYPE_ID)
+    {
+        $sql = "INSERT INTO `CONTACT_MECH`(`CONTACT_MECH_TYPE_ID`) VALUES('$CONTACT_MECH_TYPE_ID')";
+        $this->db->query($sql);
+        $CONTACT_MECH_ID = $this->db->insert_id();
+
+        $sql2 = "INSERT INTO `PARTY_CONTACT_MECH`(`PARTY_ID`,`CONTACT_MECH_ID`) VALUES('$PARTY_ID','$CONTACT_MECH_ID')";
+        $this->db->query($sql2);
+
+        if ($CONTACT_MECH_TYPE_ID == 'TELECOM_NUMBER') {
+            $sql3 = "INSERT INTO `TELECOM_NUMBER`(`CONTACT_MECH_ID`) VALUES('$CONTACT_MECH_ID')";
+            $this->db->query($sql3);
+        }
+
+        if ($CONTACT_MECH_TYPE_ID == 'POSTAL_ADDRESS') {
+            $sql3 = "INSERT INTO `POSTAL_ADDRESS`(`CONTACT_MECH_ID`) VALUES('$CONTACT_MECH_ID')";
+            $this->db->query($sql3);
+        }
+        return $CONTACT_MECH_ID;
+    }
+
+
+    /*************************Update details************************/
+
+
+     // Update User Basic Info
+    public function updateUserBasicInfo($model_data)
+    {
+
+    	$data = array(
+        'FIRST_NAME' => $model_data['FIRST_NAME'],
+        'LAST_NAME' => $model_data['LAST_NAME'],
+        'COMPANY_NAME' => $model_data['COMPANY_NAME'],
+        'INDUSTRY' => $model_data['INDUSTRY'],
+        'STAFF' => $model_data['STAFF'],
+        'VEHICLE_TYPE' => $model_data['VEHICLE_TYPE'],
+        'TRAINING_SESSION' => $model_data['TRAINING_SESSION'],		
+        'LAST_UPDATED_STAMP' => date('Y-m-d H:i:s')
+		);
+
+		$this->db->where('PARTY_ID', $model_data['PARTY_ID']);
+		$this->db->update('PERSON', $data);
+      
+    }
+
+
+    // Update User Email Info
+    public function updateUserEmailInfo($EMAIL_MECH_ID, $email)
+    {
+        $EMAIL_MECH_ID = $EMAIL_MECH_ID;
+        $INFO_STRING = $email;
+
+        $sql = "UPDATE `CONTACT_MECH` SET `INFO_STRING`= '$INFO_STRING' WHERE CONTACT_MECH_ID = '$EMAIL_MECH_ID'";
+        $this->db->query($sql);
+    }
+
+      // Update User Contact Info
+    public function updateUserContactInfo($TELECOM_MECH_ID, $mobile)
+    {
+        $TELECOM_MECH_ID = $TELECOM_MECH_ID;        
+        $MOBILE_NUMBER = $mobile;        
+
+        $sql = "UPDATE `TELECOM_NUMBER` SET `MOBILE_NUMBER` = '$MOBILE_NUMBER' WHERE CONTACT_MECH_ID = '$TELECOM_MECH_ID'";
+        $this->db->query($sql);
+    }
+
+    // Update User Address Info
+    public function updateUserAddressInfo($POSTAL_MECH_ID)
+    {
+        $POSTAL_MECH_ID = $POSTAL_MECH_ID;
+
+        $sql = "UPDATE `POSTAL_ADDRESS` SET `TO_NAME` = '$TO_NAME', `ADDRESS1` = '$ADDRESS1', `ADDRESS2` = '$ADDRESS2', `CITY` = '$CITY', `STATE_PROVINCE_GEO_ID` = '$STATE', `POSTAL_CODE` = '$POSTAL_CODE' WHERE CONTACT_MECH_ID = '$POSTAL_MECH_ID'";
+        $this->db->query($sql);
+    }
+
+
 }

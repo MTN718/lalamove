@@ -467,10 +467,3 @@ padding-left: 44px !important;
 .alg-r {
   text-align: right;
 }
-#city-picker1 {
-  /*background: rgba(0, 0, 0, 0) url("../images/map/header-sprite.png") no-repeat scroll 10px -34px;*/
-  display: inline-block;
-  font-size: 13px;
-  height: 21px;
-  padding: 17px 15px 30px 40px;
-}

@@ -1,4 +1,6 @@
 <!-- left one panel -->
+<input type="hidden" class="country_code" name="country_code" value="<?php if(isset($country) AND !empty($country)){ echo $country; }else{ echo "th"; } ?>">
+
 <nav class="bdr-right">
   <ul>
     <li class="sidemenu-list"> <a href="#" id="place-order-btn" class="sidemenu-btn cursor-ptr dft-gry active" href="map.html"> <span id="place-order-icon" class="place-order-icon"></span> <br>
@@ -28,15 +30,24 @@
     <div class="normal-request-ctn bdr-btm">
       <div class="jcarousel-control-ctn" style="height: 80px;"> <a class="jcarousel-prev" href="#">‹</a> </div>
       <div class="jcarousel vehicle-type-select">
-        <ul>
-          <li> <a id="motorcycle-btn" class="vehicle-type-select-btn lgt-gry active bike" href="javascript:void(0);" data-type="LOAD_PARCEL"> <span class="vehicle-type-select-icon"> <img class="off" src="<?php echo base_url('assets/images/map/moto_v2_off.png'); ?>" height="55"> <img class="on" src="<?php echo base_url('assets/images/map/moto_v2.png'); ?>" height="55"> </span> <br>
-            Motorcycle </a> </li>
-          <li> <a id="van-btn" class="vehicle-type-select-btn lgt-gry van" href="javascript:void(0);"  data-type="VAN"> <span class="vehicle-type-select-icon"> <img class="off" src="<?php echo base_url('assets/images/map/van_v2_off.png'); ?>" height="55"> <img class="on" src="<?php echo base_url('assets/images/map/van_v2.png'); ?>" height="55"> </span> <br>
-            Van </a> </li>
-          <li> <a id="5.5-ton-btn" class="vehicle-type-select-btn lgt-gry truck" href="javascript:void(0);" data-type="TON55"> <span class="vehicle-type-select-icon"> <img class="off" src="<?php echo base_url('assets/images/map/truck_v2_off.png'); ?>" height="55"> <img class="on" src="<?php echo base_url('assets/images/map/truck_v2.png'); ?>" height="55"> </span> <br>
-            5.5 Ton </a> </li>
-            <input type="hidden" name="vehicle_type" id="vehicle-type" value="1">
-        </ul>
+        <ul class="tabs">
+        <?php $vehicle_type = $this->order_model->getVehicleType(); 
+        foreach ($vehicle_type as $key => $value) {
+          $image1 = $value['IMAGE1'];
+$image2 = $value['IMAGE2'];
+
+          ?>
+            <li> 
+              <a data-basefare="<?php echo $value['BASE_FARE'] ?>" data-rentkm="<?php echo $value['RENT_PER_KM']; ?>" id="<?php echo strtolower($value['VEHICLE_TYPE_NAME']); ?>-btn" class="vehicle-type-select-btn lgt-gry <?php echo $value['VEHICLE_TYPE_CLASS']; ?>" href="javascript:void(0);" data-vehicletype="<?php echo $value['VEHICLE_TYPE_ID']; ?>"> 
+                <span class="vehicle-type-select-icon">
+                 <img class="off" src="<?php echo base_url('assets/images/map/');echo $image1; ?>" height="55">
+                 <img class="on" src='<?php  echo base_url('assets/images/map/');echo $image2; ?>' height="55">
+                </span> <br>
+            <?php echo ucfirst($value['VEHICLE_TYPE_NAME']); ?> </a> </li>
+           
+        <?php }
+        ?>
+      </ul>
       </div>
       <div class="jcarousel-control-ctn" style="height: 80px;"> <a class="jcarousel-next" href="#">›</a> </div>
     </div>
@@ -51,10 +62,7 @@
       <?php }
       ?>
       <input type="hidden" name="item_type" id="item_type_val" value="1">
-       <!--  <li> <a id="document-vechicle-type-detail-select" class="vehicle-type-detail-select-link lgt-gry active" data-type="DOCUMENT" href="javascript:void(0);"> Document </a> </li>
-        <li> <a id="parcel-vechicle-type-detail-select" class="vehicle-type-detail-select-link lgt-gry " data-type="PARCEL" href="javascript:void(0);"> Parcel </a> </li>
-        <li> <a id="food-vechicle-type-detail-select" class="vehicle-type-detail-select-link lgt-gry " data-type="FOOD" href="javascript:void(0);"> Food </a> </li> -->
-      </ul>
+    </ul>
     </div>
     <div class="place-order-inputs">
       <div class="place-order-input-wrapper alg-r mg-btm-10"> <a id="more-info-link" class="oge-link-btn" href="javascript:void(0);"> More Info </a> </div>
@@ -64,30 +72,10 @@
           <a class="from-location-icon from-to-location-icon" href="javascript:void(0);" draggable="true"> <span class="location-drag-icon"></span> <span class="location-drag-tips">Drag To Reorder</span> </a> <span class="location-input-wrapper bdr-btm">
             <!-- <input id="location-1" class="location-input ellipsis" tabindex="1" data-placeid="" data-lat="" data-lng="" data-address="" placeholder="Select Origin" type="text"> -->
             <input id="location-1" class="controls location-input ellipsis origin_input" type="text" placeholder="Select Origin" value="">
+            <span class="input-right-text hide add_delivery_info add_delivery_info_start" id="input-right-text-origin" data-panel="start">+ Add Delivery Info</span>
             <span class="text-danger origin-err"></span>
             <span class="input-right-icon recipient-info-icon"></span> </span> <span id="location-1-predict" class="predict-ctn" style="display: none;"></span> </div>
-          <div id="location-1-recipient" class="location-recipient-wrapper bdr-all">
-            <div class="overlay-input-wrapper">
-              <div class="overlay-title-ctn"> <span class="dft-gry flt-l"> Recipient Info </span> </div>
-              <div class="location-recipient-input-wrapper bdr-all wht-bg">
-                <input id="location-1-recipient-name" tabindex="1" class="order-recipient-name-input recipient-overlay-input" placeholder="Recipient Name" type="text">
-              </div>
-              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">
-                <input id="location-1-recipient-number" tabindex="1" class="order-recipient-phone-input recipient-overlay-input" placeholder="Recipient Phone Number" type="text">
-              </div>
-              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">
-                <input id="location-1-recipient-block" tabindex="1" class="order-recipient-block-input recipient-overlay-input recipient-overlay-address-input" placeholder="Block" type="text">
-              </div>
-              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">
-                <div class="location-recipient-input-wrapper-1-2 bdr-right">
-                  <input id="location-1-recipient-floor" tabindex="1" class="order-recipient-floor-input recipient-overlay-input recipient-overlay-address-input" placeholder="Floor" type="text">
-                </div>
-                <div class="location-recipient-input-wrapper-1-2">
-                  <input id="location-1-recipient-room" tabindex="1" class="order-recipient-room-input recipient-overlay-input recipient-overlay-address-input" placeholder="Room" type="text">
-                </div>
-              </div>
-            </div>
-          </div>
+         
         </li>
           <div class="input_fields_wrap">
 
@@ -97,29 +85,11 @@
           <div class="place-order-input-wrapper wht-bg"> <a class="from-to-location-icon to-location-icon" href="javascript:void(0);" draggable="true"> <span class="location-drag-icon"></span> <span class="location-drag-tips">Drag To Reorder</span> </a> <span class="location-input-wrapper">
             <!-- <input id="location-2" class="location-input ellipsis" tabindex="2" data-placeid="" data-lat="" data-lng="" data-address="" placeholder="Select Destination" type="text"> -->
             <input id="location-2" class="controls location-input ellipsis destination_input" tabindex="2" type="text" placeholder="Enter a destination location" value="">
+            <span class="input-right-text hide add_delivery_info add_delivery_info_end" id="input-right-text-destination" data-panel="end">+ Add Delivery Info</span>
             <span class="text-danger destination-err"></span>
             <span class="input-right-icon recipient-info-icon"></span> </span> <span id="location-2-predict" class="predict-ctn" style="display: none;"></span> </div>
           <div id="location-2-recipient" class="location-recipient-wrapper bdr-all">
-            <div class="overlay-input-wrapper">
-              <div class="overlay-title-ctn"> <span class="dft-gry flt-l"> Recipient Info </span> </div>
-              <div class="location-recipient-input-wrapper bdr-all wht-bg">
-                <input id="location-2-recipient-name" tabindex="2" class="order-recipient-name-input recipient-overlay-input" placeholder="Recipient Name" type="text">
-              </div>
-              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">
-                <input id="location-2-recipient-number" tabindex="2" class="order-recipient-phone-input recipient-overlay-input" placeholder="Recipient Phone Number" type="text">
-              </div>
-              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">
-                <input id="location-2-recipient-block" tabindex="2" class="order-recipient-block-input recipient-overlay-input recipient-overlay-address-input" placeholder="Block" type="text">
-              </div>
-              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">
-                <div class="location-recipient-input-wrapper-1-2 bdr-right">
-                  <input id="location-2-recipient-floor" tabindex="2" class="order-recipient-floor-input recipient-overlay-input recipient-overlay-address-input" placeholder="Floor" type="text">
-                </div>
-                <div class="location-recipient-input-wrapper-1-2">
-                  <input id="location-2-recipient-room" tabindex="2" class="order-recipient-room-input recipient-overlay-input recipient-overlay-address-input" placeholder="Room" type="text">
-                </div>
-              </div>
-            </div>
+         
           </div>
         </li>
       </ul>
@@ -131,7 +101,7 @@
       </div><br>
       <div id="importMultipleAddress" class="place-order-input-wrapper alg-r">
         <!-- <div class="place-order-input-wrapper-1-2 flt-l mg-top-2"> <a href="javascript:void(0);" id="optimizeRouteCheckBox"></a> <span class="optimizeRouteBtn">Optimize Route <a id="optimize-route-annoucement" class="oge" href="javascript:void(0);"><img class="va-m" src="http://pro.lalamove.com/assets/img/side-menu/more.png" width="17" height="17"></a> </span> </div> -->
-        <div class="place-order-input-wrapper-1-2 flt-r"> <a id="importAddresses" href="javascript:void(0);"> Import Stops From List <span class="arrow"></span> </a> </div>
+        <div class="place-order-input-wrapper-1-2 flt-r"> <a id="importAddresses" class="import_address"> Import <span class="arrow"></span> </a> </div>
         <div class="place-order-input-wrapper hide" id="multiple-address-area">
           <textarea id="multiple-address-input-textarea" class="comment-textarea-input bdr-all hide" placeholder="Copy and paste your route addresses. One address per line (20 addresses max.) "></textarea>
           <div id="multiple-address-input-div" class="bdr-all hide" data-ph="Copy and paste your route addresses. One address per line (20 addresses max.) " contenteditable="true"></div>
@@ -146,16 +116,20 @@
       <br>
       <br>
       <br>
-      <div class="place-order-input-wrapper"> <a id="additional-service-btn" class="additional-service-input bdr-all alg-c lgt-gry" > Additional Services <span id="additional-service-edit" class="oge-link-btn flt-r hide"> Edit </span> </a> </div>
+      <!-- <div class="place-order-input-wrapper"> <a id="additional-service-btn" class="additional-service-input bdr-all alg-c lgt-gry" > Additional Services <span id="additional-service-edit" class="oge-link-btn flt-r hide"> Edit </span> </a> </div> -->
+      <div class="place-order-input-wrapper opa_add opacity_additional"><a class="pointer_event additional-service-input bdr-all alg-c lgt-gry"><span class="add_ser">Additional Services</span></a> 
+       <!-- <button type="button" class="btn btn-info btn-lg" >Open Small Modal</button> -->
+      </div>
       
+   
       <!-- mg 15-->
       <div class="place-order-input-wrapper mg-btm-15"> </div>
       <div class="place-order-input-wrapper mg-btm-15">
         <textarea id="comment-input" class="comment-textarea-input bdr-all" name="description" placeholder="Enter a remark or comment for this order"></textarea>
       </div>
       <div class="place-order-input-wrapper mg-btm-15">
-        <input id="promo-input" class="promo-code-input bdr-all" placeholder="Promo Code" value="" type="text">
-        <div class="flt-r"> <span class="total-text dft-gry">Total</span> <span id="price-total" class="total-number dft-gry bld total_rate" data-price="0">$0</span> </div>
+        <!-- <input id="promo-input" class="promo-code-input bdr-all" placeholder="Promo Code" value="" type="text"> -->
+        <!-- <div class="flt-r"> <span class="total-text dft-gry">Total</span> <span id="price-total" class="total-number dft-gry bld total_rate" data-price="0">$0</span> </div> -->
       </div>
     </div>
     <input type="hidden" name="waypoints[]" id="waylatlng" value="">
@@ -168,6 +142,10 @@
 </div>
 
 <!-- Hidden Session value start -->
+<?php if(!empty($this->session->user_id)) {
+  $wallet = $this->user_model->walletTopUp($this->session->user_id); ?>
+<input type="hidden" class="remaining_wallet_amt" id="remaining_wallet_amt" name="remaining_wallet_amt" value="<?php echo $wallet->AMOUNT; ?>">
+<?php } ?>
 <input type="hidden" class="party_id" id="party_id" name="party_id" value="<?php echo $this->session->user_id; ?>">
 <input type="hidden" class="order_by" id="order_by" name="order_by" value=" <?php echo $this->session->user_type; ?>">
 <!-- Hidden Session value end -->
@@ -212,18 +190,125 @@
         </span> 
     </div>
   </div>
+    <div class="overlay-title-ctn order-overlay-top-title noto-sans dft-gry mg-btm-15"> PAYMENT METHOD </div>
+    <div class="payment-btn-ctn bdr-all ">
+      <span style="padding-left: 30%;" class="wallet-item-1-2 alg-c">
+        <a href="#"  type="pre-payment" class="pre-payment-btn payment-btn dft-gry wallet-check">
+          <i style="font-size: 24px;" class="icon-wallet_mgmt"></i>
+           <div>Wallet</div>
+        </a> 
+      </span> 
+      <span style="padding-right: 30%;" class="wallet-item-1-2 alg-c ">
+        <a href="javscript:void(0);" type="cash" class="cash-btn payment-btn dft-gry active">
+          <i style="font-size: 24px;" class="icon-cash"></i> <div>Cash</div>
+        </a> </span>
+    </div>
 
     <div class="place-order-inputs">
-      <div class="place-order-input-wrapper alg-r mg-btm-10"> <a id="more-info-link" class="oge-link-btn" href="javascript:void(0);"> More Info </a> </div>
+      
      
     
       
       <!-- mg 15-->
       
       <div class="place-order-input-wrapper mg-btm-15">
-        <input id="promo-input" class="promo-code-input bdr-all" placeholder="Promo Code" value="" type="text">
-        <div class="flt-r"> <span class="total-text dft-gry">Total</span> <span id="price-total" class="total-number dft-gry bld total_rate" data-price="0">$0</span> </div>
+        <input id="promo-input" class="promo-code-input bdr-all" data-toggle="modal" data-target="#promoCode" placeholder="Promo Code" value="" type="text">
+        
+         <!--  <div class="flt-r discount_div hide"> 
+            <span class="total-text dft-gry">Total</span> 
+            <span id="price-total" class="total-number dft-gry bld orignal_rate" data-price="0">$0</span><br>-
+            <span id="price-total" class="total-number dft-gry bld discount" data-price="0">$0</span>
+           </div>   -->
+        
+      <!--   <div class="flt-r"> <span class="total-text dft-gry">Total</span> 
+                <span id="price-total" class="total-number dft-gry bld discount_div total_rate final_rate_before_discount" data-price="0">$0</span> 
+                <div class="disc_d hide"><span class="total-text dft-gry">After discount</span> 
+                <span id="price-total" class="total-number dft-gry bld total_rate final_rate_after_discount" data-price="0">$0</span> 
+                </div>
+        </div> -->
+        <div class="overlay-title-ctn order-overlay-top-title noto-sans dft-gry mg-btm-15"> PRICE BREAKDOWN </div>
+
+        <div class="wallet-detail-ctn"> 
+          <span class="wallet-item-1-2 alg-l"> Fee </span> 
+            <span class="wallet-item-1-2 alg-r total-number dft-gry bld discount_div total_rate final_rate_before_discount" id="price-total">$0</span>  
+              <div id="not-include">does NOT including extra fee (e.g. toll or parking fee)</div>   
+            <!-- <div class="wallet-detail-as hide">
+                <span class="wallet-item-1-2 alg-l"> Additional Services </span>
+                <span class="wallet-item-1-2 alg-r" id="payment-additional-service">0</span> 
+            </div>   -->
+            <div class="disc_d hide wallet-detail-dis">
+                <span class="wallet-item-1-2 alg-l dft-gry">After discount</span> 
+                <span id="price-total" class="wallet-item-1-2 alg-r total-number dft-gry bld total_rate final_rate_after_discount" data-price="0">$0</span> 
+            </div>
+            <!-- <div class="wallet-detail-dis"> 
+                <span class="wallet-item-1-2 alg-l"> Discount </span> 
+                <span class="wallet-item-1-2 alg-r" id="payment-discount">-103</span> 
+            </div> -->
+            <!-- <div class="wallet-detail-sur">
+             <span class="wallet-item-1-2 alg-l"> Surcharge </span>
+              <span class="wallet-item-1-2 alg-r" id="payment-surcharge">30</span>
+            </div>  -->
+            <!-- <div class="wallet-detail-promo hide">
+             <span class="wallet-item-1-2 alg-l"> Promo Code </span>
+              <span class="payment-promo-code wallet-item-1-2 alg-r">0</span>
+            </div>   -->
+            <!-- <div class="wallet-detail-rewards" style="display: none;"> 
+              <span class="wallet-item-1-2 alg-l"> Rewards </span> 
+                <span class="payment-rewards wallet-item-1-2 alg-r">$ 0</span> 
+            </div> -->
+        </div>
+
       </div>
+
+      <div class="modal fade" id="promoCode" role="dialog">
+          <div class="modal-dialog">
+          
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">PROMO CODE</h4>
+              </div>        
+              <input id="promo-code-input" class="form-input-2" name="promocode" placeholder="Your promocode" type="text"> 
+              <div id="not-include" style="color: black;">Note : Once applied can not be revert back</div>
+              <div class="fnt-15 form-input-ctn dft-gry alg-c mg-btm-15 modal-footer"> 
+                <a id="closePromo" class="lightbox-btn-pwd dismisss-btn" data-dismiss="modal" href="javascript:void(0);" style="text-decoration: none;"> Dismiss </a> 
+                <a id="submitPromo" class="checkPromo lightbox-btn-pwd" href="javascript:void(0);" style="background-color: #f16622;text-decoration: none; color: white;" > Apply </a> 
+              </div>     
+              
+              <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Dismiss</button>
+                <button type="submit" class="btn btn-default" onclick="checkPromo()">Submit</button>
+              </div> -->
+            </div>
+            
+          </div>
+      </div>
+
+      <div class="modal fade" id="walletAmt" role="dialog">
+          <div class="modal-dialog">
+          
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Wallet</h4>
+              </div>        <div class="form-input-ctn"><br>
+              <span class="form-input-2">You have 
+              <span id="wallet-input"></span> in your wallet account. You want to use it? </span> </div>
+              <div class="fnt-15 form-input-ctn dft-gry alg-c mg-btm-15 modal-footer"> 
+                <a id="" class="lightbox-btn-pwd dismisss-btn" data-dismiss="modal" style="text-decoration: none;" href="javascript:void(0);"> Dismiss </a> 
+                <a id="" class="lightbox-btn-pwd useWallet" href="javascript:void(0);" style="background-color: #f16622;text-decoration: none; color: white;"> Submit </a> 
+              </div>     
+              <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Dismiss</button>
+                <button type="submit" class="btn btn-default" onclick="checkPromo()">Submit</button>
+              </div> -->
+            </div>
+            
+          </div>
+      </div>
+
     </div>
     <input type="hidden" name="waypoints[]" id="waylatlng" value="">
     <div class="place-order-button-ctn"> <a id="advanced-order-btn" class="btn-1-2" href="javascript:void(0);" onclick="backOrder()"> Back </a> <a id="immediate-order-btn" class="btn-1-2" href="javascript:void(0);" onclick="placeOrder()"> Place Order </a> </div>
@@ -249,59 +334,91 @@
       </div>
     </div>
   </div>
-  
-  <!-- click box 2 -->
-  <div id="toll-tunnels-overlay" class="overlay-menu">
-    <div class="back-btn-ctn mg-btm-15"> <a id="ongoing-order-back-btn" class="overlay-back-btn dft-gry flt-r" href="javascript:void(0);"> Hide </a> </div>
-    <div id="tunnel-item-ctn">
-      <div class="tunnel-item bdr-btm" data-type="tunnel_any" data-itemid="1" data-name="Any Tunnel"> <span class="tunnel-item-desc cursor-ptr"> <b>Any Tunnel</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_any" data-itemid="1" data-name="Any Tunnel"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_hongham" data-itemid="2" data-name="Cross Harbour"> <span class="tunnel-item-desc cursor-ptr"> <b>Cross Harbour</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_hongham" data-itemid="2" data-name="Cross Harbour"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_eastern" data-itemid="3" data-name="Eastern"> <span class="tunnel-item-desc cursor-ptr"> <b>Eastern</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_eastern" data-itemid="3" data-name="Eastern"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_western" data-itemid="4" data-name="Western"> <span class="tunnel-item-desc cursor-ptr"> <b>Western</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_western" data-itemid="4" data-name="Western"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_tates_cairn" data-itemid="5" data-name="Tate's Cairn"> <span class="tunnel-item-desc cursor-ptr"> <b>Tate's Cairn</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_tates_cairn" data-itemid="5" data-name="Tate's Cairn"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_lion_rock" data-itemid="6" data-name="Lion Rock"> <span class="tunnel-item-desc cursor-ptr"> <b>Lion Rock</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_lion_rock" data-itemid="6" data-name="Lion Rock"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_shing_mun" data-itemid="7" data-name="Shing Mun"> <span class="tunnel-item-desc cursor-ptr"> <b>Shing Mun</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_shing_mun" data-itemid="7" data-name="Shing Mun"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_eagles_nest" data-itemid="8" data-name="Eagles's Nest"> <span class="tunnel-item-desc cursor-ptr"> <b>Eagles's Nest</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_eagles_nest" data-itemid="8" data-name="Eagles's Nest"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_tai_lam" data-itemid="9" data-name="Tai Lam"> <span class="tunnel-item-desc cursor-ptr"> <b>Tai Lam</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_tai_lam" data-itemid="9" data-name="Tai Lam"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_tseung_kuan_o" data-itemid="10" data-name="Tseung Kwan O"> <span class="tunnel-item-desc cursor-ptr"> <b>Tseung Kwan O</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_tseung_kuan_o" data-itemid="10" data-name="Tseung Kwan O"></a> </div>
-      <div class="tunnel-item bdr-btm" data-type="tunnel_aberdeen" data-itemid="11" data-name="Aberdeen"> <span class="tunnel-item-desc cursor-ptr"> <b>Aberdeen</b> </span> <a class="tunnel-checkbox" href="javascript:void(0);" data-type="tunnel_aberdeen" data-itemid="11" data-name="Aberdeen"></a> </div>
+ 
+
+ <div class="overlay-menu" id="importAddress">
+    <div class="back-btn-ctn mg-btm-15">
+        <span class="asd-title ads-text">Import Address</span>
+        <button type="button" class="close close-importAddresses" aria-label="Close">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>        
     </div>
-  </div>
-  
-  <!-- payment order box -->
-  <div id="payment-order-overlay" class="overlay-menu" data-showwallet="1">
-    <div class="back-btn-ctn mg-btm-15"> <a id="payment-order-back-btn" class="overlay-back-btn dft-gry flt-r" href="javascript:void(0);"> Hide </a> </div>
-    <div class="overlay-title-ctn dft-gry"> Payment - <span class="total-desc-hk">Does not include extra fee e.g. toll or parking fee</span> </div>
-    <div id="top-up-your-wallet-btn-ctn" class="top-up-your-wallet-ctn-on ellipsis"> <a id="top-up-your-wallet-btn" class="dft-gry bdr-all" href="javascript:void(0);"> <span class="arrow-right"></span>Add Value To Account <span id="wallet-balance-ctn" class="ellipsis">(Balance: <span id="wallet-balance">$0</span>)</span> </a> </div>
-    <div class="wallet-detail-ctn bdr-btm"> <span class="wallet-item-1-2 alg-l"> Basic Fare </span> <span id="payment-basic-fee" class="wallet-item-1-2 alg-r">$ 0</span> <span class="wallet-item-1-2 alg-l"> Additional Services </span> <span id="payment-additional-service" class="wallet-item-1-2 alg-r">$ 0</span> <span class="wallet-item-1-2 alg-l"> Discount </span> <span id="payment-discount" class="wallet-item-1-2 alg-r">$ 0</span> <span class="wallet-item-1-2 alg-l"> Surcharge </span> <span id="payment-surcharge" class="wallet-item-1-2 alg-r">$ 0</span> <span id="payment-free-credit-txt" class="wallet-item-1-2 alg-l oge"> Rewards </span> <span id="payment-free-credit" class="wallet-item-1-2 alg-r oge">-$ 0</span> <span class="wallet-item-1-2 alg-l bld"> Total </span> <span id="payment-total" class="wallet-item-1-2 alg-r bld">$ 0</span> </div>
-    <div class="overlay-title-ctn dft-gry mg-btm-15"> Pay By </div>
-    <div class="payment-btn-ctn bdr-all "> <span class="wallet-item-1-2 alg-c bdr-right"> <a id="cash-btn" class="payment-btn dft-gry active" href="javscript:void(0);"> Cash </a> </span> <span class="wallet-item-1-2 alg-c"> <a id="pre-payment-btn" class="payment-btn dft-gry" href="javscript:void(0);"> My Wallet </a> </span> </div>
-    <div id="prepayment-overlay-warning" class="overlay-btn-ctn mg-btm-15 alg-c oge fnt-13"> <span class="warning-logo"></span> <br>
-      Not enough prepayment credit on your account, please pay by cash or top-up your account </div>
-    <div id="free-credit-overlay-warning" class="overlay-btn-ctn mg-btm-15 alg-c oge fnt-13"> <span class="warning-logo"></span> <br>
-      You have enough free credits to cover the cost of this ride </div>
-    <div class="overlay-btn-ctn"> <a id="payment-overlay-confirm-btn" class="overlay-submit-btn" href="javascript:void(0);" data-ordertype="" data-prepaymentpossible="" data-paymenttype=""> Confirm </a> </div>
-  </div>
-  
-  <!-- add priority fee red left box on map -->
-  <div id="priority-fee-sticker" style="display:none;"> Add Priority Fee </div>
-  
-  <!-- add priority fee -->
-  <div id="priority-fee-ctn" style="display:block">
-    <!-- <div class="top oge"> <a id="add-prority-fee-btn" class="oge flt-r" href="javascript:void(0);"> Add Priority Fee <span id="add-prority-fee-arrow" class="right-arrow flt-r" href="javascript:void(0);"></span> </a> </div> -->
-    <div class="btm">
-      <div class="priority-fee-desc"> Adding tips to an assigning order will increase your chances to get matched with a driver. </div>
-      <div class="priority-fee-title lgt-gry mg-top-10"> Select An Order </div>
-      <div id="priority-fee-list-selected" class="mg-top-10"> <a id="priority-fee-list-selected-btn" class="oge" href="javascript:void(0);" data-orderno="" data-orderid="" data-cost=""> Order #<span id="priority-fee-orderno"> ...</span> <span id="priority-fee-list-selected-arrow" class="right-arrow flt-r"></span> </a> </div>
-      <div id="priority-fee-list"></div>
-      <div class="priority-fee-title lgt-gry mg-top-10"> Select An Amount </div>
-      <div class="priority-fee-increment-ctn mg-top-10"> <span class="priority-fee-decrease-ctn"> <a id="priority-fee-decrease" class="priority-fee-increase-decrease-btn" href="javascript:void(0);"></a> </span> <span id="priority-fee-total-ctn"> $<span id="priority-fee-total" data-total="">5</span> </span> <span class="priority-fee-increase-ctn"> <a id="priority-fee-increase" class="priority-fee-increase-decrease-btn" href="javascript:void(0);"></a> </span> </div>
-      <div class="priority-fee-title lgt-gry mg-top-10"> Total Amount </div>
-      <div id="priority-fee-display-ctn" class="mg-top-10"> </div>
-      <input id="priority-fee-confirm" class="mg-top-10 alg-c cursor-ptr" value="Confirm" type="submit">
-    </div>
-  </div>
+    <div id="additional-service-item-ctn">
+        <br>
+            <textarea name="cities" id="cities" placeholder="Please copy and paste your route addresses. One address per line" class="comment-textarea-input bdr-top bdr-btm"></textarea>
+            
+            <div class="alg-c" id="add-address-btn-ctn"> <a href="javascript:void(0);" class="submit-txtarea" id="add-address-btn"> Create Route </a> </div>
+        <div class="additional-service-item-tips-text bdr-btm">  </div>
 </div>
+</div> 
+
+<div class="overlay-menu" id="additionalServices">
+    <div class="back-btn-ctn mg-btm-15">
+        <span class="asd-title ads-text">Additional Services</span>
+        <button type="button" class="close close-additionalService" aria-label="Close">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>        
+    </div>
+    <div id="additional-service-item-ctn">
+        <br>
+        <?php $additional_Services = $this->order_model->getAdditionalServices(); 
+        foreach ($additional_Services as $key => $value) { ?>
+        <div class="additional-service-item bdr-btm show">            
+                <span class="additional-service-item-checkbx cursor-ptr"> 
+                <input class="add-cls"  type="checkbox" name="additionalServices[]" id="<?php echo $value['SERVICES_ID']; ?>" value="<?php echo $value['SERVICES_TITLE'].'_'.$value['PRICE'].'_'.$value['SERVICES_ID']; ?>">
+                  <label for="<?php echo $value['SERVICES_ID']; ?>"><?php echo $value['SERVICES_TITLE']; ?>
+                  </label> 
+                    <label for="<?php echo $value['SERVICES_ID']; ?>" class="asit-price" style="float: right;">+$
+                      <label class="price_addservic" data-servicePrice="<?php echo $value['PRICE']; ?>" ><?php echo $value['PRICE']; ?></label>
+                    </label>                    
+                </span> 
+                <span class="additional-service-tips-ctn">  </span> 
+        </div>          
+        
+        <?php } ?>
+        <div id="add-address-btn-ctn" class="alg-c"> <a onclick="saveServices()" id="add-address-btn" href="javascript:void(0);"> Submit </a> </div>
+        <div class="additional-service-item-tips-text bdr-btm">  </div>
+</div>
+</div>
+
+<div class="delivery_info_div">
+
+</div>
+
+<!-- <div class="overlay-menu" id="addDeliveryInfoOrigin">
+  <div class="overlay-title-ctn">
+    <div class="back-btn-ctn mg-btm-15">
+        <span class="asd-title ads-text">DELIVERY INFO</span>
+        <button type="button" class="close close-deliverOrigin" aria-label="Close">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>        
+    </div>
+    <div class="location-recipient-input-wrapper wht-bg"> 
+      <i id="records-icon" class="icon-profile fnt-16" style="color: #58595B; padding-left: 10px; padding-right: 10px; position: absolute; top: 10px; z-index: 10; left: 0px;"></i> 
+        <input id="location-1-recipient-name" class="order-recipient-name-input originName recipient-overlay-input" placeholder="Name" type="text">
+    </div>
+    <div class="location-recipient-input-wrapper wht-bg">
+     
+       <input id="location-1-recipient-number" class="order-recipient-phone-input originPhone recipient-overlay-input" placeholder="Phone Number" type="text"> 
+    </div>
+    <div class="location-recipient-input-wrapper wht-bg">
+      <div class="location-recipient-subtitle">Building / Block</div> 
+        <input id="location-1-recipient-block" class="order-recipient-block-input originBldng recipient-overlay-input recipient-overlay-address-input" placeholder="Enter here.." type="text"> 
+    </div>
+    <div class="location-recipient-input-wrapper wht-bg" style="margin-bottom: 50px;">  
+      <div class="location-recipient-input-wrapper-1-2"> 
+        <div class="location-recipient-subtitle">Floor</div> 
+          <input id="location-1-recipient-floor" class="order-recipient-floor-input originFloor recipient-overlay-input recipient-overlay-address-input" placeholder="Enter here.." type="text"> 
+      </div>  
+      <div class="location-recipient-input-wrapper-1-2">
+       <div class="location-recipient-subtitle">Room</div>
+        <input id="location-1-recipient-room" class="order-recipient-room-input originRoom recipient-overlay-input recipient-overlay-address-input" placeholder="Enter here.." type="text">
+      </div> 
+    </div>
+  </div>
+</div> -->
+ 
+
 
 <!-- light box my driver -->
 <div id="model-id" class="modal fade ogBox" tabindex="-1" role="dialog">

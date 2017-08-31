@@ -325,7 +325,7 @@ header {
     float: left;
     padding: 0 115px;
     width: calc(100% - 230px);
-    width:100%;
+	width:100%;
 }
 .logo-ctn {
     display: inline-block;
@@ -430,41 +430,41 @@ header {
 }
 #user-signin:hover, #show-user-wallet:hover, #user-signout:hover {
    background-color: #fff;
-    color:#ee6c35;
+	color:#ee6c35;
 }
 #pwd-thank, #enter-pwd, #reenter-pwd, #forgot-pwd, #user-thank, #user-signin, #user-register, #sms-verification {
     background: rgba(0, 0, 0, 0) url("../images/map/signin-icon.png") no-repeat scroll 12px 12px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #show-user-wallet {
     background: rgba(0, 0, 0, 0) url("../images/map/wallet-icon.png") no-repeat scroll 13px 10px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #user-signout {
     background: rgba(0, 0, 0, 0) url("../images/map/signout-icon.png") no-repeat scroll 12px 12px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #profile-settings {
     background: rgba(0, 0, 0, 0) url("../images/map/setting-icon.png") no-repeat scroll 12px 12px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #about-us {
     background: rgba(0, 0, 0, 0) url("../images/map/aboutus.png") no-repeat scroll 13px 10px;
-    padding-left: 44px;
+	padding-left: 44px;
     padding-top: 8px;
-    width:100%;
+	width:100%;
 }
 #about-us:hover, #profile-settings:hover {
     background-color: #fff;
-    color:#ee6c35;
+	color:#ee6c35;
 }
 .country-header-link {
     display: inline-block;
@@ -608,17 +608,17 @@ nav li a {
     padding: 20%;
     text-align: center;
     width: 100%;
-    text-decoration:none;
+	text-decoration:none;
 }
 nav li a.active, nav li a.active:hover {
     background-color: #9d9d9d;
     color: #fff;
-    width:100%
-    text-decoration:none;
+	width:100%
+	text-decoration:none;
 }
 nav li a:hover {
     background-color: #e8e8e8;
-    text-decoration:none;
+	text-decoration:none;
 }
 nav li a span.place-order-icon {
     background: rgba(0, 0, 0, 0) url("../images/map/icon-sprite.png") no-repeat scroll 0 0;
@@ -1303,7 +1303,7 @@ div.slide-menu.open {
     height: calc(100% - 50px);
     position: relative;
     max-width: 430px;
-    width:100%;
+	width:100%;
 }
 #menu-ctn.loading {
     opacity: 0.38;
@@ -1484,7 +1484,8 @@ body.en_TW .vehicle-type-select, body.zh_TW .vehicle-type-select {
     display: inline-block;
     float: left;
     font-size: 13px;
-    padding: 25px 0;
+    padding: 10px 0;
+    margin-bottom: 15px;
     text-align: center;
     width: 50%;
 }
@@ -1508,7 +1509,7 @@ body.en_TW .vehicle-type-select, body.zh_TW .vehicle-type-select {
 .additional-service-input:hover {
     background-color: #ee6c35;
     color: #fff;
-    text-decoration:none;
+	text-decoration:none;
 }
 .detail-address-input, .comment-textarea-input {
     background: #fff url("../images/map/textarea-icon.png") no-repeat scroll 95% 15%;
@@ -1552,7 +1553,7 @@ input[placeholder], textarea[placeholder] {
     width: 100%;
 }
 .modal.in .modal-dialog{
-    z-index:99999;
+	z-index:99999;
 }
 #register-email-input, #register-password-input, #forgot-pwd-input, #register-company-input, #old-pwd, #new-pwd, #confirm-pwd {
     padding-left: 7rem;
@@ -3385,7 +3386,7 @@ div.slide-menu {
     color: #ee6c35;
     float: right;
     font-size: 13px;
-    padding: 5px 10px 7px;
+    padding: 5px 0px 6px 14px;
 }
 #importAddresses .arrow {
     background: rgba(0, 0, 0, 0) url("../images/arrow_down_s.png") no-repeat scroll 0 0;
@@ -3950,35 +3951,35 @@ div.slide-menu {
 }
 /* css for light box panel */
 .tabbable ul{
-              background:#fff;
-          }
-         .tabbable li a:focus, .tabbable li a{
-             font-size:18px;
-             color:#ee6c35;
-             padding:0;
-         }
+			  background:#fff;
+		  }
+		 .tabbable li a:focus, .tabbable li a{
+			 font-size:18px;
+			 color:#ee6c35;
+			 padding:0;
+		 }
           .tabbable li a:hover{
-             background:none;
-             outline:none;
-         }
-         .tabbable .tab-pane{
-             padding:10px;
-         }
-         .closeCross{
-             padding-right:20px !important;
-             padding-top:20px !important;
-         }
-         .topPad{
-             margin-top:0 !important;
-         }
+			 background:none;
+			 outline:none;
+		 }
+		 .tabbable .tab-pane{
+			 padding:10px;
+		 }
+		 .closeCross{
+			 padding-right:20px !important;
+			 padding-top:20px !important;
+		 }
+		 .topPad{
+			 margin-top:0 !important;
+		 }
 .mybulletPanel{
-    text-align:center;
-    }
+	text-align:center;
+	}
 #wallet-recharge input[type="text"], #wallet-recharge textarea, #wallet-recharge [type="submit"]{
-    width:100%;
-    margin-bottom:6px;
+	width:100%;
+	margin-bottom:6px;
 }
-         
+		 
 #fancybox-loading div {
     background-image: url("../../js/original/fancybox/fancybox.png");
     height: 480px;
@@ -8444,7 +8445,7 @@ body.stop-scrolling {
     content: "";
 }
 .icon-cash::before {
-    content: "";
+    /*content: "";*/
 }
 .icon-phone::before {
     content: "";

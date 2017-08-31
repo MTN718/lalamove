@@ -44,7 +44,7 @@ $(document).on("click", ".user_register", function(){
             type: 'POST',
             dataType: 'html',
             success: function(output_string){
-                $("#model-signIn").modal('hide');
+                $("#model-signIn").modal('hide');                
                 $('.registration-text').html(output_string);
                 $(".register-prsnl").css("display", "block"); 
                 // $('#model-signUp').modal('show');
@@ -73,7 +73,6 @@ function submitLoginFormEmail(){
                         if(data.status == 'success'){ 
                             $(".party_id").val(data['user_id']);
                             $(".order_by").val(data['user_type']);
-                            $(".remaining_wallet_amt").val(data['walletAmount']);
                             $("#order-username-input").val(data['name']);
                             $("#user-login-name").html(data['name']);
                             $("#user-login-name").removeClass('hide');
@@ -125,7 +124,6 @@ function submitLoginFormMobile(){
                         if(data.status == 'success'){  
                             $(".party_id").val(data['user_id']);
                             $(".order_by").val(data['user_type']);
-                            $(".remaining_wallet_amt").val(data['walletAmount']);
                             $("#order-username-input").val(data['name']);
                             $("#user-login-name").html(data['name']);
                             $("#user-login-name").removeClass('hide');
@@ -276,7 +274,7 @@ function backRegister(){
 // }
 
 
-  $('.account_click').click(function(){
+    $('.account_click').click(function(){
     // alert('fff');return;
     var party_id = $('.party_id').val();
     var path = base_url+'/lalamove/user/account';
@@ -385,73 +383,3 @@ function updateReceiptEmail(){
             } // End of success function of ajax form
         }); // End of ajax call
 }
-
-$('.wallet-check').click(function(){
-    var party_id = $('.party_id').val();
-    var path = base_url+'/lalamove/user/walletRecharge';
-         $.ajax({
-            url: path,
-            type:'POST',
-            data:{party_id: party_id},
-            dataType: 'JSON',
-            success: function(data){                
-                if(data.status == 'success'){                    
-                    $('#walletAmt').modal('show');
-                    $('#wallet-input').html('$'+data.amount);                    
-                }else{         
-                    alert(data.message);
-                }          
-            } // End of success function of ajax form
-        }); // End of ajax call
-});
-
-$('.useWallet').click(function(){
-    var party_id = $('.party_id').val();
-    var path = base_url+'/lalamove/user/walletRecharge';
-        $.ajax({
-            url: path,
-            type:'POST',
-            data:{party_id: party_id},
-            dataType: 'JSON',
-            success: function(data){                
-                if(data.status == 'success'){                    
-                    
-                    $('#walletAmt').modal('hide');
-                    $('.wallet-check').css('pointer-events','none');
-                    var adrate = $('.final_rate_before_discount').text().replace('$','');
-                    var bdrate = $('.final_rate_after_discount').text().replace('$','');
-
-                    if(adrate == bdrate){
-                        var wallet_rate = adrate - data.amount;
-                        if(wallet_rate <= 0){
-                            $('.final_rate_before_discount').html('$0');
-                            $('.final_rate_after_discount').html('$0');
-                            $('.remaining_wallet_amt').val(Math.abs(wallet_rate));
-                        }else{
-                            $('.final_rate_before_discount').html('$'+wallet_rate);
-                            $('.final_rate_after_discount').html('$'+wallet_rate);
-                            $('.remaining_wallet_amt').val(0);
-                        }
-                    }else{
-                        var wallet_rate = bdrate - data.amount;
-                        if(wallet_rate <=0){
-                            $('.final_rate_before_discount').html('$0');
-                            $('.final_rate_after_discount').html('$0');
-                            $('.remaining_wallet_amt').val(Math.abs(wallet_rate));
-                        }else{
-                            $('.final_rate_before_discount').html('$'+wallet_rate);
-                            $('.final_rate_after_discount').html('$'+wallet_rate);
-                            $('.remaining_wallet_amt').val(0);
-                        }
-                    }
-                    // alert(wallet_rate);
-                    // alert(Math.abs(wallet_rate));
-                    console.log(data);
-                }else{         
-                    alert(data.message);
-                    // $('.error-personal').html(data['email']);
-                }          
-            } // End of success function of ajax form
-        }); // End of ajax call
-
-});

@@ -52,8 +52,8 @@ class User extends CI_Controller {
 		if($user_type==1){
 			$this->form_validation->set_rules('first_name', 'First name', 'trim|required|alpha|min_length[2]|max_length[30]');
 			$this->form_validation->set_rules('last_name', 'Last name', 'trim|required|alpha|min_length[2]|max_length[30]');
-			$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[PARTY.EMAIL]');
-			$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[8]');
+			$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[USER_LOGIN.USER_LOGIN_ID]');
+			$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[8]|is_unique[USER_LOGIN.USER_MOBILE]');
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
 			$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
 			
@@ -62,28 +62,52 @@ class User extends CI_Controller {
 				// validation not ok, send validation errors to the view
 				$data = array('first_name' => form_error('first_name'), 'last_name' => form_error('last_name'), 'email' => form_error('email'), 'mobile' => form_error('mobile')
 					, 'password' => form_error('password'), 'password_confirm' => form_error('password_confirm'));
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));				
 			
 			} else {
-			
-				// set variables from the form
-				$first_name = $this->input->post('first_name');
-				$last_name = $this->input->post('last_name');
-				$email    = $this->input->post('email');
-				$mobile    = $this->input->post('mobile');
-				$password = $this->input->post('password');
-				$user_type = "CUSTOMER";
-									
-			if ($this->user_model->create_user($first_name, $last_name, $email, $mobile, $password, $user_type)) {
+				$PARTY_TYPE_ID = 'CUSTOMER';
+				 $modal_data = array(
+	              'FIRST_NAME' => $this->input->post('first_name'),
+	              'LAST_NAME'    => $this->input->post('last_name'),
+	              'COMPANY_NAME' => NULL,
+	              'INDUSTRY' => NULL,
+	              'STAFF' => NULL,
+	              'VEHICLE_TYPE' => NULL,
+	              'TRAINING_SESSION' => NULL
+	            );
 				
-				// user creation ok
+				$password = $this->input->post('password');
+				$email    = $this->input->post('email');
+				$mobile    = $this->input->post('mobile');				
+				$user_type = 'CUSTOMER';
+
+				$modal_data['PARTY_ID'] = $this->user_model->addPartyId($PARTY_TYPE_ID,$email);
+				$PARTY_ID = $modal_data['PARTY_ID'];
+            	
+            	$this->user_model->addBillingDetails($PARTY_ID,$email);
+            	$this->user_model->addUserPassword($PARTY_ID,$email,$mobile,$password);
+            	$this->user_model->updateUserBasicInfo($modal_data);
+
+            	$EMAIL_MECH_ID = $this->user_model->addPartyContactMechId($PARTY_ID, 'EMAIL_ADDRESS');
+            	$this->user_model->updateUserEmailInfo($EMAIL_MECH_ID, $email);
+
+            	$TELECOM_MECH_ID = $this->user_model->addPartyContactMechId($PARTY_ID, 'TELECOM_NUMBER');
+            	$this->user_model->updateUserContactInfo($TELECOM_MECH_ID, $mobile);
+
+            	$POSTAL_MECH_ID = $this->user_model->addPartyContactMechId($PARTY_ID, 'POSTAL_ADDRESS');
+            	// $this->user_model->updateUserAddressInfo($POSTAL_MECH_ID);
+				// set variables from the form
+									
+			if ($PARTY_ID) {
+				
+				// user creation ok				
 				$data = array("status"=>"success", 'message' => "Thank you for registering your new account!");
 				$this->session->set_flashdata("success","Thank you for registering your new account! Please login to update your profile");
 				$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
 			} else {
 				
-				// user creation failed, this should never happen
+				// user creation failed, this should never happen				
 				$this->session->set_flashdata("error","There was a problem creating your new account. Please try again.");
 				$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				
@@ -95,8 +119,8 @@ class User extends CI_Controller {
 			// set validation rules
 		$this->form_validation->set_rules('first_name', 'First name', 'trim|required|alpha|min_length[2]|max_length[30]');
 		$this->form_validation->set_rules('last_name', 'Last name', 'trim|required|alpha|min_length[2]|max_length[30]');
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[PARTY.EMAIL]');
-		$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[8]');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[USER_LOGIN.USER_LOGIN_ID]');
+		$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[8]|is_unique[USER_LOGIN.USER_MOBILE]');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
 		$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
 		$this->form_validation->set_rules('company_name', 'Company name', 'trim|required|min_length[2]|max_length[30]');
@@ -115,21 +139,43 @@ class User extends CI_Controller {
         	$this->output->set_content_type('application/json')->set_output(json_encode($data));
 			
 		} else {
-					
+			$PARTY_TYPE_ID = 'PARTY_GROUP';
+			$industry = implode(',',$this->input->post('industry'));
+			$staff = implode(',',$this->input->post('staff'));
+			$modal_data = array(
+	              'FIRST_NAME' => $this->input->post('first_name'),
+	              'LAST_NAME'    => $this->input->post('last_name'),
+	              'COMPANY_NAME' => $this->input->post('company_name'),
+	              'INDUSTRY' => $industry,
+	              'STAFF' => $staff,
+	              'VEHICLE_TYPE' => NULL,
+	              'TRAINING_SESSION' => NULL
+	            );
 			// set variables from the form
-			$first_name = $this->input->post('first_name');
-			$last_name = $this->input->post('last_name');
 			$email    = $this->input->post('email');
 			$mobile    = $this->input->post('mobile');
 			$password = $this->input->post('password');
-			$company_name = $this->input->post('company_name');
-			$industry = implode(',',$this->input->post('industry'));
-			$staff = implode(',',$this->input->post('staff'));
-			$user_type = "PARTY_GROUP";
 			
-			if ($this->user_model->create_company($first_name, $last_name, $email, $mobile, $password, $company_name, $industry, $staff, $user_type)) {
+			$user_type = 'PARTY_GROUP';
+
+			$modal_data['PARTY_ID'] = $this->user_model->addPartyId($PARTY_TYPE_ID,$email);
+			$PARTY_ID = $modal_data['PARTY_ID'];
+			
+			$this->user_model->addBillingDetails($PARTY_ID,$email);            	
+        	$this->user_model->addUserPassword($PARTY_ID,$email,$mobile,$password);
+        	$this->user_model->updateUserBasicInfo($modal_data);
+
+        	$EMAIL_MECH_ID = $this->user_model->addPartyContactMechId($PARTY_ID, 'EMAIL_ADDRESS');
+        	$this->user_model->updateUserEmailInfo($EMAIL_MECH_ID, $email);
+
+        	$TELECOM_MECH_ID = $this->user_model->addPartyContactMechId($PARTY_ID, 'TELECOM_NUMBER');
+        	$this->user_model->updateUserContactInfo($TELECOM_MECH_ID, $mobile);
+
+        	$POSTAL_MECH_ID = $this->user_model->addPartyContactMechId($PARTY_ID, 'POSTAL_ADDRESS');
+			
+			if ($PARTY_ID) {
 				
-				// user creation ok
+				// user creation ok				
 				$data = array("status"=>"success", 'message' => "Thank you for registering your new account!");
 				$this->session->set_flashdata("success","Thank you for registering your new account! Please login to update your profile");
 				$this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -143,8 +189,8 @@ class User extends CI_Controller {
 			}
 			
 		}
-		}else{			
-			$this->load->view('user/register/register');			
+		}else{
+			$this->load->view('user/register/register');
 		}
 		
 		
@@ -158,66 +204,66 @@ class User extends CI_Controller {
 	 * @access public
 	 * @return void
 	 */
-	public function driver() {
+	// public function driver() {
 
-		// create the data object
-		$data = new stdClass();		
+	// 	// create the data object
+	// 	$data = new stdClass();		
 
-		// load form helper and validation library
-		$this->load->helper('form');
-		$this->load->library('form_validation');
+	// 	// load form helper and validation library
+	// 	$this->load->helper('form');
+	// 	$this->load->library('form_validation');
 
-		// set validation rules
-		$this->form_validation->set_rules('first_name', 'Name', 'trim|required|alpha|min_length[2]|max_length[30]');
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[PARTY.EMAIL]');
-		$this->form_validation->set_rules('mobile', 'Phone', 'trim|required|min_length[8]');
-		$this->form_validation->set_rules('vehicle_type', 'Vehicle Type', 'required');
-		$this->form_validation->set_rules('training_session', 'Training Session', 'required');
-		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
-		$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
+	// 	// set validation rules
+	// 	$this->form_validation->set_rules('first_name', 'Name', 'trim|required|alpha|min_length[2]|max_length[30]');
+	// 	$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[PARTY.EMAIL]');
+	// 	$this->form_validation->set_rules('mobile', 'Phone', 'trim|required|min_length[8]');
+	// 	$this->form_validation->set_rules('vehicle_type', 'Vehicle Type', 'required');
+	// 	$this->form_validation->set_rules('training_session', 'Training Session', 'required');
+	// 	$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
+	// 	$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
 		
-		if ($this->form_validation->run() === false) {
+	// 	if ($this->form_validation->run() === false) {
 			
-			// validation not ok, send validation errors to the view
-			$this->load->view('common/header');
-			$this->load->view('user/driver/driver', $data);
-			$this->load->view('common/footer');
+	// 		// validation not ok, send validation errors to the view
+	// 		$this->load->view('common/header');
+	// 		$this->load->view('user/driver/driver', $data);
+	// 		$this->load->view('common/footer');
 			
-		} else {
+	// 	} else {
 			
-			// set variables from the form
-			$first_name = $this->input->post('first_name');
-			$email    = $this->input->post('email');
-			$mobile    = $this->input->post('mobile');
-			$vehicle_type = $this->input->post('vehicle_type');
-			$training_session = $this->input->post('training_session');
-			$password = $this->input->post('password');
-			$user_type = "DRIVER";
+	// 		// set variables from the form
+	// 		$first_name = $this->input->post('first_name');
+	// 		$email    = $this->input->post('email');
+	// 		$mobile    = $this->input->post('mobile');
+	// 		$vehicle_type = $this->input->post('vehicle_type');
+	// 		$training_session = $this->input->post('training_session');
+	// 		$password = $this->input->post('password');
+	// 		$user_type = "DRIVER";
 			
-			if ($this->user_model->create_driver($first_name, $email, $mobile, $vehicle_type, $training_session, $password, $user_type)) {
+	// 		if ($this->user_model->create_driver($first_name, $email, $mobile, $vehicle_type, $training_session, $password, $user_type)) {
 				
-				// user creation ok
-				unset($_POST['password_confirm']);
-				$this->load->view('common/header');
-				$this->load->view('user/driver/driver_success', $data);
-				$this->load->view('common/footer');
+	// 			// user creation ok
+	// 			unset($_POST['password_confirm']);
+	// 			$this->load->view('common/header');
+	// 			$this->load->view('user/driver/driver_success', $data);
+	// 			$this->load->view('common/footer');
 				
-			} else {
+	// 		} else {
 				
-				// user creation failed, this should never happen
-				$data->error = 'There was a problem creating your new account. Please try again.';
+	// 			// user creation failed, this should never happen
+	// 			$data->error = 'There was a problem creating your new account. Please try again.';
 				
-				// send error to the view
-				$this->load->view('common/header');
-				$this->load->view('user/driver/driver', $data);
-				$this->load->view('common/footer');
+	// 			// send error to the view
+	// 			$this->load->view('common/header');
+	// 			$this->load->view('user/driver/driver', $data);
+	// 			$this->load->view('common/footer');
 				
-			}
+	// 		}
 			
-		}
+	// 	}
 
 
-	}
+	// }
 		
 	/**
 	 * login function.
@@ -225,82 +271,88 @@ class User extends CI_Controller {
 	 * @access public
 	 * @return void
 	 */
-	public function login() {
+	public function login() {		
 		
 		$CI = & get_instance();
 		// create the data object
 		$data = new stdClass();
-			
+		
 		// load form helper and validation library
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		
 		$login_type = $this->input->post('login_type');
-
+		
 		if($login_type==1){
 			
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');			
 			$this->form_validation->set_rules('password', 'Password', 'required');
 
-			if ($this->form_validation->run() == false) {
+			if ($this->form_validation->run() == false) {			 
 			
 				// validation not ok, send validation errors to the view
 				$data = array('email_error_message' => form_error('email'), 'pass_error_message' => form_error('password'));
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));			
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 			} else {
 			
 			// set variables from the form
 			$email = $this->input->post('email');
 			$password = $this->input->post('password');
-			
+
 			if ($this->user_model->resolve_user_login_email($email, $password)) {
 				// echo "string";die;
 				$user_id = $this->user_model->get_user_id_from_email($email);
-				$user    = $this->user_model->get_user($user_id);				
-				// set session user datas
+				$user    = $this->user_model->get_user($user_id);
+				$wallet    = $this->user_model->get_user_wallet($user_id);
+				if(!empty($wallet)){ 
+					$amount = $wallet->AMOUNT;
+				}else{ 
+					$amount = 0;
+				}
+				// set session user datas				
 				$sess_array = array(
 					'user_id' 	=> $user->PARTY_ID,
-					'email' 	=> $user->EMAIL,
+					'email' 	=> $user->USER_LOGIN_ID,
 					'user_type'	=> $user->PARTY_TYPE_ID,
 					'name'		=> $user->FIRST_NAME,
-					'mobile'	=> $user->MOBILE,
-					'logged_in'	=> (bool)true,
-					'status'	=> $user->STATUS_ID,
+					'mobile'	=> $user->USER_MOBILE,
+					'walletAmount' => $amount,
+					'logged_in'	=> (bool)true,					
 					 );
 				$CI->session->set_userdata($sess_array);
 				// user login ok
-				if($user->PARTY_TYPE_ID=="CUSTOMER"){
-					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->EMAIL, 'user_type' => $user->PARTY_TYPE_ID,  'message' => "<p>Login success!</p>");
+				if($user->PARTY_TYPE_ID=="CUSTOMER"){								
+					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->USER_LOGIN_ID, 'user_type' => $user->PARTY_TYPE_ID, 'name' => $user->FIRST_NAME, 'mobile' => $user->USER_MOBILE, 'walletAmount' => $amount, 'message' => "<p>Login success!</p>");
+					$this->output->set_content_type('application/json')->set_output(json_encode($data));				
+				}elseif($user->PARTY_TYPE_ID=="PARTY_GROUP") {					
+					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->USER_LOGIN_ID, 'user_type' => $user->PARTY_TYPE_ID,'name' => $user->FIRST_NAME, 'mobile' => $user->USER_MOBILE, 'walletAmount' => $amount, 'message' => "<p>Login success!</p>");
 					$this->output->set_content_type('application/json')->set_output(json_encode($data));
-				}elseif($user->PARTY_TYPE_ID=="PARTY_GROUP") {
-					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->EMAIL, 'user_type' => $user->PARTY_TYPE_ID,  'message' => "<p>Login success!</p>");
+				}elseif($user->PARTY_TYPE_ID=="DRIVER"){					
+					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->USER_LOGIN_ID, 'user_type' => $user->PARTY_TYPE_ID,'name' => $user->FIRST_NAME, 'mobile' => $user->USER_MOBILE, 'walletAmount' => $amount, 'message' => "<p>Login success!</p>");
 					$this->output->set_content_type('application/json')->set_output(json_encode($data));
-				}elseif($user->PARTY_TYPE_ID=="DRIVER"){
-					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->EMAIL, 'user_type' => $user->PARTY_TYPE_ID,  'message' => "<p>Login success!</p>");
-					$this->output->set_content_type('application/json')->set_output(json_encode($data));
-				}else{
+				}else{					
 					$data = array('error' => "<p>Database error please log in again</p>");
 					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}
 				
 			} else {				
 				$data = array('error' => '<p>Wrong email or password.</p>');
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));				
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 			}
 
 
 		
 		}
-	}elseif($login_type==2){			
+	}elseif($login_type==2){
 
-			$this->form_validation->set_rules('mobile', 'Mobile', 'trim|required|min_length[8]');
+			$this->form_validation->set_rules('mobile', 'Mobile', 'required|min_length[8]');
 			$this->form_validation->set_rules('password', 'Password', 'required');
 
 			if ($this->form_validation->run() == false) {
 			
 				// validation not ok, send validation errors to the view
 				$data = array('email_error_message' => form_error('mobile'), 'pass_error_message' => form_error('password'));
-        		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));				
 			
 			} else {
 			
@@ -312,28 +364,34 @@ class User extends CI_Controller {
 				
 				$user_id = $this->user_model->get_user_id_from_mobile($mobile);
 				$user    = $this->user_model->get_user($user_id);
+				$wallet  = $this->user_model->get_user_wallet($user_id);
+				if(!empty($wallet)){ 
+					$amount = $wallet->AMOUNT;
+				}else{ 
+					$amount = 0;
+				}
 				
-				// set session user datas
+				// set session user datas				
 				$sess_array = array(
 					'user_id' 	=> $user->PARTY_ID,
-					'email' 	=> $user->EMAIL,
+					'email' 	=> $user->USER_LOGIN_ID,
 					'user_type'	=> $user->PARTY_TYPE_ID,
 					'name'		=> $user->FIRST_NAME,
-					'mobile'	=> $user->MOBILE,
-					'logged_in'	=> (bool)true,
-					'status'	=> $user->STATUS_ID,
+					'mobile'	=> $user->USER_MOBILE,
+					'walletAmount' => $amount,
+					'logged_in'	=> (bool)true,					
 					 );
 				$CI->session->set_userdata($sess_array);
 				
 				// user login ok
-				if($user->PARTY_TYPE_ID=="CUSTOMER"){
-					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->EMAIL, 'user_type' => $user->PARTY_TYPE_ID,  'message' => "<p>Login success!</p>");
+				if($user->PARTY_TYPE_ID=="CUSTOMER"){					
+					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->USER_LOGIN_ID, 'user_type' => $user->PARTY_TYPE_ID,'name' => $user->FIRST_NAME, 'mobile' => $user->USER_MOBILE, 'walletAmount' => $amount, 'message' => "<p>Login success!</p>");
 					$this->output->set_content_type('application/json')->set_output(json_encode($data));
-				}elseif($user->PARTY_TYPE_ID=="PARTY_GROUP") {
-					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->EMAIL, 'user_type' => $user->PARTY_TYPE_ID,  'message' => "<p>Login success!</p>");
+				}elseif($user->PARTY_TYPE_ID=="PARTY_GROUP") {					
+					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->USER_LOGIN_ID, 'user_type' => $user->PARTY_TYPE_ID,'name' => $user->FIRST_NAME, 'mobile' => $user->USER_MOBILE, 'walletAmount' => $amount, 'message' => "<p>Login success!</p>");
 					$this->output->set_content_type('application/json')->set_output(json_encode($data));
-				}elseif($user->PARTY_TYPE_ID=="DRIVER"){
-					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->EMAIL, 'user_type' => $user->PARTY_TYPE_ID,  'message' => "<p>Login success!</p>");
+				}elseif($user->PARTY_TYPE_ID=="DRIVER"){					
+					$data = array("status"=>"success", 'user_id' => $user->PARTY_ID, 'email' => $user->USER_LOGIN_ID, 'user_type' => $user->PARTY_TYPE_ID, 'name' => $user->FIRST_NAME, 'mobile' => $user->USER_MOBILE, 'walletAmount' => $amount, 'message' => "<p>Login success!</p>");
 					$this->output->set_content_type('application/json')->set_output(json_encode($data));
 				}else{
 					$data = array('error' => "<p>Database error please log in again</p>");
@@ -356,7 +414,6 @@ class User extends CI_Controller {
 
 		}
 	}
-	
 	/**
 	 * logout function.
 	 * 
@@ -397,7 +454,7 @@ class User extends CI_Controller {
      * @work   : Load forget password form and reset password
      */
 
-     public function forgot_password()
+    public function forgot_password()
         {
 
         	// create the data object
@@ -437,7 +494,7 @@ class User extends CI_Controller {
                 $message .= '<strong>Please click:</strong> ' . $link;             
 
                 echo $message; //send this through mail
-                $to = $userInfo->EMAIL;
+                $to = $userInfo->USER_LOGIN_ID;
                 $subject = "test";
                 $result = $this->email
 				        ->from('easyweb444@gmail.com')
@@ -456,7 +513,7 @@ echo $this->email->print_debugger();
             
         }
 
-        public function reset_password()
+       public function reset_password()
         {
         // create the data object
 		$data = new stdClass();
@@ -476,7 +533,7 @@ echo $this->email->print_debugger();
             }            
             $data = array(
                 'firstName'=> $user_info->FIRST_NAME, 
-                'email'=>$user_info->EMAIL,
+                'email'=>$user_info->USER_LOGIN_ID,
                 'token'=>$this->base64url_encode($token)
             );
            
@@ -543,5 +600,161 @@ echo $this->email->print_debugger();
     }
 
 }*/
+
+	/**
+	 * account function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function account() {
+		
+		// create the data object
+		$data = new stdClass();
+		// load form helper and validation library
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		
+		$party_id = $this->input->post('party_id');		
+		$data = $this->user_model->get_user($party_id);
+		// echo "<pre>";print_r($data);
+		if(!empty($data->USER_LOGIN_ID)){
+			$this->load->view('user/profile/account',$data);
+		}else{
+			$this->load->view('user/profile/account');			
+		}
+	}
+
+	/**
+	 * billing function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function billing() {
+		
+		// create the data object
+		$data = new stdClass();
+		// load form helper and validation library
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		
+		$party_id = $this->input->post('party_id');		
+		$data = $this->user_model->get_email_bill($party_id);
+		
+		if(!empty($data->EMAIL)){
+			$this->load->view('user/profile/settings',$data);
+		}else{
+			$this->load->view('user/profile/settings');
+		}
+	}
+
+	/**
+	 * updateReceiptEmail function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function updateReceiptEmail() {
+		
+		// create the data object
+		$data = new stdClass();
+		// load form helper and validation library
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		
+		$party_id = $this->input->post('party_id');		
+		$data = $this->user_model->get_user($party_id);
+		// echo "<pre>";print_r($data);
+		if(!empty($party_id)){
+			$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+
+			if ($this->form_validation->run() === false) {
+				$data = array('email' => form_error('email'));
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));		
+			}else{				
+				$email = $this->input->post('email');
+				$e_receipt = $this->input->post('e_receipt');
+				
+				$result = $this->user_model->updateEreceipt($party_id, $email, $e_receipt);
+				// echo "<pre>";print_r($result);die;
+				$data = array('status' => 'success', 'message'=>'Youre settings are updated');
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));		
+				// $this->load->view('user/profile/changePassword');
+			}
+		}else{
+			$this->load->view('user/profile/settings');
+		}
+	}
+
+
+
+	/**
+	 * changePassword function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function changePassword() {
+		
+		// create the data object
+		$data = new stdClass();
+		// load form helper and validation library
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$party_id = $this->input->post('party_id');		
+		if (!empty($party_id)) {
+			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
+			$this->form_validation->set_rules('password_confirm', 'Confirm Password', 'trim|required|min_length[6]|matches[password]');
+			
+			if ($this->form_validation->run() === false) {
+				// echo "string";
+				// $this->load->view('user/profile/changePassword',$data);
+				$data = array('password' => form_error('password'), 'password_confirm' => form_error('password_confirm'));
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));		
+			}else{				
+				$password = $this->input->post('password');
+				$result = $this->user_model->update_password_userid($party_id, $password);
+				// echo "<pre>";print_r($result);die;
+				$data = array('status' => 'success', 'message'=>'Password Changed Successfully');
+        		$this->output->set_content_type('application/json')->set_output(json_encode($data));		
+				// $this->load->view('user/profile/changePassword');
+			}
+			
+		}else{
+			$this->load->view('user/profile/changePassword');
+		}
+	}
 	
+	/**
+	 * walletRecharge function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function walletRecharge() {
+		
+		// create the data object
+		$data = new stdClass();
+		// load form helper and validation library
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$party_id = $this->input->post('party_id');		
+		if (!empty($party_id)) {				
+				
+				$result = $this->user_model->walletTopUp($party_id);
+				if(!empty($result->AMOUNT)){					
+					$data = array('status' => 'success', 'amount' => $result->AMOUNT, 'party_id' => $result->PARTY_ID, 'message'=>'Password Changed Successfully');
+	        		$this->output->set_content_type('application/json')->set_output(json_encode($data));		
+				}else{
+					$data = array('status' => 'error', 'amount' => $result->AMOUNT, 'party_id' => $result->PARTY_ID, 'message'=>'You dont have enough balance please contact to admin to recharge your wallet account');
+	        		$this->output->set_content_type('application/json')->set_output(json_encode($data));		
+				}
+				// $this->load->view('user/profile/changePassword');
+			
+			
+		}else{
+			$this->load->view('user/profile/changePassword');
+		}
+	}
 }

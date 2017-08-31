@@ -1038,19 +1038,19 @@ div.slide-menu.open {
     background: rgba(0, 0, 0, 0) url("../images/map/hk-flag.png") no-repeat scroll 28% 3px;
 }
 .sg-link {
-    background: rgba(0, 0, 0, 0) url("../images/map/sg-flag.png") no-repeat scroll 20px 7px;
+    background: rgba(0, 0, 0, 0) url("../images/map/sg-flag.png") no-repeat scroll 6px 12px;
 }
 .ph-link {
-    background: rgba(0, 0, 0, 0) url("../images/map/country-flags-sprite.png") no-repeat scroll 20px -143px;
+    background: rgba(0, 0, 0, 0) url("../images/map/country-flags-sprite.png") no-repeat scroll 6px -138px;
 }
 .bkk-link {
-    background: rgba(0, 0, 0, 0) url("../images/map/th-flag.png") no-repeat scroll 20px 7px;
+    background: rgba(0, 0, 0, 0) url("../images/map/th-flag.png") no-repeat scroll 6px 12px;
 }
 .tp-link {
-    background: rgba(0, 0, 0, 0) url("../images/map/tw-flag.png") no-repeat scroll 20px 7px;
+    background: rgba(0, 0, 0, 0) url("../images/map/tw-flag.png") no-repeat scroll 6px 12px;
 }
 .hk-link {
-    background: rgba(0, 0, 0, 0) url("../images/map/login-box/hk-flag.png") no-repeat scroll 20px 7px;
+    background: rgba(0, 0, 0, 0) url("../images/map/hk-flag.png") no-repeat scroll 6px 12px;
 }
 .area-code-style {
     max-height: 35px;
@@ -8445,7 +8445,7 @@ body.stop-scrolling {
     content: "";
 }
 .icon-cash::before {
-    content: "";
+    /*content: "";*/
 }
 .icon-phone::before {
     content: "";
