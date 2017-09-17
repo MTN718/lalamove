@@ -22,6 +22,10 @@ foreach ($scripts['foot'] as $file) {
         $("#WYSIHTML2").wysihtml5();
         $("#WYSIHTML3").wysihtml5();
     });
+
+    //Date range picker
+    $('.datepicker').daterangepicker();
+ 
 </script>
 <script>
     $(function () {
@@ -77,4 +81,17 @@ foreach ($scripts['foot'] as $file) {
         $("#example6").DataTable();
     });
 </script>
+
+
+  <script>
+    function deleteMail() {
+      $('#deleteMail').submit();
+    }
+  </script>
+
+
+
+
+
+  
 </html>
