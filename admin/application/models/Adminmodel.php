@@ -169,7 +169,7 @@ Class Adminmodel extends CI_Model
             $this->db->join('user_login', 'user_login.party_id = party.party_id');
             $this->db->join('party_contact_mech', 'party_contact_mech.party_id = party.party_id');
             $this->db->join('contact_mech', 'contact_mech.contact_mech_id = party_contact_mech.contact_mech_id');
-            $this->db->join('telecom_number', 'telecom_number.contact_mech_id = party_contact_mech.contact_mech_id');
+            $this->db->join('telecom_number', 'telecom_number.contact_mech_id = party_contact_mech.contact_mech_id','left');
             $this->db->where('contact_mech.contact_mech_type_id', 'telecom_number');
             $this->db->where('party.party_type_id', $party_type_id);
             $this->db->where('party.external_id', $owner_data['party_id']);
@@ -182,7 +182,7 @@ Class Adminmodel extends CI_Model
             $this->db->join('user_login', 'user_login.party_id = party.party_id');
             $this->db->join('party_contact_mech', 'party_contact_mech.party_id = party.party_id');
             $this->db->join('contact_mech', 'contact_mech.contact_mech_id = party_contact_mech.contact_mech_id');
-            $this->db->join('telecom_number', 'telecom_number.contact_mech_id = party_contact_mech.contact_mech_id');
+            $this->db->join('telecom_number', 'telecom_number.contact_mech_id = party_contact_mech.contact_mech_id','left');
             $this->db->where('contact_mech.contact_mech_type_id', 'telecom_number');
             $this->db->where('party.party_type_id', $party_type_id);
             $this->db->where('party.status_id !=', 'Delete');
@@ -572,10 +572,10 @@ Class Adminmodel extends CI_Model
     }
 
     // get Vehicle info by id
-    public function getVehicleInfo($vehicle_id="") {
+    public function getVehicleInfo($no="") {
         $this->db->select('*');
         $this->db->from('vehicle');
-        $this->db->where('vehicle_id',$vehicle_id);
+        $this->db->where('no',$no);
         return $this->db->get()->row();
     }
 
@@ -646,10 +646,10 @@ Class Adminmodel extends CI_Model
     }
 
     // check order status for vehicle
-    public function checkVehicleOrder($vehicle_id="") {
+    public function checkVehicleOrder($no="") {
         $this->db->select('*');
         $this->db->from('order_move');
-        $this->db->where('vehicle_id', $vehicle_id);
+        $this->db->where('no', $no);
         $this->db->where('order_status_id !=', 'complete');
         return $this->db->get()->num_rows();
     }
@@ -674,10 +674,10 @@ Class Adminmodel extends CI_Model
     }
 
     // check vehicles list
-    public function checkvehicleInfo($vehicle_id) {
+    public function checkvehicleInfo($no) {
         $this->db->select('*');
         $this->db->from('vehicle');
-        $this->db->where('vehicle_id', $vehicle_id);
+        $this->db->where('no', $no);
         return $this->db->get()->num_rows();
     }
 
@@ -693,7 +693,9 @@ Class Adminmodel extends CI_Model
     public function checkUserNameInfo($model_data) {
         $this->db->select('*');
         $this->db->from('user_login');
-        $this->db->where('user_login_id', $model_data['user_login_id']);
+        $this->db->join('party', 'party.party_id = user_login.party_id');
+        $this->db->where('user_login.user_login_id', $model_data['user_login_id']);
+        $this->db->where('party.status_id !=', 'Delete');
         return $this->db->get()->num_rows();
     }
 
@@ -772,9 +774,9 @@ Class Adminmodel extends CI_Model
 
     // add vehicle
     public function addvehicleInfo($model_data) {
-        $vehicle_id = $model_data['vehicle_no'];
-        $vehicle_id = strtoupper($vehicle_id);
-        $vehicle_id = preg_replace('/[^A-Za-z0-9\-]/', '', $vehicle_id);
+        $no = $model_data['vehicle_no'];
+        $no = strtoupper($no);
+        $no = preg_replace('/[^A-Za-z0-9\-]/', '', $no);
 
         $vehicle_no = $model_data['vehicle_no'];
         $party_id = $model_data['party_id'];
@@ -783,11 +785,11 @@ Class Adminmodel extends CI_Model
         $permit = $model_data['permit'];
         $registration_no = $model_data['registration_no'];
 
-        $num_rows = $this->checkvehicleInfo($vehicle_id);
+        $num_rows = $this->checkvehicleInfo($no);
         if($num_rows > 0)
             return false;
 
-        $sql = "INSERT INTO `vehicle`(`vehicle_id`,`vehicle_no`,`party_id`,`driver_id`,`vehicle_type_id`,`PERMIT`,`registration_no`) VALUES('$vehicle_id','$vehicle_no','$party_id','$driver_id','$vehicle_type_id','$permit','$registration_no')";  
+        $sql = "INSERT INTO `vehicle`(`vehicle_no`,`party_id`,`driver_id`,`vehicle_type_id`,`PERMIT`,`registration_no`) VALUES('$vehicle_no','$party_id','$driver_id','$vehicle_type_id','$permit','$registration_no')";  
         $this->db->query($sql); 
 
         //for notification and mail
@@ -798,8 +800,6 @@ Class Adminmodel extends CI_Model
         $this->addPartyMail($this->login_party_id, $driver_id, "New Vehicle ".$vehicle_no." of type [".$vehicle_type_info->vehicle_type_name."] Added", "New Vehicle ".$vehicle_no." of type [".$vehicle_type_info->vehicle_type_name."] of Owner ".$party_name->first_name." ".$party_name->last_name." assigned you");
 
         $this->addPartyMail($this->login_party_id, $party_id, "New Vehicle ".$vehicle_no." of type [".$vehicle_type_info->vehicle_type_name."] Added", "New Vehicle ".$vehicle_no." of type [".$vehicle_type_info->vehicle_type_name."] of Owner ".$party_name->first_name." ".$party_name->last_name." info added");
-
-        $this->addpartynNotification($this->login_party_id, "vehicle", "New Vehicle ".$vehicle_no." of type [".$vehicle_type_info->vehicle_type_name."] assigned to Driver ".$driver_name->first_name." ".$driver_name->last_name);
 
         $this->addpartynNotification($this->login_party_id, "vehicle", "New Vehicle ".$vehicle_no." of type [".$vehicle_type_info->vehicle_type_name."] of Owner ".$party_name->first_name." ".$party_name->last_name." info added");
         return true;    
@@ -1462,7 +1462,7 @@ Class Adminmodel extends CI_Model
                     return false;
             }
 
-            $sql = "UPDATE vehicle SET ".$columns[$colIndex]." = '".$colVal."' WHERE vehicle_id='".$rowid."'";
+            $sql = "UPDATE vehicle SET ".$columns[$colIndex]." = '".$colVal."' WHERE no='".$rowid."'";
             $this->db->query($sql);
 
 
@@ -1627,7 +1627,7 @@ Class Adminmodel extends CI_Model
                 );
                 $order_data = $this->getorderInfoForInvoice($order_data1);
 
-                $sql1 = "INSERT INTO `order_invoice`(`order_id`,`order_date`,`order_email`,`order_price`,`order_duration`,`order_distance`,`party_id`,`item_type_id`,`vehicle_type_id`,`vehicle_id`,`driver_id`,`discount_promocode_id`,`description`,`order_status_id`) VALUES('$order_data->order_id','$order_data->order_date','$order_data->order_by','$order_data->order_price','$order_data->order_duration','$order_data->order_distance','$order_data->party_id','$order_data->item_type_id','$order_data->vehicle_type_id','$order_data->vehicle_id','$order_data->driver_id','$order_data->discount_promocode_id','$order_data->description','$order_data->order_status_id')";
+                $sql1 = "INSERT INTO `order_invoice`(`order_id`,`order_date`,`order_email`,`order_price`,`order_duration`,`order_distance`,`party_id`,`item_type_id`,`vehicle_type_id`,`no`,`driver_id`,`discount_promocode_id`,`description`,`order_status_id`) VALUES('$order_data->order_id','$order_data->order_date','$order_data->order_by','$order_data->order_price','$order_data->order_duration','$order_data->order_distance','$order_data->party_id','$order_data->item_type_id','$order_data->vehicle_type_id','$order_data->no','$order_data->driver_id','$order_data->discount_promocode_id','$order_data->description','$order_data->order_status_id')";
                 $this->db->query($sql1);
 
                 $sql = "UPDATE `order_move` SET ".$columns[$colIndex]." = '".$colVal."' WHERE order_id='".$rowid."'";
@@ -1635,7 +1635,7 @@ Class Adminmodel extends CI_Model
             }
             else if($colIndex == 13 && $colVal == '') {
                 $this->addpartynNotification($this->login_party_id, "order", "order #00".$order_data->order_id." of customer ".$party_name->first_name." ".$party_name->last_name." Business Owner removed");
-                $sql = "UPDATE `order_move` SET ".$columns[$colIndex]." = '".$colVal."', vehicle_id = '', driver_id = '', order_status_id = 'active' WHERE order_id='".$rowid."'";
+                $sql = "UPDATE `order_move` SET ".$columns[$colIndex]." = '".$colVal."', no = '', driver_id = '', order_status_id = 'active' WHERE order_id='".$rowid."'";
             }
             else if( $colIndex == 13 ) {
                 $business_name = $this->getpartyNameInfoByParty($colVal);
@@ -1650,7 +1650,7 @@ Class Adminmodel extends CI_Model
             }
             else if($colIndex == 8 && $colVal == '') {
                 $this->addpartynNotification($this->login_party_id, "order", "order #00".$order_data->order_id." of customer ".$party_name->first_name." ".$party_name->last_name." driver removed");
-                $sql = "UPDATE `order_move` SET ".$columns[$colIndex]." = '".$colVal."', vehicle_id = '', order_status_id = 'confirm' WHERE order_id='".$rowid."'";
+                $sql = "UPDATE `order_move` SET ".$columns[$colIndex]." = '".$colVal."', no = '', order_status_id = 'confirm' WHERE order_id='".$rowid."'";
             }
             else if($colIndex == 8) {
                 $driver_name = $this->getpartyNameInfoByParty($colVal);
@@ -1658,11 +1658,11 @@ Class Adminmodel extends CI_Model
                     'party_id' => $colVal,
                 );
                 $vehicle_data = $this->getvehicleData($driver_data);
-                $vehicle_id = $vehicle_data->vehicle_id;
+                $no = $vehicle_data->no;
 
                 $this->addpartynNotification($this->login_party_id, "order", "order #00".$order_data->order_id." of customer ".$party_name->first_name." ".$party_name->last_name." allocated driver ".$driver_name->first_name." ".$driver_name->last_name." and vehicle ".$vehicle_data->vehicle_no);
 
-                $sql = "UPDATE `order_move` SET ".$columns[$colIndex]." = '".$colVal."', vehicle_id = '".$vehicle_id."', order_status_id = 'matched' WHERE order_id='".$rowid."'";
+                $sql = "UPDATE `order_move` SET ".$columns[$colIndex]." = '".$colVal."', no = '".$no."', order_status_id = 'matched' WHERE order_id='".$rowid."'";
             }
             else if($colIndex == 4) {
                 $extraCharge = 0;

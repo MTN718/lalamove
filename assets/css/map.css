@@ -580,7 +580,7 @@ nav {
     float: left;
     height: calc(100% - 50px);
     position: relative;
-    width: 108px;
+    width: 70px;
 }
 nav ul, .predict-ctn ul, .tips-menu-box ul, .on-going-item-list, .area-code-picker-list, #priority-fee-list ul, .vehicle-type-select ul, .on-going-overlay-item ul, .price-breakdown-box-4-10 ul, .vehicle-type-detail-select ul, #additional-service-enable-list ul {
     margin: 0;
@@ -740,7 +740,7 @@ div.slide-menu.open {
     height: calc(100% - 50px);
     overflow-y: hidden;
     position: relative;
-    width: calc(100% - 538px);
+    width: calc(100% - 500px);
     /*z-index: 800;*/
 }
 #map-canvas {
@@ -4706,7 +4706,7 @@ table.dataTable thead th, table.dataTable tfoot th {
 table.dataTable thead th, table.dataTable thead td {
     border-bottom: 1px solid #e0e0e0;
     outline: medium none;
-    padding: 40px 10px 20px;
+    /*padding: 40px 10px 20px;*/
     text-align: center;
 }
 table.dataTable thead th:active, table.dataTable thead td:active {
@@ -4724,7 +4724,7 @@ table.dataTable thead .sorting {
     background: rgba(0, 0, 0, 0) url("../../js/original/datatables/media/images/sort_both.png") no-repeat scroll right 38px;
 }
 table.dataTable thead .sorting_asc {
-    background: rgba(0, 0, 0, 0) url("../../js/original/datatables/media/images/sort_asc.png") no-repeat scroll right 38px;
+    background: rgba(0, 0, 0, 0) url("../../assets/images/new_sort_both.png") no-repeat scroll right 38px;
 }
 table.dataTable thead .sorting_desc {
     background: rgba(0, 0, 0, 0) url("../../js/original/datatables/media/images/sort_desc.png") no-repeat scroll right 38px;

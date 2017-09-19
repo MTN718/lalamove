@@ -1,24 +1,30 @@
 <!-- left one panel -->
 <input type="hidden" class="country_code" name="country_code" value="<?php if(isset($country) AND !empty($country)){ echo $country; }else{ echo "th"; } ?>">
-
+<!--  <?php if ($this->session->flashdata('error')) { ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <?php echo $this->session->flashdata('error'); ?>
+                    </div>
+                <?php } elseif ($this->session->flashdata('success')) { ?>
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <?php echo $this->session->flashdata('success'); ?>
+                    </div>
+                <?php } ?> -->
 <nav class="bdr-right">
   <ul>
-    <li class="sidemenu-list"> <a href="#" id="place-order-btn" class="sidemenu-btn cursor-ptr dft-gry active" href="map.html"> <span id="place-order-icon" class="place-order-icon"></span> <br>
-      Place Order </a> </li>
-    <li class="sidemenu-list"> <a href="#" id="on-going-orders-btn" class="sidemenu-btn cursor-ptr dft-gry"> <span id="on-going-orders-icon" class="on-going-orders-icon"> <span id="on-going-orders-counter" class="notification-counter hide"></span> </span> <br>
-      Ongoing Orders </a> </li>
-    <li class="sidemenu-list"> <a href="#" id="records-btn" class="sidemenu-btn cursor-ptr dft-gry"> <span id="records-icon" class="records-icon"> <span id="records-counter" class="notification-counter hide"></span> </span> <br>
-      Records </a>
+    <li class="sidemenu-list"> <a href="<?php echo base_url('home/instantquote'); ?>" id="place-order-btn" class="sidemenu-btn cursor-ptr dft-gry active" href="map.html"> <span id="place-order-icon" class="place-order-icon"></span> <br>Place Order</a>
+      </li>
+    
+    <li class="sidemenu-list"> <a href="#" id="records-btn" class="sidemenu-btn cursor-ptr dft-gry showRecords"> <span id="records-icon" class="records-icon"> <span id="records-counter" class="notification-counter hide"></span> </span> <br>Records</a>
       <ul>
         <li>
           <div id="records-menu" class="slide-menu"></div>
         </li>
       </ul>
     </li>
-    <li class="sidemenu-list"> <a href="#model-id" id="my-fleet-btn" class="sidemenu-btn cursor-ptr dft-gry" data-toggle="modal"> <span id="my-fleet-icon" class="my-fleet-icon"></span> <br>
-      Manage My Driver </a> </li>
-    <li class="sidemenu-list"> <a href="#model-id2"  id="user-wallet" class="sidemenu-btn cursor-ptr dft-gry" data-toggle="modal"> <span id="my-wallet-icon" class="my-wallet-icon"></span> <br>
-      My Wallet </a> </li>
+    <li class="sidemenu-list"> <a href="#fav-driver-modal" id="my-fleet-btn" class="sidemenu-btn cursor-ptr dft-gry fav-driver-modal" data-toggle="modal"> <span id="my-fleet-icon" class="my-fleet-icon"></span> <br>Manage Driver</a> </li>
+    <li class="sidemenu-list"> <a href="#model-id2"  id="user-wallet" class="sidemenu-btn cursor-ptr dft-gry my_wallet" data-toggle="modal"> <span id="my-wallet-icon" class="my-wallet-icon"></span> <br>Wallet</a> </li>
     <li class="sidemenu-list"> </li>
   </ul>
 </nav>
@@ -31,22 +37,30 @@
       <div class="jcarousel-control-ctn" style="height: 80px;"> <a class="jcarousel-prev" href="#">‹</a> </div>
       <div class="jcarousel vehicle-type-select">
         <ul class="tabs">
-        <?php $vehicle_type = $this->order_model->getVehicleType(); 
+        <?php
+        if(isset($country) AND !empty($country)){            
+           $vehicle_type = $this->order_model->getVehicleType($country);
+         }else{ 
+          $country = "th";
+           $vehicle_type = $this->order_model->getVehicleType($country);          
+        }
+        $new_string = '';
         foreach ($vehicle_type as $key => $value) {
-          $image1 = $value['IMAGE1'];
-$image2 = $value['IMAGE2'];
-
+          $image1 = $value['image1'];
+$image2 = $value['image2'];
+$new_string .= preg_replace('/[^a-z]/i','',$value['vehicle_type_name']).'_';
           ?>
             <li> 
-              <a data-basefare="<?php echo $value['BASE_FARE'] ?>" data-rentkm="<?php echo $value['RENT_PER_KM']; ?>" id="<?php echo strtolower($value['VEHICLE_TYPE_NAME']); ?>-btn" class="vehicle-type-select-btn lgt-gry <?php echo $value['VEHICLE_TYPE_CLASS']; ?>" href="javascript:void(0);" data-vehicletype="<?php echo $value['VEHICLE_TYPE_ID']; ?>"> 
+              <a data-basefare="<?php echo $value['base_fare'] ?>" data-basefarekm = "<?php echo $value['base_fare_limit']; ?>" data-rentkm="<?php echo $value['rent_per_km']; ?>" id="<?php echo strtolower($value['vehicle_type_name']); ?>-btn" class="vehicle-type-select-btn lgt-gry <?php echo preg_replace('/[^a-z]/i','',$value['vehicle_type_name']); ?>" href="javascript:void(0);" data-vehicletype="<?php echo $value['vehicle_type_id']; ?>"> 
                 <span class="vehicle-type-select-icon">
                  <img class="off" src="<?php echo base_url('assets/images/map/');echo $image1; ?>" height="55">
                  <img class="on" src='<?php  echo base_url('assets/images/map/');echo $image2; ?>' height="55">
                 </span> <br>
-            <?php echo ucfirst($value['VEHICLE_TYPE_NAME']); ?> </a> </li>
+            <?php echo ucfirst($value['vehicle_type_name']); ?> </a> </li>
            
         <?php }
         ?>
+          <input type="hidden" name="vehicle_classes"  class="vehicle_classes" value="<?php echo $new_string; ?>">
       </ul>
       </div>
       <div class="jcarousel-control-ctn" style="height: 80px;"> <a class="jcarousel-next" href="#">›</a> </div>
@@ -57,8 +71,8 @@ $image2 = $value['IMAGE2'];
 
       foreach ($item_type as $value) {
         $active='';
-      $active = !empty($value['NAME']=='Document')?'active':''; ?>
-        <li> <a id="<?php echo strtolower($value['NAME']); ?>-vechicle-type-detail-select" class="vehicle-type-detail-select-link lgt-gry <?php echo $active; ?>" data-type="<?php echo strtoupper($value['NAME']); ?>" href="javascript:void(0);"> <?php echo ucfirst($value['NAME']); ?> </a> </li>
+      $active = !empty($value['name']=='Document')?'active':''; ?>
+        <li> <a id="<?php echo strtolower($value['name']); ?>-vechicle-type-detail-select" class="vehicle-type-detail-select-link lgt-gry <?php echo $active; ?>" data-type="<?php echo strtoupper($value['name']); ?>" href="javascript:void(0);"> <?php echo ucfirst($value['name']); ?> </a> </li>
       <?php }
       ?>
       <input type="hidden" name="item_type" id="item_type_val" value="1">
@@ -143,9 +157,12 @@ $image2 = $value['IMAGE2'];
 
 <!-- Hidden Session value start -->
 <?php if(!empty($this->session->user_id)) {
-  $wallet = $this->user_model->walletTopUp($this->session->user_id); ?>
-<input type="hidden" class="remaining_wallet_amt" id="remaining_wallet_amt" name="remaining_wallet_amt" value="<?php echo $wallet->AMOUNT; ?>">
-<?php } ?>
+  $wallet = $this->user_model->walletTopUp($this->session->user_id); 
+  if(!empty($wallet)){  ?>
+<input type="hidden" class="remaining_wallet_amt" id="remaining_wallet_amt" name="remaining_wallet_amt" value="<?php echo $wallet->amount; ?>">
+<?php }else{ ?>
+<input type="hidden" class="remaining_wallet_amt" id="remaining_wallet_amt" name="remaining_wallet_amt" value="0">
+<?php  } } ?>
 <input type="hidden" class="party_id" id="party_id" name="party_id" value="<?php echo $this->session->user_id; ?>">
 <input type="hidden" class="order_by" id="order_by" name="order_by" value=" <?php echo $this->session->user_type; ?>">
 <!-- Hidden Session value end -->
@@ -171,23 +188,21 @@ $image2 = $value['IMAGE2'];
                   <div class="place-order-input-wrapper bdr-btm wht-bg">  <input id="order-user-phone-input" class="order-user-phone-input overlay-input cmn-cls-width" type="text" placeholder="Phone" value="<?php echo $this->session->mobile; ?>" /> </div>
                </div>
     <div class="order-overlay-passenger">  
-      <i style="float: left; color: #F16622; margin: 11px 12px;" class="icon-passenger fnt-15"></i>
-        <span class="passenger-total-ctn"> 
-          <span data-passenger="1" class="order-passenger-total">1</span>&nbsp;
-            <span class="order-passenger-text">Passenger(s)</span>
+      
+        <span class="passenger-total-ctn">           
+            <span class="order-passenger-text">Assign to favorite drivers first</span>
+            <div id="not-include">Check to dispatch your favorite drivers</div>   
             <br> 
-              <span class="order-passenger-total-text hide">Max:5</span> 
+              
         </span>
-        <span class="passenger-increase-ctn"> 
+        <span style="height: 37px;width: 52px;" class="passenger-increase-ctn"> 
+          
           <a data-type="increase" href="javascript:void(0);" class="order-passenger-increase passenger-increase-decrease-btn"> 
-            <i style="float: left; color: #B4B4B4; margin: 5px 15px;" class="icon-plus fnt-15"></i> 
+            <!-- <i style="float: left; color: #B4B4B4; margin: 5px 15px;" class="icon-plus fnt-15"></i>  -->
+            <label style="float: left; color: #B4B4B4; margin: 5px 15px;"  ><input type="checkbox" id="favorite_driver_first" class="enable_favdriver" value=""></label>            
           </a> 
         </span> 
-        <span class="passenger-decrease-ctn"> 
-          <a data-type="decrease" href="javascript:void(0);" class="order-passenger-decrease passenger-increase-decrease-btn"> 
-            <i style="float: left; color: #B4B4B4; margin: 5px 11px;" class="icon-minus fnt-15"></i> 
-          </a> 
-        </span> 
+        
     </div>
   </div>
     <div class="overlay-title-ctn order-overlay-top-title noto-sans dft-gry mg-btm-15"> PAYMENT METHOD </div>
@@ -226,6 +241,7 @@ $image2 = $value['IMAGE2'];
                 <span id="price-total" class="total-number dft-gry bld total_rate final_rate_after_discount" data-price="0">$0</span> 
                 </div>
         </div> -->
+        <span style="display: none;" id="price-total" class="wallet-item-1-2 alg-r total-number dft-gry bld total_rate final_rate_unchanged" data-price="0">0</span> 
         <div class="overlay-title-ctn order-overlay-top-title noto-sans dft-gry mg-btm-15"> PRICE BREAKDOWN </div>
 
         <div class="wallet-detail-ctn"> 
@@ -365,11 +381,11 @@ $image2 = $value['IMAGE2'];
         foreach ($additional_Services as $key => $value) { ?>
         <div class="additional-service-item bdr-btm show">            
                 <span class="additional-service-item-checkbx cursor-ptr"> 
-                <input class="add-cls"  type="checkbox" name="additionalServices[]" id="<?php echo $value['SERVICES_ID']; ?>" value="<?php echo $value['SERVICES_TITLE'].'_'.$value['PRICE'].'_'.$value['SERVICES_ID']; ?>">
-                  <label for="<?php echo $value['SERVICES_ID']; ?>"><?php echo $value['SERVICES_TITLE']; ?>
+                <input class="add-cls"  type="checkbox" name="additionalServices[]" id="<?php echo $value['service_id']; ?>" value="<?php echo $value['services_title'].'_'.$value['price'].'_'.$value['service_id']; ?>">
+                  <label for="<?php echo $value['service_id']; ?>"><?php echo $value['services_title']; ?>
                   </label> 
-                    <label for="<?php echo $value['SERVICES_ID']; ?>" class="asit-price" style="float: right;">+$
-                      <label class="price_addservic" data-servicePrice="<?php echo $value['PRICE']; ?>" ><?php echo $value['PRICE']; ?></label>
+                    <label for="<?php echo $value['service_id']; ?>" class="asit-price" style="float: right;">+$
+                      <label class="price_addservic" data-servicePrice="<?php echo $value['price']; ?>" ><?php echo $value['price']; ?></label>
                     </label>                    
                 </span> 
                 <span class="additional-service-tips-ctn">  </span> 
@@ -421,7 +437,7 @@ $image2 = $value['IMAGE2'];
 
 
 <!-- light box my driver -->
-<div id="model-id" class="modal fade ogBox" tabindex="-1" role="dialog">
+<div id="fav-driver-modal" class="modal fade ogBox" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div style="width:auto;height:auto;overflow: auto;position:relative; background:#f6f6f3">
@@ -429,11 +445,11 @@ $image2 = $value['IMAGE2'];
         <div id="my-fleet-box" class="topPad">
           <div class="title dft-gry bld mg-lr-20 mg-btm-15">Manage My Drivers</div>
           <div class="desc dft-gry mg-lr-20 mg-btm-15">Satisfied by your drivers? Add or ban drivers from your list.</div>
-          <div id="add-driver-btn-ctn" class="alg-c"> <a id="add-driver-btn" href="javascript:void(0);"> Add Driver </a> </div>
-          <div id="driver-license-ctn" class="alg-c"> <span class="mg-btm-10"> Enter the driver license number. </span>
+          <!-- <div id="add-driver-btn-ctn" class="alg-c"> <a id="add-driver-btn" class="addDriver" href="javascript:void(0);"> Add Driver </a> </div> -->
+          <div id="driver-license-ctn" class="alg-c inputDriver"> <span class="mg-btm-10"> Enter the driver license number. </span>
             <form id="my-fleet-form" action="javascript:void(0);">
               <span class="my-fleet-input-ctn">
-              <input id="add-driver-license" class="bdr-left bdr-top bdr-btm mg-btm-30 validate[required]" placeholder="Driver's License Number" type="text">
+              <input id="add-driver-license" class="bdr-left bdr-top bdr-btm mg-btm-30 license_no validate[required]" required="required" name="license_no" placeholder="ab-07az1111" type="text">
               <input id="add-driver-license-ok-btn" class="cursor-ptr" value="OK" type="submit">
               </span>
             </form>
@@ -445,10 +461,32 @@ $image2 = $value['IMAGE2'];
             </ul>
             <div class="tab-content">
               <div class="tab-pane active" id="tab1">
-                <p>Favoright content start here </p>
+              <table style="width:100%" id="favorite-driver">
+                  <thead>
+                    <tr>                    
+                      <th>Name</th>
+                      <th>Vehicle No</th>
+                      <th>Vehicle Type</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
               </div>
               <div class="tab-pane" id="tab2">
-                <p>Banned Content Start here </p>
+              <table style="width:100%" id="banned-driver">
+               <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Vehicle No</th>
+                    <th>Vehicle Type</th>
+                    <th>Action</th>
+                  </tr>
+               </thead>
+               <tbody>
+               </tbody>
+              </table>
               </div>
             </div>
           </div>
@@ -459,7 +497,7 @@ $image2 = $value['IMAGE2'];
 </div>
 
 <!-- my wallet -->
-<div id="model-id2" class="modal fade ogBox mybulletPanel" tabindex="-1" role="dialog">
+<div id="addDriver-modal" class="modal fade ogBox mybulletPanel" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div style="width:auto;height:auto;overflow: auto;position:relative; background:#f6f6f3;">

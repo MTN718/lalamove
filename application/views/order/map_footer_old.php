@@ -1,5 +1,6 @@
 </body>
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+
 <script src="<?php echo base_url();?>assets/js/jquery.js" type="text/javascript"></script> 
 <script src="<?php echo base_url();?>assets/js/jquery.datetimepicker.full.js" type="text/javascript"></script> 
 <script src="<?php echo base_url();?>assets/js/bootstrap.min.js" type="text/javascript"></script> 

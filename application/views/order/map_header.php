@@ -13,16 +13,19 @@
 
 <!-- Bootstrap Core CSS -->
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap.min.css" type="text/css">
+<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/css/AdminLTE.min.css" type="text/css"> -->
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/datatable.css" type="text/css">
 
 <!-- Plugin CSS -->
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/animate.min.css" type="text/css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 <!-- Custom CSS -->
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap-select.min.css" type="text/css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/map.css" type="text/css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/error.css" type="text/css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap-multiselect.css" type="text/css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/jquery.datetimepicker.css" type="text/css">
-
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 
@@ -73,53 +76,8 @@
 
       
       <!-- forget password -->
-      <div id="model-forget" class="modal fade ogBox mybulletPanel" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-          <div class="logo-lalamove" style="text-align:center;"><img src="<?php echo base_url('assets/images/lalamove-logo.png'); ?>" alt=""></div>
-          <div id="wallet-box2" class="topPad">
-             
-                 <!-- forget password -->
-            <div class="modal-content">
-              <div style="width:auto;height:auto;overflow: auto;position:relative; background:#f6f6f3;">
-                <button type="button" class="close closeCross" data-dismiss="modal" aria-hidden="true">×</button>
-                <div class="signPanel">
-                  <div id="user-login-box" class="noto-sans">
-                    <div class="fnt-28 title dft-gry2 bld mg-btm-10"> Forgot Password </div>
-                    <div class="mg-btm-10" style="font-size: 12px;"> Enter your registered <b>Email</b> address or <b>Mobile</b> number to reset your password. You will receive an email or a SMS from us shortly. </div>
-                    <form id="login-form" action="javascript:void(0);">
-                      <div class="form-email-mobile-ctn">
-                        <div class="emailMobileRadio">
-                          <div class="custom-radio form-email-btn">
-                            <input name="" type="radio" value="">
-                            <label class="emailLbl"> Email </label>
-                          </div>
-                          <div class="custom-radio form-mobile-btn">
-                            <input name="" type="radio" value="">
-                            <label class="mobileLbl"> Mobile </label>
-                          </div>
-                        </div>
+      <div id="model-forget" class="modal fade ogBox mybulletPanel forgot_modal" tabindex="-1" role="dialog">
 
-                        <input id="username-input" class="form-input-2 validate[required,custom[email]]" value="" type="text">
-                      </div>
-                       <br>
-                       
-                      <div class="fnt-15 form-input-ctn mg-btm-15 fnt-15">
-                        <input id="form-signin-btn" class="bdr-all dft-gry" value="Submit" type="submit">
-                      </div>
-                       
-                      <div class="form-input-ctn mg-top-5 mg-btm-5 alg-c"> 
-                       
-                      <a id="user-signin" class="bg-none oge"  href="#model-signIn" data-toggle="modal"> Return to Login </a> </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-               
-            </div>
-              
- 
-          </div>
-        </div>
       </div>
           
       <!-- Sign up panel -->
@@ -138,7 +96,7 @@
           </ul>
         </div>
         <!-- <li class="logout-header lgt-cls" ><a href="<?= base_url('user/logout') ?>">Logout</a></li> -->
-         <div id="city-picker-ctn" class="dropdown"> 
+      <div id="city-picker-ctn" class="dropdown"> 
           <a id="city-picker1" class="header-menu-btn cursor-ptr dft-gry dropdown-toggle <?php if(isset($class_name)) { echo $class_name; }else{ echo "bkk-link"; } ?>" href="#" data-toggle="dropdown"> 
             <span id="country-name"><?php if(isset($country_name)){ echo $country_name; }else{ echo "Bangkok"; 
             } ?></span><span class="down-arrow-icon"></span> 
@@ -151,7 +109,13 @@
           <a id="tp-link" class="country-header-link dft-gry cursor-ptr tp-link" href="<?= base_url('home/taipei') ?>" target="_self"> Taipei </a>
         </div>
       </div>
+
       </div>
+      <!--   <select class="selectpicker">
+          <option><a id="bkk-link" class="country-header-link dft-gry cursor-ptr bkk-link" href="<?= base_url('home/bangkok') ?>" target="_self"> Bangkok </a> </option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+        </select> -->
         <!-- <div id="tutorial-ctn" class="lgt-cls-hide"> <a class="header-menu-btn cursor-ptr dft-gry" href="<?= base_url('user/logout') ?>" id="tutorial"> Logout </a> </div> -->
     </div>
   </div>

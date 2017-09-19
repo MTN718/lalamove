@@ -34,78 +34,83 @@ class Order_model extends CI_Model {
 	 * @param mixed $user_type
 	 * @return bool true on success, false on failure
 	 */
-	public function place_order($Description, $order_price, $party_id, $order_by, $deliveryDate, $orderName, $orderMobile, $itemType, $vehicleType,  $waypointsLatLng, $orderDuration, $orderDistance, $additionalServices) {
+	public function place_order($Description, $order_price, $party_id, $order_by, $deliveryDate, $orderName, $orderMobile, $itemType, $vehicleType,  $waypointsLatLng, $orderDuration, $orderDistance, $additionalServices, $final_rate_unchanged, $favorite_driver_first) {
 
 		$data = array(
-			'ORDER_DATE'   			=> $deliveryDate,
-			'ORDER_BY'      		=> $order_by,
-			'ORDER_PRICE'			=> $order_price,
-			'ORDER_DURATION'		=> $orderDuration,
-			'ORDER_DISTANCE'		=> $orderDistance,
-			'PARTY_ID'      		=> $party_id,
-			'ITEM_TYPE_ID'   		=> $itemType,
-			'VEHICLE_TYPE_ID '      => $vehicleType,
-			'DESCRIPTION'      		=> $Description,
-			'ORDER_STATUS_ID' 		=> "ACTIVE",
-			'CREATED_DATE'			=> date('Y-m-d H:i:s'),
-			'LAST_MODIFIED_DATE' 	=> date('Y-m-d H:i:s')
+			'order_date'   			=> $deliveryDate,
+			'order_by'      		=> $order_by,
+			'order_price'			=> $order_price,
+			'order_duration'		=> $orderDuration,
+			'order_distance'		=> $orderDistance,
+			'party_id'      		=> $party_id,
+			'item_type_id'   		=> $itemType,
+			'vehicle_type_id '      => $vehicleType,
+			'description'      		=> $Description,
+			'favorite_driver_first'	=> $favorite_driver_first,
+			'order_status_id' 		=> "ACTIVE",
+			'created_date'			=> date('Y-m-d H:i:s'),
+			'last_modified_date' 	=> date('Y-m-d H:i:s')
 		);
-		$this->db->insert('ORDER', $data);
+		$this->db->insert('order_move', $data);
 		$ORDER_ID = $this->db->insert_id();
 
 		/******************Update wallet Transactions******************/
 			$walletTransaction = array(
-					'PARTY_ID'		=>  $party_id,
-					'ORDER_ID'		=>  $ORDER_ID,
-					'TRASACTION_DATE' => date('Y-m-d H:i:s')
+					'party_id'		=>  $party_id,
+					'order_id'		=>  $ORDER_ID,
+					'original_rate' => 	$final_rate_unchanged,
+					'discounted_rate' => $order_price
 				);
-			$this->db->insert('WALLET_TRANSACTION', $walletTransaction);
+			$this->db->insert('wallet_transaction', $walletTransaction);
 
 		foreach ($waypointsLatLng as $key => $value) {
 			$orderLocation = array(
-					'ORDER_ID'		=>  $ORDER_ID,
-					'LOCATION_TYPE'	=>  $value['type'],
-					'LOCATION_NAME'	=>  $value['name'],
-					'LOCATION_LAT'	=>  $value['lat'],
-					'LOCATION_LNG'	=>  $value['lng']				
+					'order_id'		=>  $ORDER_ID,
+					'location_type'	=>  $value['type'],
+					'location_name'	=>  $value['name'],
+					'location_lat'	=>  $value['lat'],
+					'location_lng'	=>  $value['lng']				
 				);
-			$this->db->insert('ORDER_LOCATION', $orderLocation);
+			$this->db->insert('order_location', $orderLocation);
 			$ORDER_LOCATION_ID = $this->db->insert_id();	
 
 			if(isset($value['contact']) AND !empty($value['contact']))
 			{
 					$orderDeliveryContact = array(
-						'ORDER_LOCATION_ID'	=>  $ORDER_LOCATION_ID,
-						'CONTACT_NAME'		=>  $value['contact']['contact_name'],
-						'CONTACT_MOBILE'	=>  $value['contact']['contact_phone'],
-						'CONTACT_ADDRESS'	=>  "add",
-						'BUILDING_BLOCK'	=>  $value['contact']['contact_block'],			
-						'FLOOR'				=>  $value['contact']['contact_floor'],				
-						'ROOM'				=>  $value['contact']['contact_room']				
+						'order_location_id'	=>  $ORDER_LOCATION_ID,
+						'contact_name'		=>  $value['contact']['contact_name'],
+						'contact_mobile'	=>  $value['contact']['contact_phone'],
+						'contact_address'	=>  "add",
+						'building_block'	=>  $value['contact']['contact_block'],			
+						'floor'				=>  $value['contact']['contact_floor'],				
+						'room'				=>  $value['contact']['contact_room']				
 					);
-					$this->db->insert('ORDER_DELIVERY_CONTACT', $orderDeliveryContact);
+					$this->db->insert('order_delivery_contact', $orderDeliveryContact);
 			}
 		}
 
 
+		if(!empty($additionalServices)){
+			
 		foreach ($additionalServices as $key => $value) {
 			$orderServices = array(
-					'ORDER_ID'		=>  $ORDER_ID,
-					'SERVICE_ID'	=>  $value
+					'order_id'		=>  $ORDER_ID,
+					'service_id'	=>  $value
 				);
-			$this->db->insert('ORDER_SERVICES_CONN', $orderServices);
+			$this->db->insert('order_services_conn', $orderServices);
 			$ORDER_LOCATION_ID = $this->db->insert_id();	
 
+		}
 		}
 
 
 		$orderContact = array(
-						'ORDER_ID'					=>	$ORDER_ID,
-						'ORDER_CONTACT_NAME'		=>	$orderName,
-						'MOBILE_NO'					=>	$orderMobile,
-						'FAVORITE_DRIVERS_LICENCE'	=> 	NULL
+						'order_id'					=>	$ORDER_ID,
+						'order_contact_name'		=>	$orderName,
+						'mobile_no'					=>	$orderMobile,
+						'favorite_drivers_licence'	=> 	NULL
 						);
-		$this->db->insert('ORDER_CONTACT', $orderContact);
+		$this->db->insert('order_contact', $orderContact);
 		$ORDER_CONTACT_ID = $this->db->insert_id();
 		return $ORDER_ID;
 		
@@ -118,9 +123,9 @@ class Order_model extends CI_Model {
 	 *
 	 **/
 	public function updateWallete($party_id, $remainWalletAmount){
-		$this->db->set('AMOUNT', $remainWalletAmount); //value that used to update column  
-		$this->db->where('PARTY_ID', $party_id); //which row want to upgrade  
-		return $this->db->update('WALLET');
+		$this->db->set('amount', $remainWalletAmount); //value that used to update column  
+		$this->db->where('party_id', $party_id); //which row want to upgrade  
+		return $this->db->update('wallet');
 		
 
 	}
@@ -134,7 +139,7 @@ class Order_model extends CI_Model {
 	 **/
 	public function getItmeType(){
 		$this->db->select('*');
-		$this->db->from('ITEM_TYPE');		
+		$this->db->from('item_type');		
 		return $this->db->get()->result_array();
 	}
 
@@ -148,8 +153,8 @@ class Order_model extends CI_Model {
 	 **/
 	public function getAdditionalServices(){
 		$this->db->select('*');
-		$this->db->from('ADDITIONAL_SERVICES');
-		$this->db->where('STATUS', 1);
+		$this->db->from('order_additional_services');
+		$this->db->where('status', 1);
 		return $this->db->get()->result_array();	
 	}
 
@@ -160,10 +165,11 @@ class Order_model extends CI_Model {
 	 * @return list of Item type
 	 *
 	 **/
-	public function getVehicleType(){
+	public function getVehicleType($country){
 		$this->db->select('*');
-		$this->db->from('VEHICLE_TYPE');
-		$this->db->order_by('ORDER_BY','asc');
+		$this->db->from('vehicle_type');
+		$this->db->where('working_region' , $country);
+		$this->db->order_by('order_by','asc');
 		return $this->db->get()->result_array();
 	}
 
@@ -171,55 +177,83 @@ class Order_model extends CI_Model {
 	 * check_promo function.
 	 * 
 	 * @access public
-	 * @return price of promo code
+	 * @return price of promo type
 	 *
 	 **/
 	public function check_promo($party_id, $promo_code){
 		$party_id = $party_id;
 		$promo_code = $promo_code;
-		$array = array('PARTY_ID' => $party_id, 'PROMO_CODE' => $promo_code, 'IS_EXPIRED' => 0);
+		$array = array('party_id' => $party_id, 'promo_code' => $promo_code, 'is_expired' => 0);
 
 		$this->db->select('*');
-		$this->db->from('DISCOUNT_PROMOCODE');
+		$this->db->from('discount_promocode');
 		$this->db->where($array);		
 		$result = $this->db->get()->row();		
-		if(empty($result)){
+		if(empty($result)){		
 
-			// $this->usedCoupon($promo_code,$party_id);
-
-			$array = array('PROMO_CODE' => $promo_code, 'FOR_ALL' => "YES", 'IS_EXPIRED' => 0);
+			$array = array('promo_code' => $promo_code, 'for_all' => "YES", 'is_expired' => 0);
 			
 			$this->db->select('*');
-			$this->db->from('DISCOUNT_PROMOCODE');
+			$this->db->from('discount_promocode');
 			$this->db->where($array);		
 			$result = $this->db->get()->row();
 			if(!empty($result)){
-				if(!empty($result->USED_BY_PARTYIDS)){
-					$arr = explode(',', $result->USED_BY_PARTYIDS);					
+				if(!empty($result->used_by_partyids)){
+					$arr = explode(',', $result->used_by_partyids);					
 					if (in_array($party_id, $arr)){					 	
 						return false;
 					}else{
 						array_push($arr, $party_id);
 						$insert_partyids = implode(',', $arr);
-						$this->db->set('USED_BY_PARTYIDS', $insert_partyids); //value that used to update column  
-						$this->db->where('PROMO_CODE', $promo_code); //which row want to upgrade  
-						$this->db->update('DISCOUNT_PROMOCODE');					  
+						$this->db->set('used_by_partyids', $insert_partyids); //value that used to update column  
+						$this->db->where('promo_code', $promo_code); //which row want to upgrade  
+						$this->db->update('discount_promocode');					  
 					  	return $result;
 					}		
 				}else{
-					$this->db->set('USED_BY_PARTYIDS', $party_id); //value that used to update column  
-					$this->db->where('PROMO_CODE', $promo_code); //which row want to upgrade  
-					$this->db->update('DISCOUNT_PROMOCODE');		
+					$this->db->set('used_by_partyids', $party_id); //value that used to update column  
+					$this->db->where('promo_code', $promo_code); //which row want to upgrade  
+					$this->db->update('discount_promocode');		
 					return $result;
 				}
 			}else{
 				return false;
 			}
 		}else{
-			$this->db->set('IS_EXPIRED', 1); //value that used to update column  
-			$this->db->where('PARTY_ID', $party_id); //which row want to upgrade  
-			$this->db->update('DISCOUNT_PROMOCODE');
+			$this->db->set('is_expired', 1); //value that used to update column  
+			$this->db->where('party_id', $party_id); //which row want to upgrade  
+			$this->db->update('discount_promocode');
 			return $result;
 		}
 	}
+
+	/**
+	 * getVehicleName function.
+	 * 
+	 * @access public
+	 * @return list of Item type
+	 *
+	 **/
+	public function getVehicleName($vehicle_type_id){
+		$this->db->select('*');
+		$this->db->from('vehicle_type');
+		$this->db->where('vehicle_type_id' , $vehicle_type_id);		
+		return $this->db->get()->row();
+	}
+
+	/**
+	 * enableFavDriver function.
+	 * 
+	 * @access public
+	 * @return list of Item type
+	 *
+	 **/
+	public function enableFavDriver($party_id){
+		$this->db->select('*');
+		$this->db->from('party_favourite_driver');
+		$this->db->where('status' , 1);
+		$this->db->where('party_customer_id' , $party_id);
+		return $this->db->get()->row();
+	}
+
 }

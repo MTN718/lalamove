@@ -1,4 +1,6 @@
 <!-- left one panel -->
+<input type="hidden" class="country_code" name="country_code" value="<?php if(isset($country) AND !empty($country)){ echo $country; }else{ echo "th"; } ?>">
+
 <nav class="bdr-right">
   <ul>
     <li class="sidemenu-list"> <a href="#" id="place-order-btn" class="sidemenu-btn cursor-ptr dft-gry active" href="map.html"> <span id="place-order-icon" class="place-order-icon"></span> <br>
@@ -140,8 +142,8 @@ $image2 = $value['IMAGE2'];
 </div>
 
 <!-- Hidden Session value start -->
-<?php if(!empty($this->session->user_id)){  
-   $wallet = $this->user_model->walletTopUp($this->session->user_id); ?>
+<?php if(!empty($this->session->user_id)) {
+  $wallet = $this->user_model->walletTopUp($this->session->user_id); ?>
 <input type="hidden" class="remaining_wallet_amt" id="remaining_wallet_amt" name="remaining_wallet_amt" value="<?php echo $wallet->AMOUNT; ?>">
 <?php } ?>
 <input type="hidden" class="party_id" id="party_id" name="party_id" value="<?php echo $this->session->user_id; ?>">

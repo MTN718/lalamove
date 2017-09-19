@@ -1,5 +1,6 @@
  // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
+      var country_code;
       var current;
       var directionsService;
       var finaldistance;
@@ -11,17 +12,51 @@
       var waypointsLatLng = [];
       var finalduration;
       function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          // mapTypeControl: false,
-          zoom: 13,
-          center: {lat: 22.3964, lng: 114.1095},
-          zoomControl: false,
-          scaleControl: true
-        });
+        country_code = $('.country_code').val();
+        if(country_code == "hk"){
+          map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 13,
+            center: {lat: 22.3964, lng: 114.1095},
+            zoomControl: false,
+            scaleControl: true
+          });
+       }else if(country_code == "th"){
+          map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: {lat: 13.7563, lng: 100.5018},
+            zoomControl: false,
+            scaleControl: true
+          });
+       }else if(country_code == "ph"){
+          map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: {lat: 14.5995, lng: 120.9842},
+            zoomControl: false,
+            scaleControl: true
+          });
+       }else if(country_code == "sg"){
+          map = new google.maps.Map(document.getElementById('map'), {  
+            zoom: 10,
+            center: {lat: 1.3521, lng: 103.8198},
+            zoomControl: false,
+            scaleControl: true
+          });
+       }else if(country_code == "tw"){
+          map = new google.maps.Map(document.getElementById('map'), {  
+            zoom: 10,
+            center: {lat: 25.0330, lng: 121.5654},
+            zoomControl: false,
+            scaleControl: true
+          });
+       }      
 
         new AutocompleteDirectionsHandler(map);
       }
 
+      country_code = $('.country_code').val();
+      var options = {  
+          componentRestrictions: {country: country_code}
+      };
        /**
         * @constructor
        */
@@ -33,7 +68,7 @@
         this.wayPlaceId = null;        
         var originInput = document.getElementById('location-1');
         var destinationInput = document.getElementById('location-2');
-        // var waypointInput = document.getElementsByClassName('waypoints-input');
+        // var waypointInput = document.getElementsByClassName('add-cls');
         
         
         this.directionsService = new google.maps.DirectionsService;
@@ -41,10 +76,10 @@
         this.directionsDisplay.setMap(map);
 
         var originAutocomplete = new google.maps.places.Autocomplete(
-            originInput /*, {placeIdOnly: true}*/);
+            originInput, options);
 
         var destinationAutocomplete = new google.maps.places.Autocomplete(
-            destinationInput /*, {placeIdOnly: true}*/);
+            destinationInput, options);
         
 
         this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
@@ -59,7 +94,7 @@
         var waypointInput = document.getElementsByClassName('waypoints-input');        
         /*var place = autocomplete.getPlace();*/
         for (var i = 0; i < waypointInput.length; i++) {
-            var waypointAutocomplete = new google.maps.places.Autocomplete(waypointInput[i] /*, {placeIdOnly: true}*/);
+            var waypointAutocomplete = new google.maps.places.Autocomplete(waypointInput[i], options);
             current.setupPlaceChangedListener(waypointAutocomplete, 'WAYP');
             //current.map.controls[google.maps.ControlPosition.TOP_LEFT].push(waypointInput[i]);
         }
@@ -103,9 +138,9 @@
             data.lat = lat;
             data.lng = lng;
             data.temp = 'stop_'+temp;
-            var name1 = data.temp;            
-            $('.remove_field_'+temp).attr("data-info", name1);            
-            waypointsLatLng.push(data);
+            var name = data.temp;            
+            $('.remove_field_'+temp).attr("data-info", name);  
+            waypointsLatLng.push(data);            
           }else {
             var data = {};
             me.destinationPlaceId = place.place_id;  
@@ -164,11 +199,14 @@
             finaldistance = totdistance.toFixed(2);
             var baseFare = $('.bike').data('basefare');
             var rentKm = $('.bike').data('rentkm');
+            $('.van').removeClass("active");
+            $('.truck').removeClass("active");
+            $('.bike').addClass("active"); 
             final_rate = finaldistance*rentKm + parseInt(baseFare);
             final_rate = Math.round(final_rate);
             $('.total_rate').html('$'+ final_rate);
             $('.additional-service-input').removeClass('pointer_event');
-            $('.opa_add').removeClass('opacity_additional');
+            $('.opa_add').removeClass('opacity_additional');            
           } else {
             window.alert('Directions request failed due to ' + status);
           }
@@ -179,7 +217,7 @@
         var me = this;
         var waypts = [];
         var geocoder = new google.maps.Geocoder();
-
+  
         for (var i = 0; i < locations.length; i++) {
             if(i==0){
               startPoint = locations[i];
@@ -239,10 +277,10 @@
                   var name = data.temp;            
                   waypointsLatLng.push(data);
                   $('.remove_field_'+temp).attr("data-info", name);
-                  } else {
+               } else {
                   alert('Geocode was not successful for the following reason: ' + status);
                 }
-              });
+              });              
             }
         }
         
@@ -266,6 +304,9 @@
             finaldistance = totdistance.toFixed(2);
             var baseFare = $('.bike').data('basefare');
             var rentKm = $('.bike').data('rentkm');
+            $('.van').removeClass("active");
+            $('.truck').removeClass("active");
+            $('.bike').addClass("active"); 
             final_rate = finaldistance*rentKm + parseInt(baseFare);
             final_rate = Math.round(final_rate);
             $('.total_rate').html('$'+ final_rate);
@@ -304,7 +345,7 @@ var y = 1;
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(wrapper).append('<div><li id="location-list-2" class="location-list" data-item-sortable-id="0" role="option" aria-grabbed="false">          <div class="place-order-input-wrapper wht-bg"> <a  class="from-to-location-icon waypoint waypoint-'+x+'" href="javascript:void(0);" draggable="true"> <span class="location-drag-icon"></span> <span class="location-drag-tips">Drag To Reorder</span> </a> <span class="location-input-wrapper bdr-btm">                      <input data-info="10" id="location-1" class="waypoints-input controls location-input ellipsis waypoints_input remove_field_'+y+'" type="text" placeholder="Select Stop"><span class="input-right-text  add_delivery_info" id="input-right-text-origin" data-panel="stop_'+y+'">+ Add Delivery Info</span>            <span class="input-right-icon recipient-info-icon"></span> </span> <span id="location-1-predict" class="predict-ctn" style="display: none;"></span> </div>          <div id="location-1-recipient" class="location-recipient-wrapper bdr-all">            <div class="overlay-input-wrapper">              <div class="overlay-title-ctn"> <span class="dft-gry flt-l"> Recipient Info </span> </div>              <div class="location-recipient-input-wrapper bdr-all wht-bg">                <input id="location-1-recipient-name" tabindex="1" class="order-recipient-name-input recipient-overlay-input" placeholder="Recipient Name" type="text">              </div>              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">                <input id="location-1-recipient-number" tabindex="1" class="order-recipient-phone-input recipient-overlay-input" placeholder="Recipient Phone Number" type="text">              </div>              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">                <input id="location-1-recipient-block" tabindex="1" class="order-recipient-block-input recipient-overlay-input recipient-overlay-address-input" placeholder="Block" type="text">              </div>              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">                <div class="location-recipient-input-wrapper-1-2 bdr-right">                  <input id="location-1-recipient-floor" tabindex="1" class="order-recipient-floor-input recipient-overlay-input recipient-overlay-address-input" placeholder="Floor" type="text">                </div>                <div class="location-recipient-input-wrapper-1-2">                  <input id="location-1-recipient-room" tabindex="1" class="order-recipient-room-input recipient-overlay-input recipient-overlay-address-input" placeholder="Room" type="text">                </div>              </div>            </div>          </div>        </li></div> '); //add input box
+            $(wrapper).append('<div><li id="location-list-2" class="location-list" data-item-sortable-id="0" role="option" aria-grabbed="false">          <div class="place-order-input-wrapper wht-bg"> <a class="from-to-location-icon waypoint waypoint-'+x+'"  href="javascript:void(0);" draggable="true"> <span class="location-drag-icon"></span> <span class="location-drag-tips">Drag To Reorder</span> </a> <span class="location-input-wrapper bdr-btm">                      <input id="location-1" data-info="10" class="waypoints-input controls location-input ellipsis waypoints_input remove_field_'+y+'" type="text" placeholder="Select Stop"><span class="input-right-text  add_delivery_info" id="input-right-text-origin" data-panel="stop_'+y+'">+ Add Delivery Info</span>            <span class="input-right-icon recipient-info-icon"></span> </span> <span id="location-1-predict" class="predict-ctn" style="display: none;"></span> </div>          <div id="location-1-recipient" class="location-recipient-wrapper bdr-all">            <div class="overlay-input-wrapper">              <div class="overlay-title-ctn"> <span class="dft-gry flt-l"> Recipient Info </span> </div>              <div class="location-recipient-input-wrapper bdr-all wht-bg">                <input id="location-1-recipient-name" tabindex="1" class="order-recipient-name-input recipient-overlay-input" placeholder="Recipient Name" type="text">              </div>              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">                <input id="location-1-recipient-number" tabindex="1" class="order-recipient-phone-input recipient-overlay-input" placeholder="Recipient Phone Number" type="text">              </div>              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">                <input id="location-1-recipient-block" tabindex="1" class="order-recipient-block-input recipient-overlay-input recipient-overlay-address-input" placeholder="Block" type="text">              </div>              <div class="location-recipient-input-wrapper bdr-left bdr-right bdr-btm wht-bg">                <div class="location-recipient-input-wrapper-1-2 bdr-right">                  <input id="location-1-recipient-floor" tabindex="1" class="order-recipient-floor-input recipient-overlay-input recipient-overlay-address-input" placeholder="Floor" type="text">                </div>                <div class="location-recipient-input-wrapper-1-2">                  <input id="location-1-recipient-room" tabindex="1" class="order-recipient-room-input recipient-overlay-input recipient-overlay-address-input" placeholder="Room" type="text">                </div>              </div>            </div>          </div>        </li></div> '); //add input box
             addEventOnDynamicField();
         }
     });
@@ -440,22 +481,24 @@ var y = 1;
       var deliveryDate = document.getElementById('immediate-datetime-input').value;
       var orderName = document.getElementById('order-username-input').value;
       var orderMobile = document.getElementById('order-user-phone-input').value;
-      var itemType = document.getElementById('item_type_val').value;      
+      var itemType = document.getElementById('item_type_val').value;
+      var remainWalletAmount = document.getElementById('remaining_wallet_amt').value;
       var vehicleType = $('ul.tabs').find('a.active').data('vehicletype');
-      
-       var additionalServices = [];
+      final_rate = $('.final_rate_after_discount').text().replace('$','');
+      var additionalServices = [];
         $('.add-cls:checked').each(function(i){
           arr = $(this).val().split('_');
           additionalServices.push(arr[2]);
         });
-
+      
       var order_price = Math.round(final_rate);
+      
       if(order_by == "DRIVER"){
         alert('Driver cannot place order! Please log in as Customer or Corporate');
         return false;
       }
 
-console.log(waypointsLatLng);
+
       $(waypointsLatLng).each(function(index,value){
 
         var contact = {};
@@ -479,7 +522,7 @@ console.log(waypointsLatLng);
                     type:'POST',
                     data: {Description: Description, order_price: order_price, party_id: party_id, order_by: order_by, waypointsLatLng: waypointsLatLng,
                     vehicleType: vehicleType,itemType: itemType, orderMobile: orderMobile, orderName: orderName, deliveryDate: deliveryDate,
-                    finalduration: finalduration, finaldistance: finaldistance,additionalServices: additionalServices
+                    finalduration: finalduration, finaldistance: finaldistance,additionalServices: additionalServices, remainWalletAmount: remainWalletAmount
                   },
                     dataType:'JSON',
                     success:function(data){
@@ -502,7 +545,7 @@ console.log(waypointsLatLng);
 
   }
 
- /***********Check PROMO CODE************/
+  /***********Check PROMO CODE************/
   $('.checkPromo').click(function(){
     var party_id    = document.getElementById('party_id').value;
     var promo_code    = document.getElementById('promo-code-input').value;
@@ -516,26 +559,28 @@ console.log(waypointsLatLng);
             dataType: 'JSON',
             success: function(data){     
              if(data.status == 'success'){ 
-              $('#promoCode').modal('hide');              
+              $('#promoCode').modal('hide');
               $('.discount_div').removeClass('total_rate');
               $('.disc_d').removeClass('hide');
               $('.discount_div').addClass('orignal_rate');              
-              var orignal_rate = final_rate;
+              var orignal_rate = $('.final_rate_before_discount').text().replace('$','');
               $('.orignal_rate').html('$'+ orignal_rate);
               $('.discount').html('$'+ data['price']);
-              final_rate = parseInt(final_rate) - parseInt(data['price']);
+              final_rate = parseInt(orignal_rate) - parseInt(data['price']);
               $('.total_rate').html('$'+ final_rate);
               alert(data['message']);
              }else{
-                $('#promoCode').modal('hide');
-                alert(data['error']);                
+              $('#promoCode').modal('hide');
+              alert(data['error']);                
              }
             } // End of success function of ajax form
         }); // End of ajax call
     });
-  
+
 $('.bike').addClass("active"); 
       $('.bike').click(function(){
+        addServices();
+        $('.wallet-check').css('pointer-events','');
         $('.van').removeClass("active");
         $('.truck').removeClass("active");
         $('.bike').addClass("active"); 
@@ -544,10 +589,16 @@ $('.bike').addClass("active");
         var rentKm = $('.bike').data('rentkm');
         $('#item_type_val').val(1);
         final_rate = finaldistance*rentKm + parseInt(baseFare);
-        $('.total_rate').html('$'+ Math.round(final_rate));
+        if(isNaN(final_rate)){
+          final_rate = 0;
+        }
+        $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
+        $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
     });
     $('.van').click(function(){
+      addServices();
         $('.item_type_hide').hide();
+        $('.wallet-check').css('pointer-events','');
         $('.bike').removeClass("active");
         $('.truck').removeClass("active");
         $('.van').addClass("active");
@@ -558,10 +609,17 @@ $('.bike').addClass("active");
         $('#document-vechicle-type-detail-select').addClass("active");
         $('#item_type_val').val('');
         final_rate = finaldistance*rentKm + parseInt(baseFare);
-        $('.total_rate').html('$'+ Math.round(final_rate));
+        if(isNaN(final_rate)){
+          final_rate = 0;
+        }
+        
+        $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
+        $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
     });
     $('.truck').click(function(){
+      addServices();
         $('.van').removeClass("active");
+        $('.wallet-check').css('pointer-events','');
         $('.bike').removeClass("active");
         $('.truck').addClass("active");
         $('.item_type_hide').hide();
@@ -569,20 +627,40 @@ $('.bike').addClass("active");
         var rentKm = $('.truck').data('rentkm');
         $('#item_type_val').val('');
         final_rate = finaldistance*rentKm + parseInt(baseFare);
-        $('.total_rate').html('$'+ Math.round(final_rate));
+        if(isNaN(final_rate)){
+          final_rate = 0;
+        }
+        $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
+        $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
     });
 
-           $(".add-cls").click(function(){
+    function addServices(){
+          $.each($("input[name='additionalServices[]']:checked"), function(){
+              var name = $(this).val();
+              var arr = name.split('_');                
+              final_rate = $('.final_rate_before_discount').html().replace('$','');
+              final_rate = parseInt(final_rate) - parseInt(arr[1]);
+    
+                $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
+                $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
+                $(this).removeAttr('checked');
+                $('.add_ser').html('Additional Services');
+            });
+    }
+
+          $(".add-cls").click(function(){
             var favorite = [];
             var isChecked = $(this).is(":checked");
             var arr = $(this).val().split('_');
+            final_rate = $('.final_rate_after_discount').html().replace('$','');
             if(isChecked){
               final_rate = parseInt(final_rate) + parseInt(arr[1]);
             }else{
               final_rate = parseInt(final_rate) - parseInt(arr[1]);
             }
             
-            $('.total_rate').html('$'+ Math.round(final_rate));
+            $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
+            $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
             $.each($("input[name='additionalServices[]']:checked"), function(){            
                 var name = $(this).val();
                 var arr = name.split('_');                
@@ -622,7 +700,7 @@ $('.bike').addClass("active");
       format: "Y-m-d H:i",
       step: 10,
       minDate: 0,
-      minDateTime: dt,
+      /*minDateTime: dt,*/
       timepickerScrollbar:false
     });
 
@@ -723,6 +801,7 @@ function closeContactForm(id){
         });
 $('#addDelivery_'+id).removeClass('open'); 
 }
+
 function saveServices(){
   $('#additionalServices').removeClass('open');
 }

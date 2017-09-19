@@ -274,7 +274,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($data['vehiclesList'] as $vehicle) { ?>
-                                <tr data-row-id="<?php echo $vehicle->vehicle_id;?>" <?php if($vehicle->vehicle_id == $data['status']) echo "style='background:#ffbfbf'";;?>>
+                                <tr data-row-id="<?php echo $vehicle->no;?>" <?php if($vehicle->no == $data['status']) echo "style='background:#ffbfbf'";;?>>
                                     <td><?php echo $vehicle->vehicle_no; ?></td>
                                         <td>             
                                             <select class="form-control select2 editable-col" col-index='1' data-placeholder="Select vehicle Type" name="vehicle_type_id" style="width: 100%">
@@ -380,13 +380,13 @@
                               </div>
                             </td>
                             <td>
-                              <?php if(!empty($order->vehicle_id)) { 
+                              <?php if(!empty($order->no)) { 
                                 $this->db->select('*');
                                 $this->db->from('vehicle');
-                                $this->db->where('vehicle_id', $order->vehicle_id);
+                                $this->db->where('no', $order->no);
                                 $vehicle_data = $this->db->get()->row();
                                 ?>
-                                <a href="<?php echo base_url(); ?>index.php/business/vehicle/<?php echo $order->vehicle_id ?>" style="color:#f16622;">
+                                <a href="<?php echo base_url(); ?>index.php/business/vehicle/<?php echo $order->no ?>" style="color:#f16622;">
                                   <?php
                                   if (!empty($vehicle_data->vehicle_no)) echo $vehicle_data->vehicle_no;
                                   ?>

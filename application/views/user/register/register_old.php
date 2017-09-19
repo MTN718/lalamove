@@ -37,42 +37,15 @@
 		<span class="text-danger error-personal email-err"></span>
     </div>
     <input id="area-code-link" data-country="hk" data-areacode="852" type="hidden">
-     <div class="form-input-ctn va-m" style="position: relative;">
-      <div class="text-placeholder flt-l cursor-dflt"> Mobile </div>
-     <div id="country-list-ctn1" class="cursor-ptr dis-none flt-l" style="display: inline-block; position: relative; right: 0px;margin-bottom: -10%">
-                                  <div class="width-70 flt-l" style="margin-left:10px;">
-                                    <!--   <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="border:none; background:none; padding:0;">
-                                        <img class="va-m" src="http://pro.lalamove.com/assets/img/login-box/hk-flag.png" width="20px"> <span class="caret"></span>
-                                        <div id="areacode" class="inl-blck lgt-gry2 va-t hide" value="852"> Hong Kong </div>
-                                      </a> -->
-                                      <!-- <ul class="dropdown-menu" role="menu" style="top:1e2;">
-                                        <li><a href="#"><img class="area-code-style" src="<?= base_url('/assets/images/map/th-flag.png') ?>"> Bangkok</a></li>
-                                        <li><a href="#"><img class="area-code-style" src="<?= base_url('/assets/images/map/th-flag.png') ?>"> Bangkok</a></li>
-                                        <li><a href="#"><img class="area-code-style" src="<?= base_url('/assets/images/map/th-flag.png') ?>"> Bangkok</a></li>
-                                        <li><a href="#"><img class="area-code-style" src="<?= base_url('/assets/images/map/th-flag.png') ?>"> Bangkok</a></li>
-                                        <li><a href="#"><img class="area-code-style" src="<?= base_url('/assets/images/map/th-flag.png') ?>"> Bangkok</a></li>
-                                      </ul> -->
-
-        <select class="selectpicker dropdown-menu1 mobile_code1" name="mobile_codep" role="menu" style="top:1e2; display: block !important;">
-          <option value="66" class="dft-gry cursor-ptr bkk-link"> Bangkok</option>
-          <option value="852" class="dft-gry cursor-ptr hk-link">Hong kong</option>
-          <option value="63" class="dft-gry cursor-ptr ph-link">Manila</option>
-          <option value="65" class="dft-gry cursor-ptr sg-link">Singapore</option>
-          <option value="886" class="dft-gry cursor-ptr tp-link">Taipei</option>
-        </select>
-                                    </div>
-                                </div>
-        <input id="register-phone-input" class="form-input psnl-mobile register-phone-input-style-i " name="mobile" type="text" value="<?php echo set_value('mobile'); ?>" style="margin-top: 9px;margin-left: 2.5rem; line-height: 0;" />
-        <span class="text-danger error-personal mobile-err"></span>
-      </div>
-    <!-- <div class="form-input-ctn va-m" style="position: relative;">
+    <div class="form-input-ctn va-m" style="position: relative;">
       <div class="text-placeholder flt-l cursor-dflt"> Mobile </div>
        
-      <div class=" ">        
+      <div class=" ">
+        <!-- <input id="register-phone-input" class="form-input register-phone-input-style-i validate[groupRequired[registration]]" type="text" placeholder=""> -->
         <input id="register-phone-input" class="form-input psnl-mobile register-phone-input-style-i " name="mobile" type="text" value="<?php echo set_value('mobile'); ?>" />
 		<span class="text-danger error-personal mobile-err"></span>
       </div>
-    </div> -->
+    </div>
     <div class="form-input-ctn mg-btm-15">
       <div class="flt-l cursor-dflt lgt-gry2 inl-blck" style="font-size: 11px; padding-top: 3px; padding-left: 8px; width:100%;"> A verification SMS will be sent to this number. </div>
       <br>
@@ -96,7 +69,9 @@
       </div>
       <div class="form-input-ctn"> By signing up, I agree to Lalamove's <a href="https://www.lalamove.com/hongkong-eng/terms-conditions" target="_blank" id="form-terms-and-cond">Terms and Conditions</a> and <a href="https://www.lalamove.com/hongkong-eng/privacy" target="_blank" id="form-privacy-policy">Privacy Policy</a>. </div>
     </div>
-    <div class="fnt-15 form-input-ctn dft-gry alg-c mg-btm-15">      
+    <div class="fnt-15 form-input-ctn dft-gry alg-c mg-btm-15">
+      <!-- <input id="form-register-btn" class="lightbox-btn" type="submit" value="Sign Up" disabled="disabled"> -->
+      <!-- <input type="submit" id="form-register-btn" class="lightbox-btn" onclick="submitRegistrationPersonal()" value=""> -->
       <button id="form-register-btn" type="button" class="lightbox-btn" onclick="submitRegistrationPersonal()"> Register </button>
     </div>
     <div class="fnt-15 form-input-ctn dft-gry alg-c">
@@ -149,23 +124,12 @@
     <input id="area-code-link" data-country="hk" data-areacode="852" type="hidden">
     <div class="form-input-ctn va-m" style="position: relative;">
       <div class="text-placeholder flt-l cursor-dflt"> Mobile </div>
-        <div id="country-list-ctn1" class="cursor-ptr dis-none flt-l" style="display: inline-block; position: relative; right: 0px;margin-bottom: -10%">
-                                  <div class="width-70 flt-l" style="margin-left:10px;">
-                                  
-
-        <select class="selectpicker dropdown-menu1 mobile_code2" name="mobile_codeb" role="menu" style="top:1e2; display: block !important;">
-          <option value="66" class="dft-gry cursor-ptr bkk-link">Bangkok</option>
-          <option value="852" class="dft-gry cursor-ptr hk-link">Hong kong</option>
-          <option value="63" class="dft-gry cursor-ptr ph-link">Manila</option>
-          <option value="65" class="dft-gry cursor-ptr sg-link">Singapore</option>
-          <option value="886" class="dft-gry cursor-ptr tp-link">Taipei</option>
-        </select>
-                                    </div>
-                                </div>
-      
-      <input id="register-phone-input" class="form-input register-phone-input-style-i busns-mobile" name="mobile" placeholder="" type="text" value="<?php echo set_value('mobile'); ?>" />
-		  <span class="text-danger error-company bmobile-err"></span>
-      
+       
+      <div class=" ">
+        <!-- <input id="register-phone-input" class="form-input register-phone-input-style-i validate[groupRequired[registration]]" type="text" placeholder=""> -->
+        <input id="register-phone-input" class="form-input register-phone-input-style-i busns-mobile" name="mobile" placeholder="" type="text" value="<?php echo set_value('mobile'); ?>" />
+		<span class="text-danger error-company bmobile-err"></span>
+      </div>
     </div>
     <div class="form-input-ctn mg-btm-15">
       <div class="flt-l cursor-dflt lgt-gry2 inl-blck" style="font-size: 11px; padding-top: 3px; padding-left: 8px; width:100%;"> A verification SMS will be sent to this number. </div>

@@ -5,6 +5,8 @@ var username='';
 $(document).ready(function() {
 
 
+    $('#myTable').DataTable();    
+
 /* Click function to load login page */
     $('.user_signin').click(function(){
         var path = base_url+'/lalamove/user/login';
@@ -19,6 +21,28 @@ $(document).ready(function() {
         }); // End of ajax call
     });
 
+
+    $('.showRecords').click(function(){        
+        var party_id    = document.getElementById('party_id').value;
+        if(party_id == '' || party_id == undefined){
+            $("#model-signIn").modal('show');
+            openLoginModal();
+            return false;
+        }
+        var path = base_url+'/lalamove/home/records';
+        window.location.href = path;        
+    });
+
+    $('.my_wallet').click(function(){
+        var party_id    = document.getElementById('party_id').value;
+        if(party_id == '' || party_id == undefined){
+            $("#model-signIn").modal('show');
+            openLoginModal();
+            return false;
+        }
+        var path = base_url+'/lalamove/home/wallet';
+        window.location.href = path;        
+    });
 
 });
 
@@ -44,13 +68,53 @@ $(document).on("click", ".user_register", function(){
             type: 'POST',
             dataType: 'html',
             success: function(output_string){
-                $("#model-signIn").modal('hide');
+                $("#model-signIn").modal('hide');                
                 $('.registration-text').html(output_string);
                 $(".register-prsnl").css("display", "block"); 
                 // $('#model-signUp').modal('show');
             }
         });
 });
+
+/* Click function to forgot password*/
+$(document).on("click", ".user_forget", function(){
+    
+   var path = base_url+'/lalamove/user/forgot_password';
+        $.ajax({
+            url:path,
+            type: 'POST',
+            dataType: 'html',
+            success: function(output_string){
+                $("#model-signIn").modal('hide');
+                $('.forgot_modal').html(output_string);
+                $('.eml-err').html('');
+                // $(".register-prsnl").css("display", "block"); 
+                // $('#model-signUp').modal('show');
+            }
+        });
+});
+
+
+function submitForgotPassword(){
+    var email = $('.forgot-email').val();forgot_email
+    var forgot_email = $('#forgot_email').val();        
+    
+    var path = base_url+'/lalamove/user/forgot_password';
+    $.ajax({
+        url:path,
+        type:'POST',
+        data: {email: email, forgot_email: forgot_email},
+        dataType:'JSON',
+        success:function(data){        
+            if(data.status == 'success'){
+                alert(data['message']);
+                $("#model-forget").modal('hide');
+            }else{
+                $('.eml-err').html(data['message']);
+            }                       
+        }
+    });
+}
 
 /*Email login*/
 function submitLoginFormEmail(){
@@ -110,6 +174,7 @@ function submitLoginFormMobile(){
         var login_type = $('#login_type_mobile').val();        
         var mobile = $('.mobile-cls').val();    
         var password = $('.mpass-cls').val();
+        var mobile_code = $('.mobile_code option:selected').val();
             $('.mobile-danger').html('');
             $('.mpassword-danger').html('');
             $('.wrng-mbl-pwd').html('');
@@ -118,7 +183,7 @@ function submitLoginFormMobile(){
                 $.ajax({
                     url:path,
                     type:'POST',
-                    data: {login_type: login_type, mobile: mobile, password: password},
+                    data: {login_type: login_type, mobile: mobile, mobile_code: mobile_code, password: password},
                     dataType:'JSON',
                     success:function(data){
                             
@@ -156,7 +221,7 @@ function submitLoginFormMobile(){
 }
 
 /* Registration form personal*/
-function submitRegistrationPersonal(){
+function submitRegistrationPersonal(){    
     var user_type = $('#userType').val();
     var first_name = $('.psnl-first_name').val();
     var last_name = $('.psnl-last_name').val();
@@ -164,6 +229,8 @@ function submitRegistrationPersonal(){
     var mobile = $('.psnl-mobile').val();
     var password = $('.psnl-pwd').val();
     var password_confirm = $('.cnf-pwd').val();
+    var mobile_code = $('.mobile_code1 option:selected').val();    
+
 
         $('.fname-err').html('');
         $('.lname-err').html('');
@@ -177,7 +244,7 @@ function submitRegistrationPersonal(){
                 $.ajax({
                     url:path,
                     type:'POST',
-                    data: {user_type: user_type, first_name: first_name, last_name: last_name, email: email, mobile: mobile, password: password, password_confirm: password_confirm},
+                    data: {user_type: user_type, first_name: first_name, last_name: last_name, email: email, mobile: mobile, password: password, password_confirm: password_confirm, mobile_code: mobile_code},
                     dataType:'JSON',
                     success:function(data){
                             
@@ -211,7 +278,8 @@ function submitRegistrationBusiness(){
     var company_name = $('.company-name').val();
     var industry = $('.busns-industry').val();
     var staff = $('.busns-staff').val();
-
+    var mobile_code = $('.mobile_code2 option:selected').val();
+alert(mobile_code);
             $('.bfname-err').html('');
             $('.blname-err').html('');
             $('.bemail-err').html('');
@@ -227,7 +295,7 @@ function submitRegistrationBusiness(){
                     url:path,
                     type:'POST',
                     data: {user_type: user_type, first_name: first_name, last_name: last_name, email: email, mobile: mobile, password: password, password_confirm: password_confirm,
-                         company_name: company_name, industry: industry, staff: staff },
+                         company_name: company_name, industry: industry, staff: staff, mobile_code: mobile_code},
                     dataType:'JSON',
                     success:function(data){
                             
@@ -413,8 +481,8 @@ $('.useWallet').click(function(){
             type:'POST',
             data:{party_id: party_id},
             dataType: 'JSON',
-            success: function(data){                
-                if(data.status == 'success'){                    
+            success: function(data){
+                if(data.status == 'success'){
                     
                     $('#walletAmt').modal('hide');
                     $('.wallet-check').css('pointer-events','none');
@@ -455,3 +523,168 @@ $('.useWallet').click(function(){
         }); // End of ajax call
 
 });
+
+
+function showDriver(){
+    var party_id = $('.party_id').val();
+    var path = base_url+'/lalamove/user/getFavoriteDriver';
+
+    $.ajax({
+        url: path,
+        type: 'POST',
+        data: {party_id: party_id},
+        dataType: 'JSON',
+        success: function(data){
+            if(data.status == 'success'){                
+                $('#favorite-driver').find('tbody').empty();
+                $('#banned-driver').find('tbody').empty();                
+                $.each(data.getDriver, function( index, value ) {
+                    if(value.favStatus == 1){                        
+                        var row = $("<tr><td>" + value.first_name + "</td><td>" + value.vehicle_no + "</td><td>" + value.vehicle_type_name + "</td><td><a href='#' class='removeFavDriver' onclick='removefavdri(" + value.party_driver_id + ")'><img src='"+base_url+"/lalamove/assets/images/removefav.png' height='25px;' width='25px'></a></td></tr>");
+                        $("#favorite-driver").append(row);                    
+                    }else if(value.favStatus == 0){
+                        var bannedRow = $("<tr><td>" + value.first_name + "</td><td>" + value.vehicle_no + "</td><td>" + value.vehicle_type_name + "</td><td><a href='#' class='addFavDriver' onclick='addfavdri(" + value.party_driver_id + ")'><img class='addFavDriver' src='"+base_url+"/lalamove/assets/images/addfav.png' height='25px;' width='25px'></a></td></tr>");
+                        $("#banned-driver").append(bannedRow);
+                    }
+                });
+            }else{
+                alert(data.message);
+            }
+            // location.reload();
+        }
+    });
+}
+$('.fav-driver-modal').click(function(){
+    showDriver();
+});
+
+function removefavdri(party_driver_id){
+    var path = base_url+'/lalamove/user/removeFavoriteDriver';
+    var party_driver_id = party_driver_id;    
+    var party_customer_id = $('.party_id').val();
+
+    $.ajax({
+        url: path,
+        type: 'POST',
+        data: {party_driver_id: party_driver_id, party_customer_id: party_customer_id},
+        dataType: 'JSON',
+        success: function(data){
+            if(data.status == 'success'){                
+                $('#favorite-driver').find('tbody').empty();
+                $('#banned-driver').find('tbody').empty();
+                showDriver();
+            }
+        }
+    });
+
+}
+
+function addfavdri(party_driver_id){
+    var path = base_url+'/lalamove/user/addFavoriteDriverUser';
+    var party_driver_id = party_driver_id;    
+    var party_customer_id = $('.party_id').val()
+
+    $.ajax({
+        url: path,
+        type: 'POST',
+        data: {party_driver_id: party_driver_id, party_customer_id: party_customer_id},
+        dataType: 'JSON',
+        success: function(data){
+            if(data.status == 'success'){                
+                $('#favorite-driver').find('tbody').empty();
+                $('#banned-driver').find('tbody').empty();
+                showDriver();
+            }
+        }
+    });    
+}
+
+function cancelOrder(order_id){
+ 
+    var path = base_url+'/lalamove/user/cancelOrder';
+        $.ajax({
+            url: path,
+            type:'POST',
+            data:{order_id: order_id},
+            dataType: 'JSON',
+            success: function(data){                
+                location.reload();
+            }
+        });
+}
+
+function favoriteDriver(driver_id){
+    order_id = $('.fav-driver').data('order_id');
+    no = $('.fav-driver').data('no');
+    party_id = $('.fav-driver').data('party_id');
+    driver_id = driver_id;    
+    var path = base_url+'/lalamove/user/favoriteDriver';
+    $.ajax({
+        url: path,
+        type: 'POST',
+        data: {order_id: order_id, no: no, party_id: party_id, driver_id: driver_id},
+        dataType: 'JSON',
+        success: function(data){
+            if(data.status == 'success'){
+                alert(data.message);
+            }else{
+                alert(data.message);
+            }
+            // location.reload();
+        }
+    });
+}
+
+/*$('.addDriver').click(function(){
+    $('.inputDriver').show();
+});*/
+/*$('#add-driver-license-ok-btn').click(function(){
+    var license_no = $('.license_no').val();
+    var party_id = $('.party_id').val();
+    if(license_no != ''){
+        var path = base_url+'/lalamove/user/addDriverLicense';
+         $.ajax({
+            url: path,
+            type: 'POST',
+            data: {license_no: license_no, party_id: party_id},
+            dataType: 'JSON',
+            success: function(data){
+                if(data.status == 'success'){
+                    alert(data.message);
+                    showDriver();
+                }else{
+                    alert(data.message);
+                }
+                // location.reload();
+            }
+    });
+    }else{
+        
+    }
+});*/
+
+$('.enable_favdriver').click(function(){
+    if($('.enable_favdriver').is(":checked")) {        
+        var party_id = $('.party_id').val();    
+        var path = base_url+'/lalamove/order/enableFavDriver';
+        $.ajax({
+                url: path,
+                type: 'POST',
+                data: {party_id: party_id},
+                dataType: 'JSON',
+                success: function(data){
+                    if(data.status == 'success'){
+                        $('.enable_favdriver').val(1);                        
+                        alert(data.message);
+                        showDriver();
+                    }else{
+                        $('.enable_favdriver').attr('checked', false); 
+                        alert(data.error);
+                    }                
+                }
+        });
+    }else{
+     $('.enable_favdriver').val(0);
+    }
+});
+

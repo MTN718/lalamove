@@ -15,23 +15,23 @@
     <div class="form-input-ctn ">
       <div class="firstname-input-ctn flt-l">
       <i class="glyphicon glyphicon-user user-ic"></i>&nbsp;&nbsp;&nbsp;
-        <input readonly="" class="form-input psnl-first_name account-name-input" id="register-name-input" name="first_name" type="text" value="<?php echo $FIRST_NAME ?>" />
+        <input readonly="" class="form-input psnl-first_name account-name-input" id="register-name-input" name="first_name" type="text" value="<?php echo $first_name ?>" />
       </div>
       <div class="lastname-input-ctn flt-r">
-        <input readonly="" class="form-input psnl-last_name account-name-input" name="last_name" id="register-lastname-input" type="text" value="<?php echo $LAST_NAME; ?>" />
+        <input readonly="" class="form-input psnl-last_name account-name-input" name="last_name" id="register-lastname-input" type="text" value="<?php echo $last_name; ?>" />
       </div>
     </div>
       <hr class="hr-cls">
     <div class="form-input-ctn">
     <i class="glyphicon glyphicon-envelope user-ic"></i>&nbsp;&nbsp;&nbsp;
-      <input readonly="" class="form-input-2 psnl-email account-email-input" id="register-email-input" name="email" type="text" value="<?php echo $USER_LOGIN_ID; ?>" />
+      <input readonly="" class="form-input-2 psnl-email account-email-input" id="register-email-input" name="email" type="text" value="<?php echo $user_login_id; ?>" />
     </div>
     <hr class="hr-cls">
     
   
     <div class="form-input-ctn">
     <i class="glyphicon glyphicon-earphone user-ic"></i>&nbsp;&nbsp;&nbsp;
-      <input readonly="" id="register-password-input" class="form-input-2 t-p-s psnl-pwd account-email-input" name="mobile" type="text" value="<?php echo $USER_MOBILE; ?>" />      
+      <input readonly="" id="register-password-input" class="form-input-2 t-p-s psnl-pwd account-email-input" name="mobile" type="text" value="<?php echo $mobile_number; ?>" />      
     </div>
     <hr class="hr-cls">
     <br>  

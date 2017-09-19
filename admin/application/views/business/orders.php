@@ -170,13 +170,13 @@
 
 
                                         <td>
-                                            <?php if(!empty($order->vehicle_id)) { 
+                                            <?php if(!empty($order->no)) { 
                                                 $this->db->select('*');
                                                 $this->db->from('vehicle');
-                                                $this->db->where('vehicle_id', $order->vehicle_id);
+                                                $this->db->where('no', $order->no);
                                                 $vehicle_data = $this->db->get()->row();
                                             ?>
-                                            <a href="<?php echo base_url(); ?>index.php/business/vehicle/<?php echo $order->vehicle_id ?>" style="color:#f16622;">
+                                            <a href="<?php echo base_url(); ?>index.php/business/vehicle/<?php echo $order->no ?>" style="color:#f16622;">
                                             <?php
                                             if (!empty($vehicle_data->vehicle_no)) echo $vehicle_data->vehicle_no;
                                             ?>

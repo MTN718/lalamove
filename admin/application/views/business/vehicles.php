@@ -102,7 +102,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($data['vehiclesList'] as $vehicle) { ?>
-                                <tr data-row-id="<?php echo $vehicle->vehicle_id;?>" <?php if($vehicle->vehicle_id == $data['status']) echo "style='background:#ffbfbf'";;?>>
+                                <tr data-row-id="<?php echo $vehicle->no;?>" <?php if($vehicle->no == $data['status']) echo "style='background:#ffbfbf'";;?>>
                                     <td><?php echo $vehicle->vehicle_no; ?></td>
                                     <td>
                                         <?php if (!empty($vehicle->first_name)) echo $vehicle->first_name; ?> <?php if (!empty($vehicle->last_name)) echo $vehicle->last_name; ?>
@@ -152,7 +152,7 @@
                                                 <option value="interstate" <?php if($vehicle->permit == "interstate") echo "selected"; ?> > interstate </option>
                                             </select>
                                         </td>
-                                        <td id="vehicleAction<?php echo $vehicle->vehicle_id;?>">
+                                        <td id="vehicleAction<?php echo $vehicle->no;?>">
                                             <?php if($vehicle->vehicle_status == 1) { ?>                          
                                             <a href="javascript:void(0)" class="btn btn-primary editable-action" col-index='4' data="0"><i class="fa fa-thumbs-up"></i></a>
                                             <?php } else { ?>                          

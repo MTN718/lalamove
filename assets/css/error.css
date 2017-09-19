@@ -474,3 +474,39 @@ padding-left: 44px !important;
   height: 21px;
   padding: 17px 15px 30px 40px;
 }
+#country-list-ctn1 {
+  float: left;
+  left: 2.7rem;
+  position: absolute;
+  right: 0;
+  top: 1.2rem;
+  vertical-align: top;
+  width: 11%;
+}
+.dropdown-menu1 {
+  background-clip: padding-box;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+ /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);*/
+  /*display: none;*/
+  float: left;
+  /*font-size: 14px;*/
+  /*left: 0;*/
+  list-style: outside none none;
+  /*margin: 2px 0 0;*/
+  /*min-width: 95px;*/
+  padding: 5px 0;
+  position: absolute;
+  text-align: left;
+  /*top: 100%;*/
+  /*z-index: 1000;*/
+}
+.menu-ctn {
+  background-color: #f3f3f3;
+  box-sizing: border-box;
+  display: inline-block;
+  height: calc(100% - 50px);
+  position: relative;
+  width: 96%;
+}

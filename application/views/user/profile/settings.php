@@ -11,7 +11,7 @@
               <div class="form-input-ctn">
                 <div style="float: left;">BILLING</div><br>
                   <i class="glyphicon glyphicon-envelope user-ic"></i>&nbsp;&nbsp;
-                  <input class="form-input-2 psnl-email account-email-input" id="receipt-email-input" name="email" type="text" value="<?php echo $EMAIL; ?>" />
+                  <input class="form-input-2 psnl-email account-email-input" id="receipt-email-input" name="email" type="text" value="<?php echo $email; ?>" />
                   <span class="text-danger error-personal email-err"></span>
                 </div>
                 <hr class="hr-cls">
@@ -22,7 +22,7 @@
 
                   Receive E-Receipts </span>
                   <label class="switch">
-                    <?php if($E_RECEIPT == "YES"){ ?>
+                    <?php if(($e_receipt == "YES") || $e_receipt == "yes" ){ ?>
                     <input type="checkbox" id="e_receipt" name="e_receipt" value="YES" checked>
                     <span class="slider round e_receipt"></span>                      
                       <?php }else{ ?>

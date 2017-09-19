@@ -53,8 +53,10 @@ class Order extends CI_Controller
 		$waypointsLatLng = $this->input->post('waypointsLatLng');
 		$additionalServices = $this->input->post('additionalServices');
 		$remainWalletAmount = $this->input->post('remainWalletAmount');
-				
-		if ($this->order_model->place_order($Description, $order_price, $party_id, $order_by, $deliveryDate, $orderName, $orderMobile, $itemType, $vehicleType,  $waypointsLatLng, $orderDuration, $orderDistance, $additionalServices)) {
+		$final_rate_unchanged = $this->input->post('final_rate_unchanged');
+		$favorite_driver_first = $this->input->post('favorite_driver_first');
+		
+		if ($this->order_model->place_order($Description, $order_price, $party_id, $order_by, $deliveryDate, $orderName, $orderMobile, $itemType, $vehicleType,  $waypointsLatLng, $orderDuration, $orderDistance, $additionalServices, $final_rate_unchanged, $favorite_driver_first)) {
 			$this->order_model->updateWallete($party_id,$remainWalletAmount);
 			$data = array("status"=>"success", 'message' => "<p>Order Placed!</p>");
 			$this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -70,10 +72,27 @@ class Order extends CI_Controller
 
 		$result = $this->order_model->check_promo($party_id,$promo_code);
 		if(!empty($result)){			
-			$data = array("status"=>"success", 'price' => $result->PRICE, 'message'=>'Promo code applied successfully');
+			$data = array("status"=>"success", 'price' => $result->price, 'message'=>'Promo code applied successfully');
 			$this->output->set_content_type('application/json')->set_output(json_encode($data));
 		}else{
 			$data = array("status"=>"false", 'error' => "promo code is not valid or expired");
+			$this->output->set_content_type('application/json')->set_output(json_encode($data));
+		}
+
+
+	}
+
+	public function enableFavDriver(){
+		$data = new stdClass();	
+		
+		$party_id = $this->input->post('party_id');		
+
+		$result = $this->order_model->enableFavDriver($party_id);
+		if(!empty($result)){			
+			$data = array("status"=>"success", 'message'=>'If the driver is available, Orders will be dispatched to your favorite drivers first');
+			$this->output->set_content_type('application/json')->set_output(json_encode($data));
+		}else{
+			$data = array("status"=>"false", 'error' => "You have no favorite drivers available at the moment. Please go to records to add more drivers!");
 			$this->output->set_content_type('application/json')->set_output(json_encode($data));
 		}
 

@@ -1,15 +1,15 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-<!--   <?php //if ($this->session->flashdata('error')) { ?>
+<!--   <?php if ($this->session->flashdata('error')) { ?>
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <?php //echo $this->session->flashdata('error'); ?>
+                        <?php echo $this->session->flashdata('error'); ?>
                     </div>
-                <?php //} elseif ($this->session->flashdata('success')) { ?>
+                <?php } elseif ($this->session->flashdata('success')) { ?>
                     <div class="alert alert-success alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <?php //echo $this->session->flashdata('success'); ?>
+                        <?php echo $this->session->flashdata('success'); ?>
                     </div>
-                <?php //} ?>  -->
+                <?php } ?>  -->
         <?php if (isset($loginType)) { ?>
           <input type="hidden" name="login" class="login-onload" value="<?php echo $loginType; ?>">
         <?php } ?>
@@ -47,10 +47,10 @@
                               </div>
 
                           <span class="text-danger wrng-eml-pwd"></span>
-                            <div class="form-input-ctn-modified alg-l flt-l link-spanner-1 cursor-ptr"> <a href="javascript:void(0);" class="remember-checkbox"><img src="images/show-on-map-icon.png" alt="" style="vertical-align:middle;"></a>
+                            <!-- <div class="form-input-ctn-modified alg-l flt-l link-spanner-1 cursor-ptr"> <a href="javascript:void(0);" class="remember-checkbox"><img src="images/show-on-map-icon.png" alt="" style="vertical-align:middle;"></a>
                                    <h1 class="remember"> Remember me </h1>
-                            </div>
-                            <div class="form-input-ctn-modified alg-l flt-r"> <a id="user-forget" class="dft-gry" href="#model-forget" data-toggle="modal"> Forgot password </a> </div>
+                            </div> -->
+                            <div class="form-input-ctn-modified alg-l flt-r"> <a id="user-forget" class="dft-gry user_forget" href="#model-forget" data-toggle="modal"> Forgot password </a> </div>
                           
                             <div class="fnt-15 form-input-ctn mg-btm-15 fnt-15">
                                   <!-- <input id="form-signin-btn" class="bdr-all dft-gry form-submit" value="Log in" type="submit"> -->
@@ -66,17 +66,24 @@
                                 <input type="hidden" name="login_type" id="login_type_mobile" value="2">
                                 <div id="country-list-ctn" class="cursor-ptr dis-none flt-l" style="display: inline-block; position: relative; right: 0px;margin-bottom: -10%">
                                   <div class="width-70 flt-l" style="margin-left:10px;">
-                                      <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="border:none; background:none; padding:0;">
+                                      <!-- <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="border:none; background:none; padding:0;">
                                         <img class="va-m" src="http://pro.lalamove.com/assets/img/login-box/hk-flag.png" width="20px"> <span class="caret"></span>
                                         <div id="areacode" class="inl-blck lgt-gry2 va-t hide" value="852"> Hong Kong </div>
-                                      </a>
-                                      <ul class="dropdown-menu" role="menu" style="top:1e2;">
+                                      </a> -->
+                                    <!--   <ul class="dropdown-menu" role="menu" style="top:1e2;">
                                         <li><a href="#"><img class="area-code-style" src="http://pro.lalamove.com/assets/img/login-box/th-flag.png"> Bangkok</a></li>
                                         <li><a href="#"><img class="area-code-style" src="http://pro.lalamove.com/assets/img/login-box/th-flag.png"> Bangkok</a></li>
                                         <li><a href="#"><img class="area-code-style" src="http://pro.lalamove.com/assets/img/login-box/th-flag.png"> Bangkok</a></li>
                                         <li><a href="#"><img class="area-code-style" src="http://pro.lalamove.com/assets/img/login-box/th-flag.png"> Bangkok</a></li>
                                         <li><a href="#"><img class="area-code-style" src="http://pro.lalamove.com/assets/img/login-box/th-flag.png"> Bangkok</a></li>
-                                      </ul>
+                                      </ul> -->
+                                      <select class="dropdown-menu1 mobile_code" name="mobile_code" role="menu" style="top:1e2; display: block !important; width: 30px;">
+                                        <option value="66" class="dft-gry cursor-ptr bkk-link"> Bangkok</option>
+                                        <option value="852" class="dft-gry cursor-ptr hk-link">Hong kong</option>
+                                        <option value="63" class="dft-gry cursor-ptr ph-link">Manila</option>
+                                        <option value="65" class="dft-gry cursor-ptr sg-link">Singapore</option>
+                                        <option value="886" class="dft-gry cursor-ptr tp-link">Taipei</option>
+                                      </select>
                                     </div>
                                 </div>
                                 
@@ -92,10 +99,10 @@
                                 <span class="text-danger mpassword-danger"></span>
                               </div>
                               <span class="text-danger wrng-mbl-pwd"></span>
-                              <div class="form-input-ctn-modified alg-l flt-l link-spanner-1 cursor-ptr"> <a href="javascript:void(0);" class="remember-checkbox"><img src="images/show-on-map-icon.png" alt="" style="vertical-align:middle;"></a>
+                             <!--  <div class="form-input-ctn-modified alg-l flt-l link-spanner-1 cursor-ptr"> <a href="javascript:void(0);" class="remember-checkbox"><img src="images/show-on-map-icon.png" alt="" style="vertical-align:middle;"></a>
                                    <h1 class="remember"> Remember me </h1>
-                            </div>
-                            <div class="form-input-ctn-modified alg-l flt-r"> <a id="user-forget" class="dft-gry" href="#model-forget" data-toggle="modal"> Forgot password </a> </div>
+                            </div> -->
+                            <div class="form-input-ctn-modified alg-l flt-r"> <a id="user-forget" class="dft-gry user_forget" href="#model-forget" data-toggle="modal"> Forgot password </a> </div>
                           
                             <div class="fnt-15 form-input-ctn mg-btm-15 fnt-15 vish">
                                   <!-- <input id="form-signin-btn" class="bdr-all dft-gry" value="Log in" type="submit"> -->

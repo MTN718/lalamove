@@ -1,5 +1,9 @@
  // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
+      var res;      
+      $('#document-vechicle-type-detail-select').addClass('active');
+      var str = $('.vehicle_classes').val();
+      var res = str.split("_");
       var country_code;
       var current;
       var directionsService;
@@ -12,8 +16,8 @@
       var waypointsLatLng = [];
       var finalduration;
       function initMap() {
-        country_code = $('.country_code').val();
-        if(country_code == "hk"){
+       country_code = $('.country_code').val();       
+       if(country_code == "hk"){
           map = new google.maps.Map(document.getElementById('map'), {
             zoom: 13,
             center: {lat: 22.3964, lng: 114.1095},
@@ -49,14 +53,14 @@
             scaleControl: true
           });
        }      
-
+      
         new AutocompleteDirectionsHandler(map);
       }
 
       country_code = $('.country_code').val();
       var options = {  
           componentRestrictions: {country: country_code}
-      };
+        };
        /**
         * @constructor
        */
@@ -197,12 +201,18 @@
             }
             finalduration = duration;
             finaldistance = totdistance.toFixed(2);
-            var baseFare = $('.bike').data('basefare');
-            var rentKm = $('.bike').data('rentkm');
-            $('.van').removeClass("active");
-            $('.truck').removeClass("active");
-            $('.bike').addClass("active"); 
-            final_rate = finaldistance*rentKm + parseInt(baseFare);
+            var baseFareKm = $('.'+res[0]).data('basefarekm');
+            var baseFare = $('.'+res[0]).data('basefare');
+            var rentKm = $('.'+res[0]).data('rentkm');            
+            if(Math.round(finaldistance) <= baseFareKm){
+              final_rate = parseInt(baseFare);
+            }else{
+              finaldistance = Math.round(finaldistance) - parseInt(baseFareKm);
+              final_rate = finaldistance*rentKm + parseInt(baseFare);
+            }
+            $('.'+res[1]).removeClass("active");
+            $('.'+res[2]).removeClass("active");
+            $('.'+res[0]).addClass("active");
             final_rate = Math.round(final_rate);
             $('.total_rate').html('$'+ final_rate);
             $('.additional-service-input').removeClass('pointer_event');
@@ -302,12 +312,18 @@
             }
             finalduration = duration;
             finaldistance = totdistance.toFixed(2);
-            var baseFare = $('.bike').data('basefare');
-            var rentKm = $('.bike').data('rentkm');
-            $('.van').removeClass("active");
-            $('.truck').removeClass("active");
-            $('.bike').addClass("active"); 
-            final_rate = finaldistance*rentKm + parseInt(baseFare);
+            var baseFareKm = $('.'+res[0]).data('basefarekm');
+            var baseFare = $('.'+res[0]).data('basefare');
+            var rentKm = $('.'+res[0]).data('rentkm');            
+            if(Math.round(finaldistance) <= baseFareKm){
+              final_rate = parseInt(baseFare);
+            }else{
+              finaldistance = Math.round(finaldistance) - parseInt(baseFareKm);
+              final_rate = finaldistance*rentKm + parseInt(baseFare);
+            }            
+            $('.'+res[1]).removeClass("active");
+            $('.'+res[2]).removeClass("active");
+            $('.'+res[0]).addClass("active");             
             final_rate = Math.round(final_rate);
             $('.total_rate').html('$'+ final_rate);
             $('.additional-service-input').removeClass('pointer_event');
@@ -485,6 +501,9 @@ var y = 1;
       var remainWalletAmount = document.getElementById('remaining_wallet_amt').value;
       var vehicleType = $('ul.tabs').find('a.active').data('vehicletype');
       final_rate = $('.final_rate_after_discount').text().replace('$','');
+      final_rate_unchanged = $('.final_rate_unchanged').text().replace('$','');
+      var favorite_driver_first = document.getElementById('favorite_driver_first').value;      
+      
       var additionalServices = [];
         $('.add-cls:checked').each(function(i){
           arr = $(this).val().split('_');
@@ -515,14 +534,16 @@ var y = 1;
 
    /*   contact = $("#addDeliveryInfoOrigin input"); 
       data.contact = contact;*/
-       var path = base_url+'/lalamove/order/placeOrder';
+      var path = base_url+'/lalamove/order/placeOrder';
+      var recordPath = base_url+'/lalamove/home/records';
     
                 $.ajax({
                     url:path,
                     type:'POST',
                     data: {Description: Description, order_price: order_price, party_id: party_id, order_by: order_by, waypointsLatLng: waypointsLatLng,
                     vehicleType: vehicleType,itemType: itemType, orderMobile: orderMobile, orderName: orderName, deliveryDate: deliveryDate,
-                    finalduration: finalduration, finaldistance: finaldistance,additionalServices: additionalServices, remainWalletAmount: remainWalletAmount
+                    finalduration: finalduration, finaldistance: finaldistance,additionalServices: additionalServices, remainWalletAmount: remainWalletAmount,
+                    final_rate_unchanged: final_rate_unchanged, favorite_driver_first: favorite_driver_first
                   },
                     dataType:'JSON',
                     success:function(data){
@@ -531,6 +552,7 @@ var y = 1;
                             $("#success-order-alert").fadeTo(2000, 500).slideUp(500, function(){
                             $("#success-order-alert").slideUp(500);
                         });
+                            window.location.href = recordPath;
                         }else{
                             $('.fname-err').html(data['first_name']);
                             $('.lname-err').html(data['last_name']);
@@ -577,61 +599,92 @@ var y = 1;
         }); // End of ajax call
     });
 
-$('.bike').addClass("active"); 
-      $('.bike').click(function(){
+  var FD;
+$('.'+res[0]).addClass("active"); 
+      $('.'+res[0]).click(function(){
         addServices();
         $('.wallet-check').css('pointer-events','');
-        $('.van').removeClass("active");
-        $('.truck').removeClass("active");
-        $('.bike').addClass("active"); 
+        $('.'+res[1]).removeClass("active");
+        $('.'+res[2]).removeClass("active");
+        $('.'+res[0]).addClass("active"); 
         $('.item_type_hide').show();
-        var baseFare = $('.bike').data('basefare');
-        var rentKm = $('.bike').data('rentkm');
+        var baseFareKm = $('.'+res[0]).data('basefarekm');
+        var baseFare = $('.'+res[0]).data('basefare');
+        var rentKm = $('.'+res[0]).data('rentkm');        
+        FD = finaldistance;        
+        if(Math.round(finaldistance) <= baseFareKm){
+          final_rate = parseInt(baseFare);
+        }else{
+          finaldistance = Math.round(finaldistance) - parseInt(baseFareKm);
+          final_rate = finaldistance*rentKm + parseInt(baseFare);
+        }
+        finaldistance = FD;
+        // final_rate = finaldistance*rentKm + parseInt(baseFare);
         $('#item_type_val').val(1);
-        final_rate = finaldistance*rentKm + parseInt(baseFare);
         if(isNaN(final_rate)){
           final_rate = 0;
         }
         $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
         $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
+        $('.final_rate_unchanged').html(Math.round(final_rate));
     });
-    $('.van').click(function(){
+    $('.'+res[1]).click(function(){
       addServices();
         $('.item_type_hide').hide();
         $('.wallet-check').css('pointer-events','');
-        $('.bike').removeClass("active");
-        $('.truck').removeClass("active");
-        $('.van').addClass("active");
-        var baseFare = $('.van').data('basefare');
-        var rentKm = $('.van').data('rentkm');
+        $('.'+res[0]).removeClass("active");
+        $('.'+res[2]).removeClass("active");
+        $('.'+res[1]).addClass("active");
         $('#parcel-vechicle-type-detail-select').removeClass("active");
         $('#food-vechicle-type-detail-select').removeClass("active");
         $('#document-vechicle-type-detail-select').addClass("active");
         $('#item_type_val').val('');
-        final_rate = finaldistance*rentKm + parseInt(baseFare);
+        var baseFareKm = $('.'+res[1]).data('basefarekm');
+        var baseFare = $('.'+res[1]).data('basefare');
+        var rentKm = $('.'+res[1]).data('rentkm');
+        FD = finaldistance;
+        if(Math.round(finaldistance) <= baseFareKm){
+          final_rate = parseInt(baseFare);
+        }else{
+          finaldistance = Math.round(finaldistance) - parseInt(baseFareKm);
+          final_rate = finaldistance*rentKm + parseInt(baseFare);
+        }
+        finaldistance = FD;
+        // final_rate = finaldistance*rentKm + parseInt(baseFare);
         if(isNaN(final_rate)){
           final_rate = 0;
         }
         
         $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
         $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
+        $('.final_rate_unchanged').html(Math.round(final_rate));
     });
-    $('.truck').click(function(){
+    $('.'+res[2]).click(function(){
       addServices();
-        $('.van').removeClass("active");
+        $('.'+res[1]).removeClass("active");
         $('.wallet-check').css('pointer-events','');
-        $('.bike').removeClass("active");
-        $('.truck').addClass("active");
+        $('.'+res[0]).removeClass("active");
+        $('.'+res[2]).addClass("active");
         $('.item_type_hide').hide();
-        var baseFare = $('.truck').data('basefare');
-        var rentKm = $('.truck').data('rentkm');
         $('#item_type_val').val('');
-        final_rate = finaldistance*rentKm + parseInt(baseFare);
+        var baseFareKm = $('.'+res[2]).data('basefarekm');
+        var baseFare = $('.'+res[2]).data('basefare');
+        var rentKm = $('.'+res[2]).data('rentkm');        
+        FD = finaldistance;        
+        if(Math.round(finaldistance) <= baseFareKm){
+          final_rate = parseInt(baseFare);
+        }else{
+          finaldistance = Math.round(finaldistance) - parseInt(baseFareKm);
+          final_rate = finaldistance*rentKm + parseInt(baseFare);
+        }
+        finaldistance = FD;
+        // final_rate = finaldistance*rentKm + parseInt(baseFare);
         if(isNaN(final_rate)){
           final_rate = 0;
         }
         $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
         $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
+        $('.final_rate_unchanged').html(Math.round(final_rate));
     });
 
     function addServices(){
@@ -643,6 +696,7 @@ $('.bike').addClass("active");
     
                 $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
                 $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
+                $('.final_rate_unchanged').html(Math.round(final_rate));
                 $(this).removeAttr('checked');
                 $('.add_ser').html('Additional Services');
             });
@@ -661,6 +715,7 @@ $('.bike').addClass("active");
             
             $('.final_rate_before_discount').html('$'+ Math.round(final_rate));
             $('.final_rate_after_discount').html('$'+ Math.round(final_rate));
+            $('.final_rate_unchanged').html(Math.round(final_rate));
             $.each($("input[name='additionalServices[]']:checked"), function(){            
                 var name = $(this).val();
                 var arr = name.split('_');                
@@ -693,14 +748,11 @@ $('.bike').addClass("active");
     });
 
     var dt = new Date();
-    $('#immediate-datetime-input').datetimepicker({
-      defaultDate: dt,
-      minDate: "-1970/01/01",
-      maxDate: "+1970/01/30",
+    $('#immediate-datetime-input').datetimepicker({      
       format: "Y-m-d H:i",
       step: 10,
-      minDate: 0,
-      /*minDateTime: dt,*/
+      minDate: -0,
+      minDateTime: dt,
       timepickerScrollbar:false
     });
 

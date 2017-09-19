@@ -1,38 +1,41 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="page-header">
-                    <h1>Forgot Password</h1>
-                </div>
-
-                 <?php if ($this->session->flashdata('error')) { ?>
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <?php echo $this->session->flashdata('error'); ?>
-                    </div>
-                <?php } elseif ($this->session->flashdata('success')) { ?>
-                    <div class="alert alert-success alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <?php echo $this->session->flashdata('success'); ?>
-                    </div>
-                <?php } ?>  
-
-                <?php $attributes = array("name" => "forgotform");
+        <div class="modal-dialog">
+          <div class="logo-lalamove" style="text-align:center;"><img src="<?php echo base_url('assets/images/lalamove-logo.png'); ?>" alt=""></div>
+          <div id="wallet-box2" class="topPad">
+             
+                 <!-- forget password -->
+            <div class="modal-content">
+              <div style="width:auto;height:auto;overflow: auto;position:relative; background:#f6f6f3;">
+                <button type="button" class="close closeCross" data-dismiss="modal" aria-hidden="true">×</button>
+                <div class="signPanel">
+                  <div id="user-login-box" class="noto-sans">
+                    <div class="fnt-28 title dft-gry2 bld mg-btm-10"> Forgot Password </div>
+                    <div class="mg-btm-10" style="font-size: 12px;"> Enter your registered <b>Email</b> address or <b>Mobile</b> number to reset your password. You will receive an email or a SMS from us shortly. </div>
+                     <?php $attributes = array("name" => "forgotform");
                     echo form_open("user/forgot_password", $attributes); ?>
-                        <div class="form-group">
-                        <input type="hidden" name="login_type" value="1">
-                            <label for="email">Email</label>
-                                <input type="email" name="email" class="form-control" id="email" placeholder="Email">
-                            
-                            <span class="text-danger"><?php echo form_error('email'); ?></span>
-                        </div>                      
-                        <div class="form-group">
-                            <input type="submit" class="btn btn-default" value="Submit">
-                        </div>
-                        <a href="<?php echo site_url('user/login'); ?>">Back to login</a><br>
-                    </form>                
+                      <input type="hidden" id="forgot_email" name="forgot_email" value="1">
+                      <div class="form-email-mobile-ctn">
+                        
+                        <input id="username-input" type="email" name="email" value="" class="form-input-2 forgot-email" placeholder="Email">
+                        <span class="text-danger eml-err"><?php echo form_error('email'); ?></span>
+                        <!-- <input id="username-input" class="form-input-2" value="" type="text"> -->
+                      </div>
+                       <br>
+                       
+                      <div class="fnt-15 form-input-ctn mg-btm-15 fnt-15">
+                        <!-- <input id="form-signin-btn" class="bdr-all dft-gry" value="Submit" type="submit"> -->
+                        <button id="form-signin-btn" type="button" class="bdr-all dft-gry" onclick="submitForgotPassword()">Submit</button>
+                      </div>
+                       
+                    <div class="form-input-ctn mg-top-5 mg-btm-5 alg-c">                       
+                        <a id="user-signin" class="bg-none oge"  href="#model-signIn" data-toggle="modal"> Return to Login </a> 
+                    </div>
+                    </form>              
+                  </div>
+                </div>
+              </div>
+               
             </div>
+              
+ 
+          </div>
         </div>
-    </div>
-       
